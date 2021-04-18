@@ -3,6 +3,7 @@
 
 #include <map>
 #include <set>
+#include <type_traits>
 
 #include "Graph/Vertex.hpp"
 
@@ -20,6 +21,9 @@ class Graph {
 public:
     using AdjacencyList = std::map<Vertex, std::set<Vertex>>;
 
+    template<typename... Args>
+    bool addVertexes(Args&&... args);
+
     bool add(const Vertex& v);
     bool add(const Edge& e);
 
@@ -31,3 +35,5 @@ private:
 };
 
 }
+
+#include "Graph/Graph.tpp"

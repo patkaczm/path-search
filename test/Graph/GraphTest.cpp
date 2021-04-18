@@ -55,8 +55,7 @@ TEST_F(GraphTest, cannotAddSameEdgeTwice)
     Vertex v1{1};
     Vertex v2{2};
     Edge e {v1, v2};
-    g.add(v1);
-    g.add(v2);
+    g.addVertexes(v1, v2);
     EXPECT_TRUE(g.add(e));
     EXPECT_FALSE(g.add(e));
 }
