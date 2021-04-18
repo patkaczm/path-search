@@ -31,5 +31,12 @@ bool Graph::add(const Edge &e)
     return true;
 }
 
+Graph::Neighbours Graph::getNeighbours(const Vertex &v) const
+{
+    if (!adjList.contains(v)) {
+        throw VertexDoesNotExist{};
+    }
+    return adjList.at(v);
+}
 
 }

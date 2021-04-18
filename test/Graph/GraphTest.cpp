@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 #include "Graph/Graph.hpp"
 #include "Graph/Vertex.hpp"
@@ -59,6 +60,33 @@ TEST_F(GraphTest, cannotAddSameEdgeTwice)
     EXPECT_TRUE(g.add(e));
     EXPECT_FALSE(g.add(e));
 }
+
+TEST_F(GraphTest, neighboursListForNotConnectedVertexIsEmpty)
+{
+    g.addVertexes(Vertex{1}, Vertex{2});
+    auto neighbours = g.getNeighbours(Vertex{1});
+    EXPECT_TRUE(neighbours.empty());
+}
+
+TEST_F(GraphTest, throwWhenGettingNeighbourListForNonExistingVertes)
+{
+    EXPECT_THROW(g.getNeighbours(Vertex{1}), VertexDoesNotExist);
+}
+
+TEST_F(GraphTest, canCreateConnectedGraph)
+{
+    using ::testing::UnorderedElementsAre;
+    g.addVertexes(Vertex{1}, Vertex{2}, Vertex{3}, Vertex{4});
+    g.addEdges(Edge{{1}, {2}},
+               Edge{{1}, {3}},
+               Edge{{2}, {3}},
+               Edge{{3}, {4}});
+    EXPECT_THAT(g.getNeighbours({1}), UnorderedElementsAre(Vertex{2}, Vertex{3}));
+    EXPECT_THAT(g.getNeighbours({2}), UnorderedElementsAre(Vertex{1}, Vertex{3}));
+    EXPECT_THAT(g.getNeighbours({3}), UnorderedElementsAre(Vertex{1}, Vertex{2}, Vertex{4}));
+    EXPECT_THAT(g.getNeighbours({4}), UnorderedElementsAre(Vertex{3}));
+}
+
 
 }
 }

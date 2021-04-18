@@ -19,15 +19,19 @@ struct Edge {
 
 class Graph {
 public:
-    using AdjacencyList = std::map<Vertex, std::set<Vertex>>;
+    using Neighbours = std::set<Vertex>;
+    using AdjacencyList = std::map<Vertex, Neighbours>;
 
     template<typename... Args>
     bool addVertexes(Args&&... args);
 
+    template<typename... Args>
+    bool addEdges(Args&&... args);
+
     bool add(const Vertex& v);
     bool add(const Edge& e);
 
-    bool isAdjacent(const Vertex& lhs, const Vertex& rhs);
+    Neighbours getNeighbours(const Vertex& v) const;
 
 private:
     AdjacencyList adjList;
