@@ -32,6 +32,7 @@ public:
     bool add(const Edge& e);
 
     Neighbours getNeighbours(const Vertex& v) const;
+    std::set<Vertex> getVertexes() const;
 
 private:
     AdjacencyList adjList;

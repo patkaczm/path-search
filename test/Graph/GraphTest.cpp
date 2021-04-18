@@ -87,6 +87,12 @@ TEST_F(GraphTest, canCreateConnectedGraph)
     EXPECT_THAT(g.getNeighbours({4}), UnorderedElementsAre(Vertex{3}));
 }
 
+TEST_F(GraphTest, canGetNumberOfVertexes)
+{
+    g.addVertexes(Vertex{1}, Vertex{2}, Vertex{3}, Vertex{4});
+    EXPECT_EQ(4, g.getVertexes().size());
+}
+
 
 }
 }

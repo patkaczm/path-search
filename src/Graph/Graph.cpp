@@ -39,4 +39,14 @@ Graph::Neighbours Graph::getNeighbours(const Vertex &v) const
     return adjList.at(v);
 }
 
+std::set<Vertex> Graph::getVertexes() const
+{
+    std::set<Vertex> v;
+    for (const auto& [key, _] : adjList)
+    {
+        v.insert(key);
+    }
+    return v;
+}
+
 }

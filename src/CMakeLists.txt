@@ -40,3 +40,4 @@ target_link_libraries(path-search
   PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Quick)
 
 add_subdirectory(Graph)
+add_subdirectory(Algorithm)

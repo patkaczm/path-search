@@ -3,8 +3,5 @@ project(path-search-tests LANGUAGES CXX)
 
 set(TEST_MAIN ${CMAKE_CURRENT_LIST_DIR}/main_test.cpp)
 
-add_executable(Test main_test.cpp)
-
-target_link_libraries(Test PRIVATE gtest gmock)
-
 add_subdirectory(Graph)
+add_subdirectory(Algorithm)
