@@ -1,15 +1,15 @@
+// Adjacency list graph
 #pragma once
 
-#include<map>
-#include<vector>
+#include <map>
+#include <set>
+
+#include "Graph/Vertex.hpp"
 
 namespace graph {
 
-// Adjacency list graph
-struct Vertex {
-    //@todo in that phase assume that id is unique
-    int id;
-};
+struct VertexDoesNotExist : public std::exception
+{};
 
 struct Edge {
     Vertex a;
@@ -18,7 +18,7 @@ struct Edge {
 
 class Graph {
 public:
-    using AdjacencyList = std::map<Vertex, std::vector<Vertex>>;
+    using AdjacencyList = std::map<Vertex, std::set<Vertex>>;
 
     bool add(const Vertex& v);
     bool add(const Edge& e);
