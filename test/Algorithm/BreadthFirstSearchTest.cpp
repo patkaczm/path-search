@@ -6,40 +6,57 @@
 
 #include "Algorithm/BreadthFirstSearch.hpp"
 
-#include <iostream>
-
 namespace algorithm {
 namespace test {
 
 using graph::Vertex;
 using graph::Edge;
 
-class BreadthFirstSearchTest : public ::testing::Test{
+struct BreadthFirstSearchTestParams
+{
+    std::vector<Vertex> vertexes{};
+    std::vector<Edge> edges{};
+    std::pair<Vertex, Vertex> searchedPath{};
+    std::vector<Vertex> path{};
+};
+
+class BreadthFirstSearchTest : public ::testing::TestWithParam<BreadthFirstSearchTestParams>{
 protected:
     graph::Graph g;
 };
 
-TEST_F(BreadthFirstSearchTest, test1)
+TEST_P(BreadthFirstSearchTest, pathSearchingTest)
 {
-    g.addVertexes(Vertex{1}, Vertex{2}, Vertex{3}, Vertex{4});
-    g.addEdges(Edge{{1}, {2}},
-               Edge{{1}, {3}},
-               Edge{{2}, {3}},
-               Edge{{3}, {4}});
-
+    auto params = GetParam();
+    for(const auto& v : params.vertexes) {
+        g.add(v);
+    }
+    for(const auto& e: params.edges) {
+        g.add(e);
+    }
     BreadthFirstSearch bfs(g);
-    auto path = bfs(Vertex{1}, Vertex{4});
-    EXPECT_THAT(path, ::testing::ElementsAre(Vertex{1}, Vertex{3}, Vertex{4}));
+    EXPECT_THAT(bfs(params.searchedPath.first, params.searchedPath.second),
+                ::testing::ContainerEq(params.path));
 }
 
-TEST_F(BreadthFirstSearchTest, test2) {
-    g.addVertexes(Vertex{1}, Vertex{2}, Vertex{3}, Vertex{4}, Vertex{5});
-    g.addEdges(Edge{{1}, {2}},Edge{{2}, {3}},Edge{{3}, {4}},Edge{{4}, {5}},Edge{{3}, {5}});
+const std::vector<BreadthFirstSearchTestParams> params {
+    {
+        {Vertex{1}, Vertex{2}, Vertex{3}, Vertex{4}},
+        {Edge{{1}, {2}}, Edge{{1}, {3}}, Edge{{2}, {3}}, Edge{{3}, {4}}},
+        {Vertex{1}, Vertex{4}},
+        {Vertex{1}, Vertex{3}, Vertex{4}}
+    },
+    {
+        {Vertex{1}, Vertex{2}, Vertex{3}, Vertex{4}, Vertex{5}},
+        {Edge{{1}, {2}},Edge{{2}, {3}},Edge{{3}, {4}},Edge{{4}, {5}},Edge{{3}, {5}}},
+        {Vertex{1}, Vertex{5}},
+        {Vertex{1}, Vertex{2}, Vertex{3}, Vertex{5}}
+    }
+};
 
-    BreadthFirstSearch bfs(g);
-    auto path = bfs(Vertex{1}, Vertex{5});
-    EXPECT_THAT(path, ::testing::ElementsAre(Vertex{1}, Vertex{2}, Vertex{3}, Vertex{5}));
-}
+INSTANTIATE_TEST_SUITE_P(,
+                         BreadthFirstSearchTest,
+                         testing::ValuesIn(params));
 
 }
 }
