@@ -18,26 +18,31 @@ set(PROJECT_SOURCES
         ${CMAKE_BASE_LIST_DIR}/qml.qrc
 )
 
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(path-search
-        ${PROJECT_SOURCES}
-    )
-else()
-    if(ANDROID)
-        add_library(path-search SHARED
-            ${PROJECT_SOURCES}
-        )
-    else()
-        add_executable(path-search
-          ${PROJECT_SOURCES}
-        )
-    endif()
-endif()
+#if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+#    qt_add_executable(path-search
+#        ${PROJECT_SOURCES}
+#    )
+#else()
+#    if(ANDROID)
+#        add_library(path-search SHARED
+#            ${PROJECT_SOURCES}
+#        )
+#    else()
+#        add_executable(path-search
+#          ${PROJECT_SOURCES}
+#        )
+#    endif()
+#endif()
+
+set(QtLib Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Quick)
+
+add_subdirectory(Graph)
+add_subdirectory(Algorithm)
+add_subdirectory(Backend)
+
+add_executable(path-search ${PROJECT_SOURCES})
 
 target_compile_definitions(path-search
   PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 target_link_libraries(path-search
-  PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Quick)
-
-add_subdirectory(Graph)
-add_subdirectory(Algorithm)
+  PRIVATE ${QtLib} BackendLib)
