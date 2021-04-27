@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>view/main.qml</file>
+        <file>view/gridCell.qml</file>
     </qresource>
 </RCC>

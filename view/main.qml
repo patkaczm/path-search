@@ -70,40 +70,39 @@ Window {
             rowSpacing: 0
         }
 
-        property var gridCells: [
-        ];
+        property var gridCells: [];
+
+        function cellClicked(cellId)
+        {
+            console.log("Clicked: ", cellId)
+            for (var i = 0; i < gridCells.length; i++) {
+                if (gridCells[i].cellId === cellId) {
+                    gridCells[i].color = "blue";
+                    console.log("height: ", gridCells[i].height, " width: ", gridCells[i].width)
+                }
+            }
+        }
 
         function createItem() {
+            var component = Qt.createComponent("gridCell.qml")
             for (var i = 0; i < spinBox.value; i++) {
-                var object = Qt.createQmlObject("import QtQuick 2.5; Rectangle {}", gridLayout, "dynamicItem");
+
+                var object = component.createObject(gridLayout,
+                                                    {"cellId": i,
+                                                     "width": gridLayout.width / gridLayout.columns,
+                                                     "height": gridLayout.height / gridLayout.columns,
+                                                     "color": "red",
+                                                     "border.color": "black",
+                                                     "border.width": 1})
+                console.log("height: ", gridLayout.height / gridLayout.columns," width: ", gridLayout.width / gridLayout.columns)
+                object.clicked.connect(cellClicked)
                 gridCells.push(object)
-
-                object.width = gridLayout.width / gridLayout.columns;
-                object.height = gridLayout.height / gridLayout.columns;
-                object.color = "yellow"
-                object.border.color = "black"
-                object.border.width = 1
-                var mouseArea = Qt.createQmlObject("import QtQuick 2.5; MouseArea {
-            }", object, 'mousearea');
-
-                mouseArea.anchors.fill = object
-
-                mouseArea.onClicked.connect(function() {console.log("how to access to mouse area from here")})
-
-                console.log(gridCells.length, object, mouseArea.parent)
             }
 
         }
 
+        //should be deleted on visibility changed to invisible
         onVisibleChanged: gridView.createItem();
-
-
     }
 
 }
-
-/*##^##
-Designer {
-    D{i:0;autoSize:true;height:480;width:640}D{i:1;invisible:true}
-}
-##^##*/
