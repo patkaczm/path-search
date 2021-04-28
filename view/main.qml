@@ -34,14 +34,61 @@ Window {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 minimumPixelSize: 12
             }
-            SpinBox {
-                id: spinBox
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                objectName: "gridSize"
-                editable: true
-                value: 25
-                Layout.topMargin: 20
+            RowLayout {
+                id: rowLayout
+                width: 100
+                height: 100
+
+                ColumnLayout {
+                    id: columnLayout1
+                    width: 100
+                    height: 100
+
+
+                    Text {
+                        id: text2
+                        text: qsTr("Select grid width")
+                        font.pixelSize: 12
+                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                    }
+                    SpinBox {
+                        id: gridSizeWidth
+                        Layout.topMargin: 20
+                        objectName: "gridSizeWidth"
+                        editable: true
+                        value: 10
+                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                        to: 20
+                        from: 1
+                    }
+                }
+
+                ColumnLayout {
+                    id: columnLayout2
+                    width: 100
+                    height: 100
+
+                    Text {
+                        id: text3
+                        text: qsTr("Select grid height")
+                        font.pixelSize: 12
+                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                    }
+
+                    SpinBox {
+                        id: gridSizeHeight
+                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                        objectName: "gridSize"
+                        editable: true
+                        value: 10
+                        from: 1
+                        to: 10
+                        Layout.topMargin: 20
+                    }
+                }
+
             }
+
             Button {
                 id: button
                 text: qsTr("Start")
@@ -52,6 +99,7 @@ Window {
                 }
                 Layout.topMargin: 20
             }
+
         }
     }
     Item {
@@ -65,7 +113,6 @@ Window {
             id: gridLayout
             width: parent.height
             height: parent.height
-            columns: 5
             columnSpacing: 0
             rowSpacing: 0
         }
@@ -78,23 +125,24 @@ Window {
             for (var i = 0; i < gridCells.length; i++) {
                 if (gridCells[i].cellId === cellId) {
                     gridCells[i].color = "blue";
-                    console.log("height: ", gridCells[i].height, " width: ", gridCells[i].width)
                 }
             }
         }
 
-        function createItem() {
+        function createGrid() {
             var component = Qt.createComponent("gridCell.qml")
-            for (var i = 0; i < spinBox.value; i++) {
+
+            gridLayout.columns = gridSizeWidth.value
+
+            for (var i = 0; i < gridSizeWidth.value * gridSizeHeight.value; i++) {
 
                 var object = component.createObject(gridLayout,
                                                     {"cellId": i,
-                                                     "width": gridLayout.width / gridLayout.columns,
-                                                     "height": gridLayout.height / gridLayout.columns,
-                                                     "color": "red",
-                                                     "border.color": "black",
-                                                     "border.width": 1})
-                console.log("height: ", gridLayout.height / gridLayout.columns," width: ", gridLayout.width / gridLayout.columns)
+                                                        "width": gridLayout.width / gridLayout.columns,
+                                                        "height": gridLayout.height / gridLayout.columns,
+                                                        "color": "red",
+                                                        "border.color": "black",
+                                                        "border.width": 1})
                 object.clicked.connect(cellClicked)
                 gridCells.push(object)
             }
@@ -102,7 +150,15 @@ Window {
         }
 
         //should be deleted on visibility changed to invisible
-        onVisibleChanged: gridView.createItem();
+        onVisibleChanged: {
+            gridView.createGrid();
+        }
     }
 
 }
+
+/*##^##
+Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+##^##*/

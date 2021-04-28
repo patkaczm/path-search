@@ -18,10 +18,11 @@ int main(int argc, char *argv[])
 
     Backend* backend = new Backend(engine, &app);
 
-    auto view = engine.rootObjects()[0]->findChild<QObject*>("selectGridSizeView");
-    auto spinBox = view->findChild<QObject*>("gridSize");
-    qDebug() << "?" << spinBox->property("value");
-    QObject::connect(spinBox, SIGNAL(valueModified()), backend, SLOT(onEvent1()));
+    auto view = engine.rootObjects()[0]->findChild<QObject*>("gridView");
+    auto gridCells = view->property("gridCells");
+    qDebug() << gridCells;
+
+//    QObject::connect(spinBox, SIGNAL(valueModified()), backend, SLOT(onEvent1()));
 
 
     return app.exec();
