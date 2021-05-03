@@ -21,11 +21,9 @@ void Backend::onEvent() {
 }
 
 
-void Backend::onEvent1() {
+void Backend::onEvent1(QVariant gc) {
     qInfo() << "Called from onEvent1\n";
-    auto view = mEngine.rootObjects()[0]->findChild<QObject*>("selectGridSizeView");
-    auto spinBox = view->findChild<QObject*>("gridSize");
-    qDebug() << "?" << spinBox->property("value");
+    qDebug() << gc;
 }
 
 void Backend::changeColor()

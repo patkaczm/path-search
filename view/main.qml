@@ -108,23 +108,67 @@ Window {
         width: parent.width
         height: parent.height
         visible: false
+        property var selectColor: "black"
 
-        GridLayout {
-            id: gridLayout
-            width: parent.height
-            height: parent.height
-            columnSpacing: 0
-            rowSpacing: 0
-        }
-
+        signal startPathSearching(variant gridCells);
         property var gridCells: [];
+
+        RowLayout {
+        anchors.fill: parent
+        anchors.centerIn: parent
+            GridLayout {
+                id: gridLayout
+                height: parent.height
+                width: height
+                columnSpacing: 0
+                rowSpacing: 0
+            }
+            ColumnLayout {
+
+                Button {
+                    text: "Select start"
+                    Layout.leftMargin: 10
+                    Layout.rightMargin: 10
+                    onClicked: {
+                        gridView.selectColor = "green"
+                        gridView.startPathSearching(gridView.gridCells)
+                    }
+                }
+                Button {
+                    text: "Select end"
+                    Layout.leftMargin: 10
+                    Layout.rightMargin: 10
+                    onClicked: {
+                        gridView.selectColor = "red"
+                        gridView.startPathSearching(gridView.gridCells)
+                    }
+                }
+                Button {
+                    text: "Draw obstacle"
+                    Layout.leftMargin: 10
+                    Layout.rightMargin: 10
+                    onClicked: {
+                        gridView.selectColor = "black"
+                        gridView.startPathSearching(gridView.gridCells)
+                    }
+                }
+                Button {
+                    text: "Start"
+                    Layout.leftMargin: 10
+                    Layout.rightMargin: 10
+                    onClicked: {
+                        gridView.startPathSearching(gridView.gridCells)
+                    }
+                }
+            }
+        }
 
         function cellClicked(cellId)
         {
             console.log("Clicked: ", cellId)
             for (var i = 0; i < gridCells.length; i++) {
                 if (gridCells[i].cellId === cellId) {
-                    gridCells[i].color = "blue";
+                    gridCells[i].color = gridView.selectColor;
                 }
             }
         }
@@ -133,6 +177,7 @@ Window {
             var component = Qt.createComponent("gridCell.qml")
 
             gridLayout.columns = gridSizeWidth.value
+            gridLayout.rows = gridSizeHeight.value
 
             for (var i = 0; i < gridSizeWidth.value * gridSizeHeight.value; i++) {
 
@@ -140,7 +185,7 @@ Window {
                                                     {"cellId": i,
                                                         "width": gridLayout.width / gridLayout.columns,
                                                         "height": gridLayout.height / gridLayout.columns,
-                                                        "color": "red",
+                                                        "color": "white",
                                                         "border.color": "black",
                                                         "border.width": 1})
                 object.clicked.connect(cellClicked)

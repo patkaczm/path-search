@@ -17,7 +17,7 @@ signals:
 
 public slots:
     void onEvent();
-    void onEvent1();
+    void onEvent1(QVariant gc);
     void changeColor();
 
 private:
