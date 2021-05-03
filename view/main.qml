@@ -2,6 +2,7 @@ import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.11
+import QtQml 2.15
 
 Window {
     width: 640
@@ -163,14 +164,30 @@ Window {
             }
         }
 
-        function cellClicked(cellId)
+        function removeColorFromGridIfNeeded() {
+            if (gridView.selectColor === "green" || gridView.selectColor === "red") {
+                for (var i = 0; i < gridCells.length; i++) {
+                    if (Qt.colorEqual(gridCells[i].color, gridView.selectColor)) {
+                        gridCells[i].color = "white";
+                    }
+                }
+            }
+        }
+
+        function drawField(cellId)
         {
-            console.log("Clicked: ", cellId)
+           removeColorFromGridIfNeeded()
             for (var i = 0; i < gridCells.length; i++) {
                 if (gridCells[i].cellId === cellId) {
                     gridCells[i].color = gridView.selectColor;
                 }
             }
+        }
+
+        function cellClicked(cellId)
+        {
+            console.log("Clicked: ", cellId)
+            drawField(cellId)
         }
 
         function createGrid() {
