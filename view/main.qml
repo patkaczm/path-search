@@ -111,7 +111,8 @@ Window {
         visible: false
         property var selectColor: "black"
 
-        signal startPathSearching(variant gridCells);
+        signal startPathSearching(variant gridCells, int width);
+
         property var gridCells: [];
 
         RowLayout {
@@ -132,7 +133,6 @@ Window {
                     Layout.rightMargin: 10
                     onClicked: {
                         gridView.selectColor = "green"
-                        gridView.startPathSearching(gridView.gridCells)
                     }
                 }
                 Button {
@@ -141,7 +141,6 @@ Window {
                     Layout.rightMargin: 10
                     onClicked: {
                         gridView.selectColor = "red"
-                        gridView.startPathSearching(gridView.gridCells)
                     }
                 }
                 Button {
@@ -150,7 +149,6 @@ Window {
                     Layout.rightMargin: 10
                     onClicked: {
                         gridView.selectColor = "black"
-                        gridView.startPathSearching(gridView.gridCells)
                     }
                 }
                 Button {
@@ -158,7 +156,25 @@ Window {
                     Layout.leftMargin: 10
                     Layout.rightMargin: 10
                     onClicked: {
-                        gridView.startPathSearching(gridView.gridCells)
+                        var easyArray = [];
+                        for (var i = 0; i < gridView.gridCells.length; i++) {
+                            if (Qt.colorEqual(gridView.gridCells[i].color, "green"))
+                            {
+                                easyArray.push(1);
+                            }
+                            else if (Qt.colorEqual(gridView.gridCells[i].color, "red"))
+                            {
+                                easyArray.push(2);
+                            }
+                            else if (Qt.colorEqual(gridView.gridCells[i].color, "black"))
+                            {
+                                easyArray.push(3);
+                            } else {
+                                easyArray.push(0);
+                            }
+                        }
+
+                        gridView.startPathSearching(easyArray, gridSizeWidth.value)
                     }
                 }
             }

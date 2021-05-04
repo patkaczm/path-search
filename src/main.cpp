@@ -23,8 +23,8 @@ int main(int argc, char *argv[])
     auto gridCells = view->property("gridCells");
     qDebug() << gridCells;
 
-    QObject::connect(view, SIGNAL(startPathSearching(QVariant)),
-                     backend, SLOT(onEvent1(QVariant)));
+    QObject::connect(view, SIGNAL(startPathSearching(QVariant, int)),
+                     backend, SLOT(onStartPathFinding(QVariant, int)));
 
 
     return app.exec();
