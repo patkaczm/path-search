@@ -25,6 +25,8 @@ int main(int argc, char *argv[])
 
     QObject::connect(view, SIGNAL(startPathSearching(QVariant, int)),
                      backend, SLOT(onStartPathFinding(QVariant, int)));
+    QObject::connect(backend, SIGNAL(pathFindingDone(QVariant)),
+                     view, SLOT(onPathFindingDone(QVariant)));
 
 
     return app.exec();

@@ -113,6 +113,14 @@ Window {
 
         signal startPathSearching(variant gridCells, int width);
 
+        function onPathFindingDone(pathV) {
+            console.log(pathV)
+//            console.log(typeof(pathV))
+            for (var prop in pathV) {
+                gridCells[pathV[prop]].color = "blue";
+            }
+        }
+
         property var gridCells: [];
 
         RowLayout {

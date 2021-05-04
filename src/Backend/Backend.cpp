@@ -25,25 +25,121 @@ void Backend::onStartPathFinding(QVariant gc, int width) {
 
     auto plane = make_plane(gc, width);
     auto graph = make_graph(plane);
+    auto alg = algorithm::BreadthFirstSearch(graph);
+    auto path = alg(graph::Vertex{getStart(plane)}, graph::Vertex{getEnd(plane)});
+    auto variant_path = toQVariant(path);
+    emit pathFindingDone(variant_path);
+}
+
+int Backend::getStart(const Plane &plane) const
+{
+    for (const auto& row : plane) {
+        for (const auto& cell : row) {
+            if (cell.cellType == CellType::Start) {
+                return cell.id;
+            }
+        }
+    }
+    // this should never happen
+    return 0;
+}
+
+int Backend::getEnd(const Plane &plane) const
+{
+    for (const auto& row : plane) {
+        for (const auto& cell : row) {
+            if (cell.cellType == CellType::End) {
+                return cell.id;
+            }
+        }
+    }
+    // this should never happen
+    return 0;
+}
+
+QVariant Backend::toQVariant(const algorithm::Path &path) const
+{
+    std::vector<int> tmp;
+    for(const auto& step : path) {
+        tmp.push_back(step.id);
+    }
+    QVariant v;
+    v.setValue(tmp);
+    return v;
+}
+
+Backend::CellType Backend::toCellType(int v) const
+{
+    switch (v) {
+    case 1: {
+        return CellType::Start;
+    }
+    case 2: {
+        return CellType::End;
+    }
+    case 3: {
+        return CellType::Obstacle;
+    }
+    default: {
+        return CellType::EmptyField;
+    }
+    }
 }
 
 Backend::Plane Backend::make_plane(QVariant data, int width) const
 {
+    // for now there is assumption made that cells are numbered from left to right, from top to bottom, ascending, starting from 0
     QList l (data.toList());
-    QVector<QVector<int>> plane{};
+    Plane plane{};
 
-    QVector<int> tmp;
+    QVector<Cell> tmp;
     for (int i = 0 ; i < l.length(); i++ ) {
-        tmp.push_back(l[i].toInt());
+        tmp.push_back({i, toCellType(l[i].toInt())});
         if ((i + 1) % width == 0) {
             plane.push_back(tmp);
-            tmp = QVector<int>();
+            tmp = QVector<Cell>();
         }
     }
+    return plane;
 }
 
 graph::Graph Backend::make_graph(const Plane &plane) const
 {
     graph::Graph graph;
-
+    //add vertexes
+    for (const auto& row : plane) {
+        for (const auto& cell : row) {
+            qDebug() << "Add: " << cell.id;
+            graph.add(graph::Vertex{cell.id});
+        }
+    }
+    //add edges
+    for (int i = 0 ; i < plane.size(); i++) {
+        for (int j = 0 ; j < plane[i].size(); j++) {
+            if (plane[i][j].cellType == CellType::Obstacle) {
+                continue;
+            }
+            if (i > 0) {
+                if (plane[i-1][j].cellType != CellType::Obstacle) {
+                    graph.add(graph::Edge{{plane[i][j].id}, {plane[i-1][j].id}});
+                }
+            }
+            if (j < plane[i].size() - 1) {
+                if (plane[i][j + 1].cellType != CellType::Obstacle) {
+                    graph.add(graph::Edge{{plane[i][j].id}, {plane[i][j + 1].id}});
+                }
+            }
+            if (i < plane.size() - 1) {
+                if (plane[i + 1][j].cellType != CellType::Obstacle) {
+                    graph.add(graph::Edge{{plane[i][j].id}, {plane[i + 1][j].id}});
+                }
+            }
+            if (j > 0 ) {
+                if (plane[i][j - 1].cellType != CellType::Obstacle) {
+                    graph.add(graph::Edge{{plane[i][j].id}, {plane[i][j - 1].id}});
+                }
+            }
+        }
+    }
+    return graph;
 }
