@@ -34,8 +34,8 @@ TEST_P(BreadthFirstSearchTest, pathSearchingTest)
     for(const auto& e: params.edges) {
         g.add(e);
     }
-    BreadthFirstSearch bfs(g);
-    EXPECT_THAT(bfs(params.searchedPath.first, params.searchedPath.second),
+    BreadthFirstSearch bfs;
+    EXPECT_THAT(bfs(g, params.searchedPath.first, params.searchedPath.second),
                 ::testing::ContainerEq(params.path));
 }
 

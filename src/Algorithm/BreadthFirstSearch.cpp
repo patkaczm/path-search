@@ -6,17 +6,13 @@
 namespace algorithm
 {
 
-BreadthFirstSearch::BreadthFirstSearch(const graph::Graph &graph)
-    : _graph(graph)
-{}
-
-Path BreadthFirstSearch::operator()(const graph::Vertex &start, const graph::Vertex &end)
+Path BreadthFirstSearch::operator()(const graph::Graph& graph, const graph::Vertex &start, const graph::Vertex &end)
 {
-    auto prev = solve(start);
+    auto prev = solve(graph, start);
     return reconstructPath(start, end, prev);
 }
 
-std::map<graph::Vertex, graph::Vertex> BreadthFirstSearch::solve(const graph::Vertex &start)
+std::map<graph::Vertex, graph::Vertex> BreadthFirstSearch::solve(const graph::Graph& graph, const graph::Vertex &start)
 {
     using graph::Vertex;
     std::queue<Vertex> q;
@@ -30,7 +26,7 @@ std::map<graph::Vertex, graph::Vertex> BreadthFirstSearch::solve(const graph::Ve
     while (!q.empty()) {
         auto node = q.front();
         q.pop();
-        auto neighbours = _graph.getNeighbours(node);
+        auto neighbours = graph.getNeighbours(node);
 
         for (const auto neighbour : neighbours) {
             if (!visited.contains(neighbour)) {
