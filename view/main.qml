@@ -115,7 +115,6 @@ Window {
 
         function onPathFindingDone(pathV) {
             console.log(pathV)
-//            console.log(typeof(pathV))
             for (var prop in pathV) {
                 gridCells[pathV[prop]].color = "blue";
             }

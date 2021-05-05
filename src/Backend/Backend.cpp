@@ -35,7 +35,7 @@ int Backend::getStart(const Plane &plane) const
 {
     for (const auto& row : plane) {
         for (const auto& cell : row) {
-            if (cell.cellType == CellType::Start) {
+            if (cell.type == Grid::Cell::Type::Start) {
                 return cell.id;
             }
         }
@@ -48,7 +48,7 @@ int Backend::getEnd(const Plane &plane) const
 {
     for (const auto& row : plane) {
         for (const auto& cell : row) {
-            if (cell.cellType == CellType::End) {
+            if (cell.type == Grid::Cell::Type::End) {
                 return cell.id;
             }
         }
@@ -68,36 +68,18 @@ QVariant Backend::toQVariant(const algorithm::Path &path) const
     return v;
 }
 
-Backend::CellType Backend::toCellType(int v) const
-{
-    switch (v) {
-    case 1: {
-        return CellType::Start;
-    }
-    case 2: {
-        return CellType::End;
-    }
-    case 3: {
-        return CellType::Obstacle;
-    }
-    default: {
-        return CellType::EmptyField;
-    }
-    }
-}
-
 Backend::Plane Backend::make_plane(QVariant data, int width) const
 {
     // for now there is assumption made that cells are numbered from left to right, from top to bottom, ascending, starting from 0
     QList l (data.toList());
     Plane plane{};
 
-    QVector<Cell> tmp;
+    QVector<Grid::Cell> tmp;
     for (int i = 0 ; i < l.length(); i++ ) {
-        tmp.push_back({i, toCellType(l[i].toInt())});
+        tmp.push_back({i, l[i].toInt()});
         if ((i + 1) % width == 0) {
             plane.push_back(tmp);
-            tmp = QVector<Cell>();
+            tmp = QVector<Grid::Cell>();
         }
     }
     return plane;
@@ -116,26 +98,26 @@ graph::Graph Backend::make_graph(const Plane &plane) const
     //add edges
     for (int i = 0 ; i < plane.size(); i++) {
         for (int j = 0 ; j < plane[i].size(); j++) {
-            if (plane[i][j].cellType == CellType::Obstacle) {
+            if (plane[i][j].type == Grid::Cell::Type::Obstacle) {
                 continue;
             }
             if (i > 0) {
-                if (plane[i-1][j].cellType != CellType::Obstacle) {
+                if (plane[i-1][j].type != Grid::Cell::Type::Obstacle) {
                     graph.add(graph::Edge{{plane[i][j].id}, {plane[i-1][j].id}});
                 }
             }
             if (j < plane[i].size() - 1) {
-                if (plane[i][j + 1].cellType != CellType::Obstacle) {
+                if (plane[i][j + 1].type != Grid::Cell::Type::Obstacle) {
                     graph.add(graph::Edge{{plane[i][j].id}, {plane[i][j + 1].id}});
                 }
             }
             if (i < plane.size() - 1) {
-                if (plane[i + 1][j].cellType != CellType::Obstacle) {
+                if (plane[i + 1][j].type != Grid::Cell::Type::Obstacle) {
                     graph.add(graph::Edge{{plane[i][j].id}, {plane[i + 1][j].id}});
                 }
             }
             if (j > 0 ) {
-                if (plane[i][j - 1].cellType != CellType::Obstacle) {
+                if (plane[i][j - 1].type != Grid::Cell::Type::Obstacle) {
                     graph.add(graph::Edge{{plane[i][j].id}, {plane[i][j - 1].id}});
                 }
             }

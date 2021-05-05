@@ -7,6 +7,7 @@
 
 #include "Graph/Graph.hpp"
 #include "Algorithm/BreadthFirstSearch.hpp"
+#include "Cell.hpp"
 
 class Backend : public QObject
 {
@@ -22,18 +23,7 @@ public slots:
     void onStartPathFinding(QVariant gc, int width);
 
 private:
-    enum class CellType {
-        EmptyField,
-        Obstacle,
-        Start,
-        End
-    };
-    struct Cell {
-        int id;
-        CellType cellType;
-    };
-    using Plane = QVector<QVector<Cell>>;
-    CellType toCellType(int) const;
+    using Plane = QVector<QVector<Grid::Cell>>;
     QVariant toQVariant(const algorithm::Path& path) const;
 
     int getStart(const Plane& plane) const;
