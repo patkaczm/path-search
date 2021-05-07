@@ -34,8 +34,6 @@ set(PROJECT_SOURCES
 #    endif()
 #endif()
 
-set(QtLib Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Quick)
-
 add_subdirectory(Graph)
 add_subdirectory(Algorithm)
 add_subdirectory(Backend)

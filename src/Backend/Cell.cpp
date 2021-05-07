@@ -2,7 +2,7 @@
 
 #include <map>
 
-namespace Grid {
+namespace grid {
 
 Cell::Cell(int id, int type) : id(id), type(toType(type))
 {

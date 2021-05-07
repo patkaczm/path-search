@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-namespace Grid {
+namespace grid {
 namespace test {
 
 TEST(CellTest, CellTypeStart)

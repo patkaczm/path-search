@@ -7,3 +7,12 @@ target_link_libraries(CellTest PRIVATE
     gmock
     CellLib)
 target_include_directories(CellTest PRIVATE ${INCLUDE_DIR})
+
+add_executable(GridTest GridTest.cpp
+                         ${TEST_MAIN})
+target_link_libraries(GridTest PRIVATE
+    gtest
+    gmock
+    GridLib
+    ${QtLib})
+target_include_directories(GridTest PRIVATE ${INCLUDE_DIR})

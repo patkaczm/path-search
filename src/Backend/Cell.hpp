@@ -1,4 +1,6 @@
-namespace Grid {
+#pragma once
+
+namespace grid {
 
 struct Cell {
     enum class Type {

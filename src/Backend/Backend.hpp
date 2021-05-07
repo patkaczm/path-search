@@ -7,7 +7,8 @@
 
 #include "Graph/Graph.hpp"
 #include "Algorithm/BreadthFirstSearch.hpp"
-#include "Cell.hpp"
+#include "Backend/Cell.hpp"
+#include "Backend/Grid.hpp"
 
 class Backend : public QObject
 {
@@ -23,13 +24,9 @@ public slots:
     void onStartPathFinding(QVariant gc, int width);
 
 private:
-    using Plane = QVector<QVector<Grid::Cell>>;
     QVariant toQVariant(const algorithm::Path& path) const;
 
-    int getStart(const Plane& plane) const;
-    int getEnd(const Plane& plane) const;
-    Plane make_plane(QVariant data,int width) const;
-    graph::Graph make_graph(const Plane& plane) const;
+    graph::Graph make_graph(const grid::Grid::Grid_t& plane) const;
 
     QQmlApplicationEngine& mEngine;
 };
