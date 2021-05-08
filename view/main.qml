@@ -110,14 +110,22 @@ Window {
         height: parent.height
         visible: false
 
-        property var selectColor: "black"
+        readonly property var emptyFiled: ({ color: "white", value: 0});
+        readonly property var startField: ({ color: "green", value: 1});
+        readonly property var stopField: ({ color: "red", value: 2});
+        readonly property var obstacleField: ({ color: "black", value: 3});
+        readonly property var visitedField: ({ color: "yellow", value: 4});
+        readonly property var pathField: ({ color: "blue", value: 5})
+
+        property var selectColor: obstacleField.color
         property var gridCells: [];
 
         signal startPathSearching(variant gridCells, int width);
 
         Timer {
             id: timer
-            interval: 50
+            readonly property int baseInterval: 50
+            interval: baseInterval
             running: false
             repeat: true
             property var path: []
@@ -125,17 +133,17 @@ Window {
             onTriggered: {
                 console.log("History: ", history, " Path: ", path)
                 if (history.length > 0) {
-                    if (!Qt.colorEqual(parent.gridCells[history[0]].color, "red") &&
-                            !Qt.colorEqual(parent.gridCells[history[0]].color, "green")) {
-                        parent.gridCells[history[0]].color = "yellow";
+                    if (!Qt.colorEqual(parent.gridCells[history[0]].color, parent.stopField.color) &&
+                            !Qt.colorEqual(parent.gridCells[history[0]].color, parent.startField.color)) {
+                        parent.gridCells[history[0]].color = parent.visitedField.color;
                     }
                     history.shift();
                 } else {
                     if (path.length > 0) {
-                        interval = 10
-                        if (!Qt.colorEqual(parent.gridCells[path[0]].color, "red") &&
-                                !Qt.colorEqual(parent.gridCells[path[0]].color, "green")) {
-                        parent.gridCells[path[0]].color = "blue";
+                        interval = baseInterval / 5;
+                        if (!Qt.colorEqual(parent.gridCells[path[0]].color, parent.stopField.color) &&
+                                !Qt.colorEqual(parent.gridCells[path[0]].color, parent.startField.color)) {
+                        parent.gridCells[path[0]].color = parent.pathField.color;
                         }
                         path.shift();
                     }
@@ -145,45 +153,51 @@ Window {
                     }
                 }
             }
+            function clearTimer() {
+                stop()
+                interval = 50
+                path = []
+                history = []
+            }
+
         }
 
         function onPathFindingDone(pathV) {
             console.log(pathV)
             for (var prop in pathV) {
-//                gridCells[pathV[prop]].color = "blue";
                 timer.path.push(pathV[prop]);
             }
         }
 
         function onVertexVisited(vertex) {
-//            gridCells[vertex].color = "yellow";
             timer.history.push(vertex);
             timer.start()
         }
 
-        function removeColorFromGridIfNeeded() {
-            if (gridView.selectColor === "green" || gridView.selectColor === "red") {
-                for (var i = 0; i < gridCells.length; i++) {
-                    if (Qt.colorEqual(gridCells[i].color, gridView.selectColor)) {
-                        gridCells[i].color = "white";
-                    }
+        function removeAnotherStartOrStopField() {
+            for (var i = 0; i < gridCells.length; i++) {
+                if (Qt.colorEqual(gridCells[i].color, gridView.selectColor)) {
+                    gridCells[i].color = emptyFiled.color;
                 }
             }
         }
 
         function drawField(cellId)
         {
-           removeColorFromGridIfNeeded()
             for (var i = 0; i < gridCells.length; i++) {
                 if (gridCells[i].cellId === cellId) {
                     gridCells[i].color = gridView.selectColor;
+                    break;
                 }
             }
         }
 
         function cellClicked(cellId)
         {
-            console.log("Clicked: ", cellId)
+            if (gridView.selectColor === startField.color || gridView.selectColor === stopField.color)
+            {
+                removeAnotherStartOrStopField()
+            }
             drawField(cellId)
         }
 
@@ -216,12 +230,16 @@ Window {
         RowLayout {
         anchors.fill: parent
         anchors.centerIn: parent
+
             GridLayout {
                 id: gridLayout
                 height: parent.height
                 width: height
                 columnSpacing: -2
                 rowSpacing: -1
+                Layout.leftMargin: 5
+                Layout.bottomMargin: 5
+                Layout.topMargin: 5
                 Layout.fillWidth: true
                 Layout.fillHeight: true
             }
@@ -234,6 +252,8 @@ Window {
                     onClicked: {
                         gridView.selectColor = "green"
                     }
+                    Layout.fillWidth: true
+
                 }
                 Button {
                     text: "Select end"
@@ -242,6 +262,7 @@ Window {
                     onClicked: {
                         gridView.selectColor = "red"
                     }
+                    Layout.fillWidth: true
                 }
                 Button {
                     text: "Draw obstacle"
@@ -250,27 +271,29 @@ Window {
                     onClicked: {
                         gridView.selectColor = "black"
                     }
+                    Layout.fillWidth: true
                 }
                 Button {
                     text: "Start"
                     Layout.leftMargin: 10
                     Layout.rightMargin: 10
+                    Layout.fillWidth: true
                     onClicked: {
                         var easyArray = [];
                         for (var i = 0; i < gridView.gridCells.length; i++) {
-                            if (Qt.colorEqual(gridView.gridCells[i].color, "green"))
+                            if (Qt.colorEqual(gridView.gridCells[i].color, gridView.startField.color))
                             {
-                                easyArray.push(1);
+                                easyArray.push(gridView.startField.value);
                             }
-                            else if (Qt.colorEqual(gridView.gridCells[i].color, "red"))
+                            else if (Qt.colorEqual(gridView.gridCells[i].color, gridView.stopField.color))
                             {
-                                easyArray.push(2);
+                                easyArray.push(gridView.stopField.value);
                             }
-                            else if (Qt.colorEqual(gridView.gridCells[i].color, "black"))
+                            else if (Qt.colorEqual(gridView.gridCells[i].color, gridView.obstacleField.color))
                             {
-                                easyArray.push(3);
+                                easyArray.push(gridView.obstacleField.value);
                             } else {
-                                easyArray.push(0);
+                                easyArray.push(gridView.emptyFiled.value);
                             }
                         }
                         gridView.startPathSearching(easyArray, gridSizeWidth.value)
@@ -280,9 +303,11 @@ Window {
                     text: "Reset"
                     Layout.leftMargin: 10
                     Layout.rightMargin: 10
+                    Layout.fillWidth: true
                     onClicked: {
+                        timer.clearTimer()
                         for (var i = 0; i < gridView.gridCells.length; i++) {
-                            gridView.gridCells[i].color = "white"
+                            gridView.gridCells[i].color = gridView.emptyFiled.color
                         }
                     }
                 }
@@ -290,12 +315,12 @@ Window {
                     text: "Clear searched area"
                     Layout.leftMargin: 10
                     Layout.rightMargin: 10
+                    Layout.fillWidth: true
                     onClicked: {
                         for (var i = 0; i < gridView.gridCells.length; i++) {
-                            if (Qt.colorEqual(gridView.gridCells[i].color, "yellow")) {
-                                gridView.gridCells[i].color = "white";
+                            if (Qt.colorEqual(gridView.gridCells[i].color, gridView.visitedField.color)) {
+                                gridView.gridCells[i].color = gridView.emptyFiled.color;
                             }
-
                         }
                     }
                 }
