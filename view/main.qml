@@ -120,6 +120,10 @@ Window {
             }
         }
 
+        function onVertexVisited(vertex) {
+            gridCells[vertex].color = "yellow";
+        }
+
         property var gridCells: [];
 
         RowLayout {

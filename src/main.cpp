@@ -27,6 +27,8 @@ int main(int argc, char *argv[])
                      backend, SLOT(onStartPathFinding(QVariant, int)));
     QObject::connect(backend, SIGNAL(pathFindingDone(QVariant)),
                      view, SLOT(onPathFindingDone(QVariant)));
+    QObject::connect(backend, SIGNAL(vertexVisited(QVariant)),
+                     view, SLOT(onVertexVisited(QVariant)));
 
 
     return app.exec();

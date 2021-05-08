@@ -20,9 +20,11 @@ public:
 
 signals:
     void pathFindingDone(QVariant path);
+    void vertexVisited(QVariant v);
 
 public slots:
     void onStartPathFinding(QVariant gc, int width);
+    void onVertexVisited(const graph::Vertex& v);
 
 private:
     QVariant toQVariant(const algorithm::Algorithm::Path& path) const;

@@ -17,20 +17,27 @@ Backend::Backend(QQmlApplicationEngine& engine, QObject *parent)
 }
 
 void Backend::onStartPathFinding(QVariant gc, int width) {
-    // 0 for empty field
-    // 1 for start
-    // 2 for end
-    // 3 for obstacle
-
-
     qDebug() << "Start pathFinding";
 
     auto grid = grid::Grid(gc, width);
     auto graph = make_graph(grid.getGrid());
     auto alg = algorithm::BreadthFirstSearch();
+
+    QObject::connect(dynamic_cast<QObject*>(&alg), SIGNAL(vertexVisited(const graph::Vertex&)),
+                     this, SLOT(onVertexVisited(const graph::Vertex&)));
+
     auto path = alg(graph, graph::Vertex{grid.getStart()->id}, graph::Vertex{grid.getEnd()->id});
+
+    QObject::disconnect(dynamic_cast<QObject*>(&alg), SIGNAL(vertexVisited(const graph::Vertex&)),
+                     this, SLOT(onVertexVisited(const graph::Vertex&)));
+
     auto variant_path = toQVariant(path);
     emit pathFindingDone(variant_path);
+}
+
+void Backend::onVertexVisited(const graph::Vertex &v)
+{
+    emit vertexVisited(v.id);
 }
 
 QVariant Backend::toQVariant(const algorithm::Algorithm::Path &path) const
@@ -46,16 +53,10 @@ QVariant Backend::toQVariant(const algorithm::Algorithm::Path &path) const
 
 graph::Graph Backend::make_graph(const grid::Grid::Grid_t &plane) const
 {
-    for (const auto& row:plane) {
-        for (const auto& cell : row) {
-            qDebug() << cell.id;
-        }
-    }
     graph::Graph graph;
     //add vertexes
     for (const auto& row : plane) {
         for (const auto& cell : row) {
-            qDebug() << "Add: " << cell.id;
             graph.add(graph::Vertex{cell.id});
         }
     }

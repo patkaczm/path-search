@@ -33,6 +33,7 @@ std::map<graph::Vertex, graph::Vertex> BreadthFirstSearch::solve(const graph::Gr
                 q.push(neighbour);
                 visited.insert(neighbour);
                 prev[neighbour] = node;
+                emit vertexVisited(neighbour);
             }
         }
     }
