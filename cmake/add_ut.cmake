@@ -16,4 +16,7 @@ target_link_libraries(${ADD_UT_NAME}Test PRIVATE
 target_include_directories(${ADD_UT_NAME}Test PRIVATE ${INCLUDE_DIR})
 add_test(NAME ${ADD_UT_NAME}Test COMMAND ${ADD_UT_NAME}Test)
 
+get_property(tmp GLOBAL PROPERTY ALL_TESTS_LIST)
+set_property(GLOBAL PROPERTY ALL_TESTS_LIST "${tmp};${ADD_UT_NAME}Test")
+
 endfunction()
