@@ -8,8 +8,8 @@ grid::Grid::Grid(QVariant gc, int width)
 {
     QList l (gc.toList());
     QVector<grid::Cell> tmp;
-    for (int i = 0 ; i < l.length(); i++ ) {
-        tmp.push_back({i, l[i].toInt()});
+    for (std::size_t i = 0 ; i < static_cast<std::size_t>(l.length()); i++ ) {
+        tmp.push_back({static_cast<std::uint32_t>(i), static_cast<std::uint8_t>(l[i].toUInt())});
         if (tmp.back().type == grid::Cell::Type::Start) {
             mStart = tmp.back();
         } else if (tmp.back().type == grid::Cell::Type::End) {

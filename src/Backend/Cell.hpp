@@ -1,21 +1,23 @@
 #pragma once
 
+#include <cstdint>
+
 namespace grid {
 
 struct Cell {
-    enum class Type {
-        EmptyField,
-        Obstacle,
+    enum class Type : std::uint8_t {
+        EmptyField = 0,
         Start,
-        End
+        End,
+        Obstacle,
     };
 
-    Cell(int id, int type);
+    Cell(std::uint32_t id, std::uint8_t type);
 
-    int id;
+    std::uint32_t id;
     Type type;
 private:
-    Type toType(int type) const;
+    Type toType(std::uint8_t type) const;
 };
 
 }

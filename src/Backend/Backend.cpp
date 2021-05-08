@@ -28,7 +28,7 @@ void Backend::onStartPathFinding(QVariant gc, int width) {
     auto grid = grid::Grid(gc, width);
     auto graph = make_graph(grid.getGrid());
     auto alg = algorithm::BreadthFirstSearch();
-    auto path = alg(graph, graph::Vertex{getStart(plane)}, graph::Vertex{getEnd(plane)});
+    auto path = alg(graph, graph::Vertex{grid.getStart()->id}, graph::Vertex{grid.getEnd()->id});
     auto variant_path = toQVariant(path);
     emit pathFindingDone(variant_path);
 }
