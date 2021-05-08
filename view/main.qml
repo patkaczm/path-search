@@ -130,30 +130,31 @@ Window {
             repeat: true
             property var path: []
             property var history: []
+            function isNeitherStartNorEnd(cell) {
+                return !Qt.colorEqual(parent.gridCells[cell].color, parent.stopField.color) &&
+                        !Qt.colorEqual(parent.gridCells[cell].color, parent.startField.color)
+            }
+
             onTriggered: {
                 if (history.length > 0) {
-                    if (!Qt.colorEqual(parent.gridCells[history[0]].color, parent.stopField.color) &&
-                            !Qt.colorEqual(parent.gridCells[history[0]].color, parent.startField.color)) {
+                    if (isNeitherStartNorEnd(history[0])) {
                         parent.gridCells[history[0]].color = parent.visitedField.color;
                     }
                     history.shift();
-                } else {
-                    if (path.length > 0) {
-                        interval = baseInterval / 5;
-                        if (!Qt.colorEqual(parent.gridCells[path[0]].color, parent.stopField.color) &&
-                                !Qt.colorEqual(parent.gridCells[path[0]].color, parent.startField.color)) {
+                } else if(path.length > 0) {
+                    interval = baseInterval / 5;
+                    if (isNeitherStartNorEnd(path[0])) {
                         parent.gridCells[path[0]].color = parent.pathField.color;
-                        }
-                        path.shift();
                     }
-                    else {
-                        stop();
-                    }
+                    path.shift();
+                }
+                else {
+                    stop();
                 }
             }
             function clearTimer() {
                 stop()
-                interval = 50
+                interval = baseInterval
                 path = []
                 history = []
             }
