@@ -286,6 +286,13 @@ Window {
                                        {name: "Start", action: start},
                                        {name: "Reset", action: reset},
                                        {name: "Clear visited area", action: clearVisitedArea}]
+                ComboBox {
+                    Layout.leftMargin: 10
+                    Layout.rightMargin: 10
+                    Layout.fillWidth: true
+                    model: ["BreadthFirstSearch"]
+                }
+
                 Repeater {
                     model: parent.btnData
                     Button {
