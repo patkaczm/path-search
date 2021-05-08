@@ -33,7 +33,7 @@ void Backend::onStartPathFinding(QVariant gc, int width) {
     emit pathFindingDone(variant_path);
 }
 
-QVariant Backend::toQVariant(const algorithm::Path &path) const
+QVariant Backend::toQVariant(const algorithm::Algorithm::Path &path) const
 {
     std::vector<int> tmp;
     for(const auto& step : path) {

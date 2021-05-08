@@ -9,4 +9,4 @@ target_link_libraries(GridLib PRIVATE ${QtLib} CellLib)
 
 add_library(BackendLib Backend.cpp)
 target_include_directories(BackendLib PRIVATE ${INCLUDE_DIR})
-target_link_libraries(BackendLib PRIVATE ${QtLib} GraphLib AlgorithmLib CellLib GridLib)
+target_link_libraries(BackendLib PRIVATE ${QtLib} GraphLib BreadthFirstSearchLib CellLib GridLib)

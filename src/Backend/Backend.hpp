@@ -6,6 +6,7 @@
 #include <QTimer>
 
 #include "Graph/Graph.hpp"
+#include "Algorithm/Algorithm.hpp"
 #include "Algorithm/BreadthFirstSearch.hpp"
 #include "Backend/Cell.hpp"
 #include "Backend/Grid.hpp"
@@ -24,7 +25,7 @@ public slots:
     void onStartPathFinding(QVariant gc, int width);
 
 private:
-    QVariant toQVariant(const algorithm::Path& path) const;
+    QVariant toQVariant(const algorithm::Algorithm::Path& path) const;
 
     graph::Graph make_graph(const grid::Grid::Grid_t& plane) const;
 
