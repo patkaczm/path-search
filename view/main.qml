@@ -131,7 +131,6 @@ Window {
             property var path: []
             property var history: []
             onTriggered: {
-                console.log("History: ", history, " Path: ", path)
                 if (history.length > 0) {
                     if (!Qt.colorEqual(parent.gridCells[history[0]].color, parent.stopField.color) &&
                             !Qt.colorEqual(parent.gridCells[history[0]].color, parent.startField.color)) {
@@ -148,7 +147,6 @@ Window {
                         path.shift();
                     }
                     else {
-                        console.log("Stop")
                         stop();
                     }
                 }
@@ -163,7 +161,6 @@ Window {
         }
 
         function onPathFindingDone(pathV) {
-            console.log(pathV)
             for (var prop in pathV) {
                 timer.path.push(pathV[prop]);
             }
@@ -244,83 +241,59 @@ Window {
                 Layout.fillHeight: true
             }
             ColumnLayout {
-
-                Button {
-                    text: "Select start"
-                    Layout.leftMargin: 10
-                    Layout.rightMargin: 10
-                    onClicked: {
-                        gridView.selectColor = "green"
-                    }
-                    Layout.fillWidth: true
-
-                }
-                Button {
-                    text: "Select end"
-                    Layout.leftMargin: 10
-                    Layout.rightMargin: 10
-                    onClicked: {
-                        gridView.selectColor = "red"
-                    }
-                    Layout.fillWidth: true
-                }
-                Button {
-                    text: "Draw obstacle"
-                    Layout.leftMargin: 10
-                    Layout.rightMargin: 10
-                    onClicked: {
-                        gridView.selectColor = "black"
-                    }
-                    Layout.fillWidth: true
-                }
-                Button {
-                    text: "Start"
-                    Layout.leftMargin: 10
-                    Layout.rightMargin: 10
-                    Layout.fillWidth: true
-                    onClicked: {
-                        var easyArray = [];
-                        for (var i = 0; i < gridView.gridCells.length; i++) {
-                            if (Qt.colorEqual(gridView.gridCells[i].color, gridView.startField.color))
-                            {
-                                easyArray.push(gridView.startField.value);
-                            }
-                            else if (Qt.colorEqual(gridView.gridCells[i].color, gridView.stopField.color))
-                            {
-                                easyArray.push(gridView.stopField.value);
-                            }
-                            else if (Qt.colorEqual(gridView.gridCells[i].color, gridView.obstacleField.color))
-                            {
-                                easyArray.push(gridView.obstacleField.value);
-                            } else {
-                                easyArray.push(gridView.emptyFiled.value);
-                            }
+                id: colLayout
+                function selectStart(){gridView.selectColor = gridView.startField.color;}
+                function selectEnd(){gridView.selectColor = gridView.stopField.color;}
+                function drawObstacle(){gridView.selectColor = gridView.obstacleField.color;}
+                function start() {
+                    var easyArray = [];
+                    for (var i = 0; i < gridView.gridCells.length; i++) {
+                        if (Qt.colorEqual(gridView.gridCells[i].color, gridView.startField.color))
+                        {
+                            easyArray.push(gridView.startField.value);
                         }
-                        gridView.startPathSearching(easyArray, gridSizeWidth.value)
+                        else if (Qt.colorEqual(gridView.gridCells[i].color, gridView.stopField.color))
+                        {
+                            easyArray.push(gridView.stopField.value);
+                        }
+                        else if (Qt.colorEqual(gridView.gridCells[i].color, gridView.obstacleField.color))
+                        {
+                            easyArray.push(gridView.obstacleField.value);
+                        } else {
+                            easyArray.push(gridView.emptyFiled.value);
+                        }
+                    }
+                    gridView.startPathSearching(easyArray, gridSizeWidth.value)
+                }
+                function reset() {
+                    timer.clearTimer()
+                    for (var i = 0; i < gridView.gridCells.length; i++) {
+                        gridView.gridCells[i].color = gridView.emptyFiled.color
                     }
                 }
-                Button {
-                    text: "Reset"
-                    Layout.leftMargin: 10
-                    Layout.rightMargin: 10
-                    Layout.fillWidth: true
-                    onClicked: {
-                        timer.clearTimer()
-                        for (var i = 0; i < gridView.gridCells.length; i++) {
-                            gridView.gridCells[i].color = gridView.emptyFiled.color
+                function clearVisitedArea() {
+                    timer.clearTimer()
+                    for (var i = 0; i < gridView.gridCells.length; i++) {
+                        if (Qt.colorEqual(gridView.gridCells[i].color, gridView.visitedField.color)) {
+                            gridView.gridCells[i].color = gridView.emptyFiled.color;
                         }
                     }
                 }
-                Button {
-                    text: "Clear searched area"
-                    Layout.leftMargin: 10
-                    Layout.rightMargin: 10
-                    Layout.fillWidth: true
-                    onClicked: {
-                        for (var i = 0; i < gridView.gridCells.length; i++) {
-                            if (Qt.colorEqual(gridView.gridCells[i].color, gridView.visitedField.color)) {
-                                gridView.gridCells[i].color = gridView.emptyFiled.color;
-                            }
+                property var btnData: [{name: "Select start", action: selectStart},
+                                       {name: "Select end", action: selectEnd},
+                                       {name: "Draw obstacle", action: drawObstacle},
+                                       {name: "Start", action: start},
+                                       {name: "Reset", action: reset},
+                                       {name: "Clear visited area", action: clearVisitedArea}]
+                Repeater {
+                    model: parent.btnData
+                    Button {
+                        Layout.leftMargin: 10
+                        Layout.rightMargin: 10
+                        Layout.fillWidth: true
+                        text: modelData.name
+                        onClicked: {
+                            parent.btnData[index]["action"]()
                         }
                     }
                 }

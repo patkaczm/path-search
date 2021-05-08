@@ -21,7 +21,6 @@ int main(int argc, char *argv[])
     QObject* view = engine.rootObjects()[0]->findChild<QObject*>("gridView");
 
     auto gridCells = view->property("gridCells");
-    qDebug() << gridCells;
 
     QObject::connect(view, SIGNAL(startPathSearching(QVariant, int)),
                      backend, SLOT(onStartPathFinding(QVariant, int)));
