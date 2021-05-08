@@ -7,3 +7,5 @@ target_link_libraries(GraphTest PRIVATE
     gmock
     GraphLib)
 target_include_directories(GraphTest PRIVATE ${INCLUDE_DIR})
+
+add_test(NAME GraphTest COMMAND GraphTest)

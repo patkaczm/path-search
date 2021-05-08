@@ -19,6 +19,10 @@ set(CMAKE_BASE_LIST_DIR ${CMAKE_CURRENT_LIST_DIR})
 
 set(QtLib Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Quick)
 
+
 add_subdirectory(third_party/googletest)
 add_subdirectory(src)
+
+include(CTest)
+enable_testing()
 add_subdirectory(test)

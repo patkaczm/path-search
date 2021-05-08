@@ -8,3 +8,4 @@ target_link_libraries(BreadthFirstSearchTest PRIVATE
     GraphLib
     AlgorithmLib)
 target_include_directories(BreadthFirstSearchTest PRIVATE ${INCLUDE_DIR})
+add_test(NAME BreadthFirstSearchTest COMMAND BreadthFirstSearchTest)
