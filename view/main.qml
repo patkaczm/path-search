@@ -287,10 +287,23 @@ Window {
                                        {name: "Reset", action: reset},
                                        {name: "Clear visited area", action: clearVisitedArea}]
                 ComboBox {
+                    objectName: "availableAlgorithms"
                     Layout.leftMargin: 10
                     Layout.rightMargin: 10
                     Layout.fillWidth: true
-                    model: ["BreadthFirstSearch"]
+                    function onAvailableAlgorithmsSet(algorithms) {
+                        var tmp = []
+                        for (var alg in algorithms) {
+                            tmp.push(algorithms[alg])
+                        }
+                        model = tmp
+                    }
+                    signal algorithmSelected(variant selected);
+                    onActivated: {
+                        console.log("Selected: ", model[index]);
+                        algorithmSelected(model[index]);
+                    }
+
                 }
 
                 Repeater {

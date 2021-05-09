@@ -22,12 +22,18 @@ public:
 signals:
     void pathFindingDone(QVariant path);
     void vertexVisited(QVariant v);
+    void availableAlgorithmsSet(QVariant v);
 
 public slots:
     void onStartPathFinding(QVariant gc, int width);
     void onVertexVisited(const graph::Vertex& v);
+    void onAlgorithmSelected(QVariant v);
+
+public:
+    void loadAlgorithms();
 
 private:
+    QVariant toQVatiantVS(const std::vector<std::string>& val) const;
     QVariant toQVariant(const algorithm::Algorithm::Path& path) const;
 
     graph::Graph make_graph(const grid::Grid::Grid_t& plane) const;

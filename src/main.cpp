@@ -18,17 +18,20 @@ int main(int argc, char *argv[])
 
     Backend* backend = new Backend(engine, &app);
 
-    QObject* view = engine.rootObjects()[0]->findChild<QObject*>("gridView");
+    QObject* view = engine.rootObjects().at(0)->findChild<QObject*>("gridView");
 
-    auto gridCells = view->property("gridCells");
-
-    QObject::connect(view, SIGNAL(startPathSearching(QVariant, int)),
-                     backend, SLOT(onStartPathFinding(QVariant, int)));
+    QObject::connect(view, SIGNAL(startPathSearching(QVariant,int)),
+                     backend, SLOT(onStartPathFinding(QVariant,int)));
     QObject::connect(backend, SIGNAL(pathFindingDone(QVariant)),
                      view, SLOT(onPathFindingDone(QVariant)));
     QObject::connect(backend, SIGNAL(vertexVisited(QVariant)),
                      view, SLOT(onVertexVisited(QVariant)));
+    QObject::connect(backend, SIGNAL(availableAlgorithmsSet(QVariant)),
+                     view->findChild<QObject*>("availableAlgorithms"), SLOT(onAvailableAlgorithmsSet(QVariant)));
+    QObject::connect(view->findChild<QObject*>("availableAlgorithms"), SIGNAL(algorithmSelected(QVariant)),
+                     backend, SLOT(onAlgorithmSelected(QVariant)));
 
+    backend->loadAlgorithms();
 
     return app.exec();
 }

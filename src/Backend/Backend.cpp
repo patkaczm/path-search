@@ -14,7 +14,6 @@ Backend::Backend(QQmlApplicationEngine& engine, QObject *parent)
     : QObject(parent)
     , mEngine(engine)
 {
-    algorithmList.registerAlgorithm("BreadthFirstSearch", std::make_unique<algorithm::BreadthFirstSearch>());
 }
 
 void Backend::onStartPathFinding(QVariant gc, int width) {
@@ -43,11 +42,33 @@ void Backend::onVertexVisited(const graph::Vertex &v)
     emit vertexVisited(v.id);
 }
 
+void Backend::onAlgorithmSelected(QVariant v)
+{
+    algorithmList.selectAlgorithm(v.toString().toStdString());
+}
+
+void Backend::loadAlgorithms()
+{
+    algorithmList.registerAlgorithm("BreadthFirstSearch", std::make_unique<algorithm::BreadthFirstSearch>());
+    emit availableAlgorithmsSet(toQVatiantVS(algorithmList.getAlgorithmList()));
+}
+
 QVariant Backend::toQVariant(const algorithm::Algorithm::Path &path) const
 {
     std::vector<int> tmp;
     for(const auto& step : path) {
         tmp.push_back(step.id);
+    }
+    QVariant v;
+    v.setValue(tmp);
+    return v;
+}
+
+QVariant Backend::toQVatiantVS(const std::vector<std::string> &val) const
+{
+    std::vector<QString> tmp;
+    for (const auto& x : val) {
+        tmp.push_back(QString::fromStdString(x));
     }
     QVariant v;
     v.setValue(tmp);
