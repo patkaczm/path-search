@@ -28,7 +28,12 @@ int main(int argc, char *argv[])
                      view, SLOT(onPathFindingDone(QVariant)));
     QObject::connect(backend, SIGNAL(vertexVisited(QVariant)),
                      view, SLOT(onVertexVisited(QVariant)));
+    QObject::connect(backend, SIGNAL(availableAlgorithmsSet(QVariant)),
+                     view->findChild<QObject*>("availableAlgorithms"), SLOT(onAvailableAlgorithmsSet(QVariant)));
+    QObject::connect(view->findChild<QObject*>("availableAlgorithms"), SIGNAL(algorithmSelected(QVariant)),
+                     backend, SLOT(onAlgorithmSelected(QVariant)));
 
+    backend->loadAlgorithms();
 
     return app.exec();
 }
