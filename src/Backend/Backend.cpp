@@ -14,6 +14,7 @@ Backend::Backend(QQmlApplicationEngine& engine, QObject *parent)
     : QObject(parent)
     , mEngine(engine)
 {
+    algorithmList.registerAlgorithm("BreadthFirstSearch", std::make_unique<algorithm::BreadthFirstSearch>());
 }
 
 void Backend::onStartPathFinding(QVariant gc, int width) {
@@ -21,14 +22,16 @@ void Backend::onStartPathFinding(QVariant gc, int width) {
 
     auto grid = grid::Grid(gc, width);
     auto graph = make_graph(grid.getGrid());
-    auto alg = algorithm::BreadthFirstSearch();
+    algorithmList.selectAlgorithm("BreadthFirstSearch");
+    //@todo operator() is not pretty anymore
 
-    QObject::connect(dynamic_cast<QObject*>(&alg), SIGNAL(vertexVisited(const graph::Vertex&)),
+    auto* alg = algorithmList.getSelected();
+    QObject::connect(dynamic_cast<const QObject*>(alg), SIGNAL(vertexVisited(const graph::Vertex&)),
                      this, SLOT(onVertexVisited(const graph::Vertex&)));
 
-    auto path = alg(graph, graph::Vertex{grid.getStart()->id}, graph::Vertex{grid.getEnd()->id});
+    auto path = alg->operator()(graph, graph::Vertex{grid.getStart()->id}, graph::Vertex{grid.getEnd()->id});
 
-    QObject::disconnect(dynamic_cast<QObject*>(&alg), SIGNAL(vertexVisited(const graph::Vertex&)),
+    QObject::disconnect(dynamic_cast<const QObject*>(alg), SIGNAL(vertexVisited(const graph::Vertex&)),
                      this, SLOT(onVertexVisited(const graph::Vertex&)));
 
     auto variant_path = toQVariant(path);

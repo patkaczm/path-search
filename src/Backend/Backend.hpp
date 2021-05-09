@@ -7,6 +7,7 @@
 
 #include "Graph/Graph.hpp"
 #include "Algorithm/Algorithm.hpp"
+#include "Algorithm/AlgorithmList.hpp"
 #include "Algorithm/BreadthFirstSearch.hpp"
 #include "Backend/Cell.hpp"
 #include "Backend/Grid.hpp"
@@ -32,5 +33,6 @@ private:
     graph::Graph make_graph(const grid::Grid::Grid_t& plane) const;
 
     QQmlApplicationEngine& mEngine;
+    algorithm::AlgorithmList algorithmList;
 };
 
