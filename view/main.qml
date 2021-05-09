@@ -291,6 +291,7 @@ Window {
                     Layout.leftMargin: 10
                     Layout.rightMargin: 10
                     Layout.fillWidth: true
+                    displayText: ''
                     function onAvailableAlgorithmsSet(algorithms) {
                         var tmp = []
                         for (var alg in algorithms) {
@@ -301,6 +302,7 @@ Window {
                     signal algorithmSelected(variant selected);
                     onActivated: {
                         console.log("Selected: ", model[index]);
+                        displayText = model[index];
                         algorithmSelected(model[index]);
                     }
 

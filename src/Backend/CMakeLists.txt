@@ -12,6 +12,7 @@ target_include_directories(BackendLib PRIVATE ${INCLUDE_DIR})
 target_link_libraries(BackendLib PRIVATE ${QtLib}
                                          GraphLib
                                          BreadthFirstSearchLib
+                                         DepthFirstSearchLib
                                          CellLib
                                          GridLib
                                          AlgorithmListLib)

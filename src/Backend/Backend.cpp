@@ -8,6 +8,9 @@
 #include <QQuickItem>
 #include <QQuickAsyncImageProvider>
 
+#include "Algorithm/BreadthFirstSearch.hpp"
+#include "Algorithm/DepthFirstSearch.hpp"
+
 #include "Backend/Grid.hpp"
 
 Backend::Backend(QQmlApplicationEngine& engine, QObject *parent)
@@ -21,20 +24,21 @@ void Backend::onStartPathFinding(QVariant gc, int width) {
 
     auto grid = grid::Grid(gc, width);
     auto graph = make_graph(grid.getGrid());
-    algorithmList.selectAlgorithm("BreadthFirstSearch");
     //@todo operator() is not pretty anymore
 
     auto* alg = algorithmList.getSelected();
-    QObject::connect(dynamic_cast<const QObject*>(alg), SIGNAL(vertexVisited(const graph::Vertex&)),
-                     this, SLOT(onVertexVisited(const graph::Vertex&)));
+    if (alg) {
+        QObject::connect(dynamic_cast<const QObject*>(alg), SIGNAL(vertexVisited(const graph::Vertex&)),
+                         this, SLOT(onVertexVisited(const graph::Vertex&)));
 
-    auto path = alg->operator()(graph, graph::Vertex{grid.getStart()->id}, graph::Vertex{grid.getEnd()->id});
+        auto path = alg->operator()(graph, graph::Vertex{grid.getStart()->id}, graph::Vertex{grid.getEnd()->id});
 
-    QObject::disconnect(dynamic_cast<const QObject*>(alg), SIGNAL(vertexVisited(const graph::Vertex&)),
-                     this, SLOT(onVertexVisited(const graph::Vertex&)));
+        QObject::disconnect(dynamic_cast<const QObject*>(alg), SIGNAL(vertexVisited(const graph::Vertex&)),
+                            this, SLOT(onVertexVisited(const graph::Vertex&)));
 
-    auto variant_path = toQVariant(path);
-    emit pathFindingDone(variant_path);
+        auto variant_path = toQVariant(path);
+        emit pathFindingDone(variant_path);
+    }
 }
 
 void Backend::onVertexVisited(const graph::Vertex &v)
@@ -50,6 +54,7 @@ void Backend::onAlgorithmSelected(QVariant v)
 void Backend::loadAlgorithms()
 {
     algorithmList.registerAlgorithm("BreadthFirstSearch", std::make_unique<algorithm::BreadthFirstSearch>());
+    algorithmList.registerAlgorithm("DepthFirstSearch", std::make_unique<algorithm::DepthFirstSearch>());
     emit availableAlgorithmsSet(toQVatiantVS(algorithmList.getAlgorithmList()));
 }
 
