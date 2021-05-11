@@ -13,6 +13,7 @@ target_link_libraries(BackendLib PRIVATE ${QtLib}
                                          GraphLib
                                          BreadthFirstSearchLib
                                          DepthFirstSearchLib
+                                         DijkstraLib
                                          CellLib
                                          GridLib
                                          AlgorithmListLib)

@@ -10,6 +10,7 @@
 
 #include "Algorithm/BreadthFirstSearch.hpp"
 #include "Algorithm/DepthFirstSearch.hpp"
+#include "Algorithm/Dijkstra.hpp"
 
 #include "Backend/Grid.hpp"
 
@@ -55,6 +56,7 @@ void Backend::loadAlgorithms()
 {
     algorithmList.registerAlgorithm("BreadthFirstSearch", std::make_unique<algorithm::BreadthFirstSearch>());
     algorithmList.registerAlgorithm("DepthFirstSearch", std::make_unique<algorithm::DepthFirstSearch>());
+    algorithmList.registerAlgorithm("Dijkstra", std::make_unique<algorithm::Dijkstra>());
     emit availableAlgorithmsSet(toQVatiantVS(algorithmList.getAlgorithmList()));
 }
 

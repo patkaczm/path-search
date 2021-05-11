@@ -8,6 +8,10 @@ add_library(DepthFirstSearchLib DepthFirstSearch.cpp)
 target_include_directories(DepthFirstSearchLib PRIVATE ${INCLUDE_DIR})
 target_link_libraries(DepthFirstSearchLib PRIVATE GraphLib Qt5::Core)
 
+add_library(DijkstraLib Dijkstra.cpp)
+target_include_directories(DijkstraLib PRIVATE ${INCLUDE_DIR})
+target_link_libraries(DijkstraLib PRIVATE GraphLib Qt5::Core)
+
 add_library(AlgorithmListLib AlgorithmList.cpp)
 target_include_directories(AlgorithmListLib PRIVATE ${INCLUDE_DIR})
 target_link_libraries(AlgorithmListLib PRIVATE Qt5::Core)
