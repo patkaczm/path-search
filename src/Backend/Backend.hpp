@@ -27,6 +27,7 @@ public slots:
     void onStartPathFinding(QVariant gc, int width);
     void onVertexVisited(const graph::Vertex& v);
     void onAlgorithmSelected(QVariant v);
+    void onGenerateMaze(int width, int heigth);
 
 public:
     void loadAlgorithms();

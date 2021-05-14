@@ -48,6 +48,7 @@ std::map<graph::Vertex, graph::Vertex> Dijkstra::solve(const graph::Graph& graph
 
 Algorithm::Path Dijkstra::reconstructPath(const graph::Vertex &start, const graph::Vertex &end, const std::map<graph::Vertex, graph::Vertex> &prev) const
 {
+    //@todo add tests to this
     if (prev.empty() || start == end) {
         return {};
     }

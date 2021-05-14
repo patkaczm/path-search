@@ -31,6 +31,9 @@ int main(int argc, char *argv[])
     QObject::connect(view->findChild<QObject*>("availableAlgorithms"), SIGNAL(algorithmSelected(QVariant)),
                      backend, SLOT(onAlgorithmSelected(QVariant)));
 
+    QObject::connect(view, SIGNAL(generateMaze(int, int)),
+                     backend, SLOT(onGenerateMaze(int, int)));
+
     backend->loadAlgorithms();
 
     return app.exec();

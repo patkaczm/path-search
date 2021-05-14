@@ -57,7 +57,7 @@ Window {
                         Layout.topMargin: 20
                         objectName: "gridSizeWidth"
                         editable: true
-                        value: 10
+                        value: 11
                         Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                         to: 20
                         from: 1
@@ -81,9 +81,9 @@ Window {
                         Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                         objectName: "gridSize"
                         editable: true
-                        value: 10
+                        value: 11
                         from: 1
-                        to: 10
+                        to: 11
                         Layout.topMargin: 20
                     }
                 }
@@ -121,6 +121,7 @@ Window {
         property var gridCells: [];
 
         signal startPathSearching(variant gridCells, int width);
+        signal generateMaze(int width, int height);
 
         Timer {
             id: timer
@@ -280,12 +281,20 @@ Window {
                         }
                     }
                 }
-                property var btnData: [{name: "Select start", action: selectStart},
+                function generateMaze() {
+                    // check that width and height are 2n+1
+                    gridView.generateMaze(gridSizeWidth.value, gridSizeHeight.value);
+                }
+
+                property var btnData: [
+                                       {name: "generate maze", action: generateMaze},
+                                       {name: "Select start", action: selectStart},
                                        {name: "Select end", action: selectEnd},
                                        {name: "Draw obstacle", action: drawObstacle},
                                        {name: "Start", action: start},
                                        {name: "Reset", action: reset},
-                                       {name: "Clear visited area", action: clearVisitedArea}]
+                                       {name: "Clear visited area", action: clearVisitedArea}
+                                      ]
                 ComboBox {
                     objectName: "availableAlgorithms"
                     Layout.leftMargin: 10

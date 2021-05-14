@@ -52,6 +52,12 @@ void Backend::onAlgorithmSelected(QVariant v)
     algorithmList.selectAlgorithm(v.toString().toStdString());
 }
 
+void Backend::onGenerateMaze(int width, int heigth)
+{
+    qDebug() << "Generate maze: " << width<< ":" <<heigth;
+    qDebug() << "Tmp size: "<< (width - 1) / 2 << ":" << (heigth - 1) / 2;
+}
+
 void Backend::loadAlgorithms()
 {
     algorithmList.registerAlgorithm("BreadthFirstSearch", std::make_unique<algorithm::BreadthFirstSearch>());
