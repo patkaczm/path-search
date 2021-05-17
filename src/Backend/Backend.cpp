@@ -13,6 +13,7 @@
 #include "Algorithm/Dijkstra.hpp"
 
 #include "Backend/Grid.hpp"
+#include <random>
 
 Backend::Backend(QQmlApplicationEngine& engine, QObject *parent)
     : QObject(parent)
@@ -52,10 +53,79 @@ void Backend::onAlgorithmSelected(QVariant v)
     algorithmList.selectAlgorithm(v.toString().toStdString());
 }
 
+namespace {
+
+int index(const int i,const int j, const std::size_t width, const std::size_t height) {
+    if (i < 0 || j < 0 || i > height -1 || j > width -1) {
+        return -1;
+    }
+    return i * width + j;
+}
+}
+
+std::vector<Backend::Cell> Backend::getUnvisitedNeighbours(const std::vector<Cell>& grid, const std::size_t width, const std::size_t height, const Cell& cell)
+{
+    std::vector<Cell> unvisited;
+    //todo refactor
+    if (cell.i > 0 && not grid[index(cell.i-1, cell.j, width, height)].visited){
+        unvisited.push_back(grid[index(cell.i-1,cell.j, width, height)]);
+    }
+    if (cell.j < width - 1 && not grid[index(cell.i, cell.j + 1, width, height)].visited) {
+        unvisited.push_back(grid[index(cell.i, cell.j + 1, width, height)]);
+    }
+    if (cell.i < height - 1 && not grid[index(cell.i + 1, cell.j, width, height)].visited) {
+        unvisited.push_back(grid[index(cell.i + 1, cell.j, width, height)]);
+    }
+    if (cell.j > 0 && not grid[index(cell.i, cell.j, width, height)].visited) {
+        unvisited.push_back(grid[index(cell.i, cell.j, width, height)]);
+    }
+    return unvisited;
+}
+
+void Backend::SS(std::vector<Cell>& grid, Cell& current,  const std::size_t width, const std::size_t height)
+{
+    current.visited = true;
+    int id = current.id;
+    emit vertexVisited(id);
+    auto neighbours = getUnvisitedNeighbours(grid, width, height, current);
+
+    std::random_device seeder;
+    std::mt19937 engine(seeder());
+    std::uniform_int_distribution<std::size_t> dist(0, neighbours.size() - 1);
+
+    qDebug() << "Un size: " << neighbours.size();
+    if (neighbours.size() > 0) {
+        auto& next = neighbours.at(dist(engine));
+        qDebug() << "random ne: " << next.i << " " << next.j;
+        grid[index(next.i, next.j, width, height)].visited = true;
+        SS(grid, next, width, height);
+    }
+}
+
+
 void Backend::onGenerateMaze(int width, int heigth)
 {
     qDebug() << "Generate maze: " << width<< ":" <<heigth;
-    qDebug() << "Tmp size: "<< (width - 1) / 2 << ":" << (heigth - 1) / 2;
+    std::size_t tmpHeigth = heigth;//(heigth - 1) / 2;
+    std::size_t tmpWidth = width;//(width - 1) / 2;
+    qDebug() << "Tmp size: "<< tmpWidth << ":" << tmpHeigth;
+
+    std::vector<Cell> grid{};
+    // make a grid of cells
+    for(std::size_t i = 0; i < tmpHeigth * tmpWidth; i++ ) {
+        Cell c;
+        c.i = i / tmpWidth;
+        c.j = i % tmpWidth;
+        c.id = i;
+        grid.emplace_back(c);
+        qDebug() << "Cell: " << c.i << ":" << c.j << ":" << c.id;
+    }
+
+    auto& current = grid[0];
+    current.visited = true;
+
+    SS(grid, current, tmpWidth, tmpHeigth);
+
 }
 
 void Backend::loadAlgorithms()
