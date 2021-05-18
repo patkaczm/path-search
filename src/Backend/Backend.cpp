@@ -74,22 +74,29 @@ Backend::Cell getRandomNeighbour(const std::vector<Backend::Cell>& neighbours) {
 
 }
 
-std::vector<Backend::Cell> Backend::getUnvisitedNeighbours(const std::vector<Cell>& grid, const std::size_t width, const std::size_t height, const Cell& cell)
+std::vector<Backend::Cell> Backend::getNeighbours(const std::vector<Cell>& grid, const std::size_t width, const std::size_t height, const Cell& cell)
+{
+    std::vector<Cell> neighbours;
+    //todo refactor
+    if (cell.i > 0){
+        neighbours.push_back(grid[index(cell.i-1,cell.j, width, height)]);
+    }
+    if (cell.j < width - 1) {
+        neighbours.push_back(grid[index(cell.i, cell.j + 1, width, height)]);
+    }
+    if (cell.i < height - 1) {
+        neighbours.push_back(grid[index(cell.i + 1, cell.j, width, height)]);
+    }
+    if (cell.j > 0) {
+        neighbours.push_back(grid[index(cell.i, cell.j - 1, width, height)]);
+    }
+    return neighbours;
+}
+
+std::vector<Backend::Cell> Backend::getUnvisited(const std::vector<Cell>& neighbours, const std::map<Cell, bool>& visited)
 {
     std::vector<Cell> unvisited;
-    //todo refactor
-    if (cell.i > 0 && not grid[index(cell.i-1, cell.j, width, height)].visited){
-        unvisited.push_back(grid[index(cell.i-1,cell.j, width, height)]);
-    }
-    if (cell.j < width - 1 && not grid[index(cell.i, cell.j + 1, width, height)].visited) {
-        unvisited.push_back(grid[index(cell.i, cell.j + 1, width, height)]);
-    }
-    if (cell.i < height - 1 && not grid[index(cell.i + 1, cell.j, width, height)].visited) {
-        unvisited.push_back(grid[index(cell.i + 1, cell.j, width, height)]);
-    }
-    if (cell.j > 0 && not grid[index(cell.i, cell.j - 1, width, height)].visited) {
-        unvisited.push_back(grid[index(cell.i, cell.j - 1, width, height)]);
-    }
+    std::copy_if(neighbours.begin(), neighbours.end(), std::back_inserter(unvisited), [&visited](const Cell& c){return not visited.at(c);});
     return unvisited;
 }
 
@@ -119,6 +126,7 @@ void Backend::onGenerateMaze(int width, int heigth)
 
     std::vector<Cell> grid{};
     std::map<Cell, std::map<Direction, bool>> walls;
+    std::map<Cell, bool> visited;
     // make a grid of cells
     for(std::size_t i = 0; i < tmpHeigth * tmpWidth; i++ ) {
         Cell c;
@@ -127,35 +135,28 @@ void Backend::onGenerateMaze(int width, int heigth)
         c.id = i;
         grid.emplace_back(c);
         walls.emplace(c, std::map<Direction, bool> {
-                             {Direction::Top, true},
-                             {Direction::Right, true},
-                             {Direction::Bottom, true},
-                             {Direction::Left, true}
+                         {Direction::Top, true},
+                         {Direction::Right, true},
+                         {Direction::Bottom, true},
+                         {Direction::Left, true}
                          });
-//        qDebug() << "Cell: " << c.i << ":" << c.j << ":" << c.id;
+        visited.emplace(c, false);
     }
 
     std::stack<Cell> s;
     auto& current = grid[0];
-    current.visited = true;
+    visited[current] = true;
     s.push(current);
 
     while(!s.empty()) {
         auto current = s.top();
         s.pop();
-        auto unvisited = getUnvisitedNeighbours(grid, tmpWidth, tmpHeigth, current);
+        auto unvisited = getUnvisited(getNeighbours(grid, tmpWidth, tmpHeigth, current), visited);
         if (unvisited.size() > 0) {
             s.push(current);
             auto randomNeighbour = getRandomNeighbour(unvisited);
-
             removeTheWall(walls, current, randomNeighbour);
-
-            grid[index(randomNeighbour.i, randomNeighbour.j, tmpWidth, tmpHeigth)].visited = true;
-            randomNeighbour.visited = true;
-
-//            int id = randomNeighbour.id;
-//            emit vertexVisited(id);
-
+            visited[randomNeighbour] = true;
             s.push(randomNeighbour);
         }
     }

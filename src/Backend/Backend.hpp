@@ -31,13 +31,6 @@ public:
         std::size_t j;
         std::size_t id;
 
-        std::map<Direction, bool> walls {
-            {Direction::Top, true},
-            {Direction::Right, true},
-            {Direction::Bottom, true},
-            {Direction::Left, true}
-        };
-        bool visited = false;
         bool operator<(const Cell& rhs) const {
             return i < rhs.i || i == rhs.i && j < rhs.j;
         }
@@ -64,7 +57,8 @@ private:
     QVariant toQVariant(const algorithm::Algorithm::Path& path) const;
 
     graph::Graph make_graph(const grid::Grid::Grid_t& plane) const;
-    std::vector<Cell> getUnvisitedNeighbours(const std::vector<Cell>& grid, const std::size_t width, const std::size_t height, const Cell& cell);
+    std::vector<Cell> getUnvisited(const std::vector<Cell>& neighbours, const std::map<Cell, bool>& visited);
+    std::vector<Cell> getNeighbours(const std::vector<Cell>& grid, const std::size_t width, const std::size_t height, const Cell& cell);
 
     QQmlApplicationEngine& mEngine;
     algorithm::AlgorithmList algorithmList;
