@@ -93,25 +93,20 @@ std::vector<Backend::Cell> Backend::getUnvisitedNeighbours(const std::vector<Cel
     return unvisited;
 }
 
-void Backend::removeTheWall(std::vector<Cell>& grid, Cell& current, Cell& randomNeighbour, std::size_t tmpHeigth, std::size_t tmpWidth)
+void Backend::removeTheWall(std::map<Cell, std::map<Direction, bool>>& walls, Cell& current, Cell& randomNeighbour)
 {
     if (current.i < randomNeighbour.i) {
-        //needs to operate on originals
-        qDebug() << "GONE down";
-        grid[index(current.i, current.j, tmpWidth, tmpHeigth)].walls[Cell::Direction::Bottom] = false;
-        grid[index(randomNeighbour.i, randomNeighbour.j, tmpWidth, tmpHeigth)].walls[Cell::Direction::Top] = false;
+        walls[current][Direction::Bottom] = false;
+        walls[randomNeighbour][Direction::Top] = false;
     } else if (current.i > randomNeighbour.i) {
-        qDebug() << "GONE Up";
-        grid[index(current.i, current.j, tmpWidth, tmpHeigth)].walls[Cell::Direction::Top] = false;
-        grid[index(randomNeighbour.i, randomNeighbour.j, tmpWidth, tmpHeigth)].walls[Cell::Direction::Bottom] = false;
+        walls[current][Direction::Top] = false;
+        walls[randomNeighbour][Direction::Bottom] = false;
     } else if (current.j < randomNeighbour.j) {
-        qDebug() << "GONE right";
-        grid[index(current.i, current.j, tmpWidth, tmpHeigth)].walls[Cell::Direction::Right] = false;
-        grid[index(randomNeighbour.i, randomNeighbour.j, tmpWidth, tmpHeigth)].walls[Cell::Direction::Left] = false;
+        walls[current][Direction::Right] = false;
+        walls[randomNeighbour][Direction::Left] = false;
     } else if (current.j > randomNeighbour.j) {
-        qDebug() << "GONE left";
-        grid[index(current.i, current.j, tmpWidth, tmpHeigth)].walls[Cell::Direction::Left] = false;
-        grid[index(randomNeighbour.i, randomNeighbour.j, tmpWidth, tmpHeigth)].walls[Cell::Direction::Right] = false;
+        walls[current][Direction::Left] = false;
+        walls[randomNeighbour][Direction::Right] = false;
     }
 }
 
@@ -123,6 +118,7 @@ void Backend::onGenerateMaze(int width, int heigth)
     qDebug() << "Tmp size: "<< tmpWidth << ":" << tmpHeigth;
 
     std::vector<Cell> grid{};
+    std::map<Cell, std::map<Direction, bool>> walls;
     // make a grid of cells
     for(std::size_t i = 0; i < tmpHeigth * tmpWidth; i++ ) {
         Cell c;
@@ -130,6 +126,12 @@ void Backend::onGenerateMaze(int width, int heigth)
         c.j = i % tmpWidth;
         c.id = i;
         grid.emplace_back(c);
+        walls.emplace(c, std::map<Direction, bool> {
+                             {Direction::Top, true},
+                             {Direction::Right, true},
+                             {Direction::Bottom, true},
+                             {Direction::Left, true}
+                         });
 //        qDebug() << "Cell: " << c.i << ":" << c.j << ":" << c.id;
     }
 
@@ -146,7 +148,7 @@ void Backend::onGenerateMaze(int width, int heigth)
             s.push(current);
             auto randomNeighbour = getRandomNeighbour(unvisited);
 
-            removeTheWall(grid, current, randomNeighbour, tmpHeigth, tmpWidth);
+            removeTheWall(walls, current, randomNeighbour);
 
             grid[index(randomNeighbour.i, randomNeighbour.j, tmpWidth, tmpHeigth)].visited = true;
             randomNeighbour.visited = true;
@@ -160,13 +162,13 @@ void Backend::onGenerateMaze(int width, int heigth)
 
     std::vector<int> ret(width * heigth, static_cast<int>(grid::Cell::Type::Obstacle));
     qDebug() << "ret size: " << ret.size();
-//    //sort grid by id?
+
     for (const auto& cell : grid) {
         ret.at(index((2*cell.i) + 1, (2*cell.j) + 1, width, heigth)) = static_cast<int>(grid::Cell::Type::EmptyField);
-        if (not cell.walls.at(Cell::Direction::Bottom)) {
+        if (not walls.at(cell).at(Direction::Bottom)) {
             ret.at(index(2*(cell.i + 1), 2*cell.j + 1, width, heigth)) = static_cast<int>(grid::Cell::Type::EmptyField);
         }
-        if (not cell.walls.at(Cell::Direction::Right)) {
+        if (not walls.at(cell).at(Direction::Right)) {
             ret.at(index(2*cell.i + 1, 2*(cell.j + 1), width, heigth)) = static_cast<int>(grid::Cell::Type::EmptyField);
         }
     }

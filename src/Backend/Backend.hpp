@@ -19,17 +19,17 @@ class Backend : public QObject
 
 public:
     explicit Backend(QQmlApplicationEngine& engine, QObject *parent = nullptr);
+    enum class Direction {
+        Top,
+        Right,
+        Bottom,
+        Left
+    };
+
     struct Cell {
         std::size_t i;
         std::size_t j;
         std::size_t id;
-
-        enum class Direction {
-            Top,
-            Right,
-            Bottom,
-            Left
-        };
 
         std::map<Direction, bool> walls {
             {Direction::Top, true},
@@ -38,6 +38,9 @@ public:
             {Direction::Left, true}
         };
         bool visited = false;
+        bool operator<(const Cell& rhs) const {
+            return i < rhs.i || i == rhs.i && j < rhs.j;
+        }
     };
 signals:
     void pathFindingDone(QVariant path);
@@ -54,7 +57,7 @@ public slots:
 public:
     void loadAlgorithms();
 
-    void removeTheWall(std::vector<Cell>& grid, Cell& current, Cell& randomNeighbour, std::size_t tmpHeigth, std::size_t tmpWidth);
+    void removeTheWall(std::map<Cell, std::map<Direction, bool>>& walls, Cell& current, Cell& randomNeighbour);
 
 private:
     QVariant toQVatiantVS(const std::vector<std::string>& val) const;
