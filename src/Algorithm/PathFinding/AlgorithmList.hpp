@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 #include <typeinfo>
-#include "Algorithm/Algorithm.hpp"
+#include "Algorithm/PathFinding/Algorithm.hpp"
 
 namespace algorithm {
 
@@ -25,4 +25,4 @@ private:
 };
 
 }
-#include "Algorithm/AlgorithmList.tpp"
+#include "Algorithm/PathFinding/AlgorithmList.tpp"

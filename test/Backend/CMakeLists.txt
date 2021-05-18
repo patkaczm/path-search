@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 3.14)
-
 add_ut(NAME Cell
        SOURCES CellTest.cpp)
 

@@ -57,9 +57,9 @@ Window {
                         Layout.topMargin: 20
                         objectName: "gridSizeWidth"
                         editable: true
-                        value: 31
+                        value: 51
                         Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                        to: 31
+                        to: 51
                         from: 1
                     }
                 }
@@ -81,9 +81,9 @@ Window {
                         Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                         objectName: "gridSize"
                         editable: true
-                        value: 31
+                        value: 51
                         from: 1
-                        to: 31
+                        to: 51
                         Layout.topMargin: 20
                     }
                 }

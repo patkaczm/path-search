@@ -1,4 +1,4 @@
-#include "Algorithm/Algorithm.hpp"
+#include "Algorithm/PathFinding/Algorithm.hpp"
 
 #include <QObject>
 

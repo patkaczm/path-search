@@ -1,4 +1,4 @@
-#include "Algorithm/DepthFirstSearch.hpp"
+#include "Algorithm/PathFinding/DepthFirstSearch.hpp"
 
 namespace algorithm
 {

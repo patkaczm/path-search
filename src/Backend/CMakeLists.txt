@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 3.14)
-
 add_library(CellLib Cell.cpp)
 target_include_directories(CellLib PRIVATE ${INCLUDE_DIR})
 

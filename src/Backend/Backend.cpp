@@ -11,9 +11,9 @@
 #include <QQuickItem>
 #include <QQuickAsyncImageProvider>
 
-#include "Algorithm/BreadthFirstSearch.hpp"
-#include "Algorithm/DepthFirstSearch.hpp"
-#include "Algorithm/Dijkstra.hpp"
+#include "Algorithm/PathFinding/BreadthFirstSearch.hpp"
+#include "Algorithm/PathFinding/DepthFirstSearch.hpp"
+#include "Algorithm/PathFinding/Dijkstra.hpp"
 
 #include "Backend/Grid.hpp"
 #include <random>

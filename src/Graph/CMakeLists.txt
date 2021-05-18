@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 3.14)
-
 add_library(VertexLib Vertex.cpp)
 target_include_directories(VertexLib PRIVATE ${INCLUDE_DIR})
 

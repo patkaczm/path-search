@@ -1,4 +1,4 @@
-#include "Algorithm/AlgorithmList.hpp"
+#include "Algorithm/PathFinding/AlgorithmList.hpp"
 
 namespace algorithm {
 

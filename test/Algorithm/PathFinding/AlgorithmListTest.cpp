@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include "Algorithm/Algorithm.hpp"
-#include "Algorithm/AlgorithmList.hpp"
+#include "Algorithm/PathFinding/Algorithm.hpp"
+#include "Algorithm/PathFinding/AlgorithmList.hpp"
 
 namespace algorithm {
 namespace test {

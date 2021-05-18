@@ -1,4 +1,4 @@
-#include "Algorithm/Dijkstra.hpp"
+#include "Algorithm/PathFinding/Dijkstra.hpp"
 
 #include <cstdint>
 #include <limits>

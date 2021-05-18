@@ -4,7 +4,7 @@
 #include "Graph/Graph.hpp"
 #include "Graph/Vertex.hpp"
 
-#include "Algorithm/BreadthFirstSearch.hpp"
+#include "Algorithm/PathFinding/BreadthFirstSearch.hpp"
 
 namespace algorithm {
 namespace test {

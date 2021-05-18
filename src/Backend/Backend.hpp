@@ -6,8 +6,8 @@
 #include <QTimer>
 
 #include "Graph/Graph.hpp"
-#include "Algorithm/Algorithm.hpp"
-#include "Algorithm/AlgorithmList.hpp"
+#include "Algorithm/PathFinding/Algorithm.hpp"
+#include "Algorithm/PathFinding/AlgorithmList.hpp"
 #include "Backend/Cell.hpp"
 #include "Backend/Grid.hpp"
 

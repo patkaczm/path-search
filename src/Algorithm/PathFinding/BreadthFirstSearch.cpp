@@ -1,4 +1,4 @@
-#include "Algorithm/BreadthFirstSearch.hpp"
+#include "Algorithm/PathFinding/BreadthFirstSearch.hpp"
 
 #include <queue>
 #include <algorithm>
