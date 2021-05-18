@@ -57,9 +57,9 @@ Window {
                         Layout.topMargin: 20
                         objectName: "gridSizeWidth"
                         editable: true
-                        value: 11
+                        value: 31
                         Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                        to: 20
+                        to: 31
                         from: 1
                     }
                 }
@@ -81,9 +81,9 @@ Window {
                         Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                         objectName: "gridSize"
                         editable: true
-                        value: 11
+                        value: 31
                         from: 1
-                        to: 11
+                        to: 31
                         Layout.topMargin: 20
                     }
                 }
@@ -219,6 +219,15 @@ Window {
                 gridCells.push(object)
             }
 
+        }
+
+        function onMazeGenerationDone(maze) {
+            for (var i = 0 ; i < maze.length; i++) {
+//                console.log(i, ":", maze[i]);
+                if (maze[i] === obstacleField.value) {
+                    gridCells[i].color = obstacleField.color;
+                }
+            }
         }
 
         //should be deleted on visibility changed to invisible

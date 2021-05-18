@@ -43,6 +43,7 @@ signals:
     void pathFindingDone(QVariant path);
     void vertexVisited(QVariant v);
     void availableAlgorithmsSet(QVariant v);
+    void mazeGenerationDone(QVariant v);
 
 public slots:
     void onStartPathFinding(QVariant gc, int width);
@@ -53,12 +54,13 @@ public slots:
 public:
     void loadAlgorithms();
 
+    void removeTheWall(std::vector<Cell>& grid, Cell& current, Cell& randomNeighbour, std::size_t tmpHeigth, std::size_t tmpWidth);
+
 private:
     QVariant toQVatiantVS(const std::vector<std::string>& val) const;
     QVariant toQVariant(const algorithm::Algorithm::Path& path) const;
 
     graph::Graph make_graph(const grid::Grid::Grid_t& plane) const;
-    void SS(std::vector<Cell>& grid, Cell& current,  const std::size_t width, const std::size_t height);
     std::vector<Cell> getUnvisitedNeighbours(const std::vector<Cell>& grid, const std::size_t width, const std::size_t height, const Cell& cell);
 
     QQmlApplicationEngine& mEngine;

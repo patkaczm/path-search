@@ -1,6 +1,9 @@
 #include "Backend.hpp"
 
 #include <iostream>
+#include <stack>
+#include <thread>
+#include <chrono>
 
 #include <QObject>
 #include <QVariant>
@@ -61,6 +64,14 @@ int index(const int i,const int j, const std::size_t width, const std::size_t he
     }
     return i * width + j;
 }
+
+Backend::Cell getRandomNeighbour(const std::vector<Backend::Cell>& neighbours) {
+    std::random_device seeder;
+    std::mt19937 engine(seeder());
+    std::uniform_int_distribution<std::size_t> dist(0, neighbours.size() - 1);
+    return neighbours.at(dist(engine));
+}
+
 }
 
 std::vector<Backend::Cell> Backend::getUnvisitedNeighbours(const std::vector<Cell>& grid, const std::size_t width, const std::size_t height, const Cell& cell)
@@ -76,38 +87,39 @@ std::vector<Backend::Cell> Backend::getUnvisitedNeighbours(const std::vector<Cel
     if (cell.i < height - 1 && not grid[index(cell.i + 1, cell.j, width, height)].visited) {
         unvisited.push_back(grid[index(cell.i + 1, cell.j, width, height)]);
     }
-    if (cell.j > 0 && not grid[index(cell.i, cell.j, width, height)].visited) {
-        unvisited.push_back(grid[index(cell.i, cell.j, width, height)]);
+    if (cell.j > 0 && not grid[index(cell.i, cell.j - 1, width, height)].visited) {
+        unvisited.push_back(grid[index(cell.i, cell.j - 1, width, height)]);
     }
     return unvisited;
 }
 
-void Backend::SS(std::vector<Cell>& grid, Cell& current,  const std::size_t width, const std::size_t height)
+void Backend::removeTheWall(std::vector<Cell>& grid, Cell& current, Cell& randomNeighbour, std::size_t tmpHeigth, std::size_t tmpWidth)
 {
-    current.visited = true;
-    int id = current.id;
-    emit vertexVisited(id);
-    auto neighbours = getUnvisitedNeighbours(grid, width, height, current);
-
-    std::random_device seeder;
-    std::mt19937 engine(seeder());
-    std::uniform_int_distribution<std::size_t> dist(0, neighbours.size() - 1);
-
-    qDebug() << "Un size: " << neighbours.size();
-    if (neighbours.size() > 0) {
-        auto& next = neighbours.at(dist(engine));
-        qDebug() << "random ne: " << next.i << " " << next.j;
-        grid[index(next.i, next.j, width, height)].visited = true;
-        SS(grid, next, width, height);
+    if (current.i < randomNeighbour.i) {
+        //needs to operate on originals
+        qDebug() << "GONE down";
+        grid[index(current.i, current.j, tmpWidth, tmpHeigth)].walls[Cell::Direction::Bottom] = false;
+        grid[index(randomNeighbour.i, randomNeighbour.j, tmpWidth, tmpHeigth)].walls[Cell::Direction::Top] = false;
+    } else if (current.i > randomNeighbour.i) {
+        qDebug() << "GONE Up";
+        grid[index(current.i, current.j, tmpWidth, tmpHeigth)].walls[Cell::Direction::Top] = false;
+        grid[index(randomNeighbour.i, randomNeighbour.j, tmpWidth, tmpHeigth)].walls[Cell::Direction::Bottom] = false;
+    } else if (current.j < randomNeighbour.j) {
+        qDebug() << "GONE right";
+        grid[index(current.i, current.j, tmpWidth, tmpHeigth)].walls[Cell::Direction::Right] = false;
+        grid[index(randomNeighbour.i, randomNeighbour.j, tmpWidth, tmpHeigth)].walls[Cell::Direction::Left] = false;
+    } else if (current.j > randomNeighbour.j) {
+        qDebug() << "GONE left";
+        grid[index(current.i, current.j, tmpWidth, tmpHeigth)].walls[Cell::Direction::Left] = false;
+        grid[index(randomNeighbour.i, randomNeighbour.j, tmpWidth, tmpHeigth)].walls[Cell::Direction::Right] = false;
     }
 }
-
 
 void Backend::onGenerateMaze(int width, int heigth)
 {
     qDebug() << "Generate maze: " << width<< ":" <<heigth;
-    std::size_t tmpHeigth = heigth;//(heigth - 1) / 2;
-    std::size_t tmpWidth = width;//(width - 1) / 2;
+    std::size_t tmpHeigth = (heigth - 1) / 2;
+    std::size_t tmpWidth = (width - 1) / 2;
     qDebug() << "Tmp size: "<< tmpWidth << ":" << tmpHeigth;
 
     std::vector<Cell> grid{};
@@ -118,14 +130,50 @@ void Backend::onGenerateMaze(int width, int heigth)
         c.j = i % tmpWidth;
         c.id = i;
         grid.emplace_back(c);
-        qDebug() << "Cell: " << c.i << ":" << c.j << ":" << c.id;
+//        qDebug() << "Cell: " << c.i << ":" << c.j << ":" << c.id;
     }
 
+    std::stack<Cell> s;
     auto& current = grid[0];
     current.visited = true;
+    s.push(current);
 
-    SS(grid, current, tmpWidth, tmpHeigth);
+    while(!s.empty()) {
+        auto current = s.top();
+        s.pop();
+        auto unvisited = getUnvisitedNeighbours(grid, tmpWidth, tmpHeigth, current);
+        if (unvisited.size() > 0) {
+            s.push(current);
+            auto randomNeighbour = getRandomNeighbour(unvisited);
 
+            removeTheWall(grid, current, randomNeighbour, tmpHeigth, tmpWidth);
+
+            grid[index(randomNeighbour.i, randomNeighbour.j, tmpWidth, tmpHeigth)].visited = true;
+            randomNeighbour.visited = true;
+
+//            int id = randomNeighbour.id;
+//            emit vertexVisited(id);
+
+            s.push(randomNeighbour);
+        }
+    }
+
+    std::vector<int> ret(width * heigth, static_cast<int>(grid::Cell::Type::Obstacle));
+    qDebug() << "ret size: " << ret.size();
+//    //sort grid by id?
+    for (const auto& cell : grid) {
+        ret.at(index((2*cell.i) + 1, (2*cell.j) + 1, width, heigth)) = static_cast<int>(grid::Cell::Type::EmptyField);
+        if (not cell.walls.at(Cell::Direction::Bottom)) {
+            ret.at(index(2*(cell.i + 1), 2*cell.j + 1, width, heigth)) = static_cast<int>(grid::Cell::Type::EmptyField);
+        }
+        if (not cell.walls.at(Cell::Direction::Right)) {
+            ret.at(index(2*cell.i + 1, 2*(cell.j + 1), width, heigth)) = static_cast<int>(grid::Cell::Type::EmptyField);
+        }
+    }
+
+    QVariant v;
+    v.setValue(ret);
+    emit mazeGenerationDone(v);
 }
 
 void Backend::loadAlgorithms()
