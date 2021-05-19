@@ -1,3 +1,7 @@
+add_library(MazeGenerationUtilsLib Utils.cpp)
+target_include_directories(MazeGenerationUtilsLib PRIVATE ${INCLUDE_DIR})
+target_link_libraries(MazeGenerationUtilsLib PRIVATE GraphLib)
+
 add_library(IterativeBacktrackerLib IterativeBacktracker.cpp)
 target_include_directories(IterativeBacktrackerLib PRIVATE ${INCLUDE_DIR})
-target_link_libraries(IterativeBacktrackerLib PRIVATE GraphLib Qt5::Core)
+target_link_libraries(IterativeBacktrackerLib PRIVATE GraphLib MazeGenerationUtilsLib)
