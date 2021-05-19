@@ -13,7 +13,8 @@ namespace grid {
 class Grid {
 public:
     using Grid_t = QVector<QVector<Cell>>;
-    Grid(QVariant gc, int width);
+    Grid(std::size_t heigth, std::size_t width);
+    Grid(QVariant gc, std::size_t width);
 
     const Grid_t& getGrid() const;
     std::optional<Cell> getStart() const;
