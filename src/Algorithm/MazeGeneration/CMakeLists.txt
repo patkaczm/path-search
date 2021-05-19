@@ -1,0 +1,3 @@
+add_library(IterativeBacktrackerLib IterativeBacktracker.cpp)
+target_include_directories(IterativeBacktrackerLib PRIVATE ${INCLUDE_DIR})
+target_link_libraries(IterativeBacktrackerLib PRIVATE GraphLib Qt5::Core)

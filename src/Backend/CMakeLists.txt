@@ -14,4 +14,5 @@ target_link_libraries(BackendLib PRIVATE ${QtLib}
                                          DijkstraLib
                                          CellLib
                                          GridLib
-                                         AlgorithmListLib)
+                                         AlgorithmListLib
+                                         IterativeBacktrackerLib)
