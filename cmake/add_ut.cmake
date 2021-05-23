@@ -13,7 +13,7 @@ target_link_libraries(${ADD_UT_NAME}Test PRIVATE
     gmock
     ${ADD_UT_NAME}Lib
     ${ADD_UT_DEPENDS})
-target_include_directories(${ADD_UT_NAME}Test PRIVATE ${INCLUDE_DIR})
+target_include_directories(${ADD_UT_NAME}Test PRIVATE ${INCLUDE_DIR} ${TEST_INCLUDE_DIR})
 add_test(NAME ${ADD_UT_NAME}Test COMMAND ${ADD_UT_NAME}Test)
 
 get_property(tmp GLOBAL PROPERTY ALL_TESTS_LIST)
