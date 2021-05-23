@@ -114,7 +114,7 @@ Window {
         readonly property var startField: ({ color: "green", value: 1});
         readonly property var stopField: ({ color: "red", value: 2});
         readonly property var obstacleField: ({ color: "black", value: 3});
-        readonly property var visitedField: ({ color: "yellow", value: 4});
+        readonly property var visitedField: ({ color: "white", value: 4});
         readonly property var pathField: ({ color: "blue", value: 5})
 
         property var selectColor: obstacleField.color
@@ -125,7 +125,7 @@ Window {
 
         Timer {
             id: timer
-            readonly property int baseInterval: 50
+            readonly property int baseInterval: 1
             interval: baseInterval
             running: false
             repeat: true
@@ -143,7 +143,9 @@ Window {
                     }
                     history.shift();
                 } else if(path.length > 0) {
-                    interval = baseInterval / 5;
+                    if (interval > 5) {
+                        interval = baseInterval / 5;
+                    }
                     if (isNeitherStartNorEnd(path[0])) {
                         parent.gridCells[path[0]].color = parent.pathField.color;
                     }
@@ -226,6 +228,8 @@ Window {
 //                console.log(i, ":", maze[i]);
                 if (maze[i] === obstacleField.value) {
                     gridCells[i].color = obstacleField.color;
+                } else if (maze[i] === emptyFiled.value) {
+                    gridCells[i].color = emptyFiled.color;
                 }
             }
         }
@@ -292,6 +296,10 @@ Window {
                 }
                 function generateMaze() {
                     // check that width and height are 2n+1
+                    for (var i = 0; i < gridView.gridCells.length; i++) {
+                        gridView.gridCells[i].color="black";
+                    }
+
                     gridView.generateMaze(gridSizeWidth.value, gridSizeHeight.value);
                 }
 
