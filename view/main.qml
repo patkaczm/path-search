@@ -114,8 +114,8 @@ Window {
         readonly property var startField: ({ color: "green", value: 1});
         readonly property var stopField: ({ color: "red", value: 2});
         readonly property var obstacleField: ({ color: "black", value: 3});
-        readonly property var visitedField: ({ color: "white", value: 4});
-        readonly property var pathField: ({ color: "blue", value: 5})
+        readonly property var visitedField: ({ color: "yellow", value: 4});
+        readonly property var pathField: ({ color: "blue", value: 5});
 
         property var selectColor: obstacleField.color
         property var gridCells: [];

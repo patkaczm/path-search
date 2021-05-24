@@ -23,10 +23,14 @@ public:
     MazeGenerator(std::unique_ptr<algorithm::MazeGenerationAlgorithm>&& algorithm, const std::size_t width, const std::size_t heigth);
     Maze generate();
 
+signals:
+    void cellGenerated(const grid::Cell& c);
+
 private slots:
     void onWallRemoved(const graph::Edge &e);
 
 private:
+    void updateGenerationHistory(const std::size_t i, const std::size_t j);
     std::unique_ptr<algorithm::MazeGenerationAlgorithm> mAlgorithm;
     std::size_t mWidth;
     std::size_t mHeight;

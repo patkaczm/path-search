@@ -67,22 +67,22 @@ void MazeGenerator::onWallRemoved(const graph::Edge &e)
     auto aj = e.a.id % tmpWidth;
     auto bi = e.b.id / tmpWidth;
     auto bj = e.b.id % tmpWidth;
-    mGenerationHistory.emplace_back(index((2*ai) + 1, (2*aj) + 1, mWidth, mHeight), grid::Cell::Type::EmptyField);
-    mGenerationHistory.emplace_back(index((2*bi) + 1, (2*bj) + 1, mWidth, mHeight), grid::Cell::Type::EmptyField);
-//    emit vertexVisited(index((2*ai) + 1, (2*aj) + 1, mWidth, mHeight));
-//    emit vertexVisited(index((2*bi) + 1, (2*bj) + 1, mWidth, mHeight));
+    updateGenerationHistory((2*ai) + 1, (2*aj) + 1);
+    updateGenerationHistory((2*bi) + 1, (2*bj) + 1);
     if (e.b.id == e.a.id + 1) {
-        mGenerationHistory.emplace_back(index(2*ai + 1, 2*(aj + 1), mWidth, mHeight), grid::Cell::Type::EmptyField);
-//        emit vertexVisited(index(2*ai + 1, 2*(aj + 1), mWidth, mHeight));
+        updateGenerationHistory(2*ai + 1, 2*(aj + 1));
     } else if (e.b.id == e.a.id + tmpWidth) {
-        mGenerationHistory.emplace_back(index(2*(ai + 1), 2*aj + 1, mWidth, mHeight), grid::Cell::Type::EmptyField);
-//        emit vertexVisited(index(2*(ai + 1), 2*aj + 1, mWidth, mHeight));
+        updateGenerationHistory(2*(ai + 1), 2*aj + 1);
     } else if (e.a.id == e.b.id + 1) {
-        mGenerationHistory.emplace_back(index(2*bi + 1, 2*(bj + 1), mWidth, mHeight), grid::Cell::Type::EmptyField);
-//        emit vertexVisited(index(2*bi + 1, 2*(bj + 1), mWidth, mHeight));
+        updateGenerationHistory(2*bi + 1, 2*(bj + 1));
     } else if (e.a.id == e.b.id + tmpWidth) {
-        mGenerationHistory.emplace_back(index(2*(bi + 1), 2*bj + 1, mWidth, mHeight), grid::Cell::Type::EmptyField);
-//        emit vertexVisited(index(2*(bi + 1), 2*bj + 1, mWidth, mHeight));
+        updateGenerationHistory(2*(bi + 1), 2*bj + 1);
     }
-    //also emit CellVisited or sth.
+}
+
+void MazeGenerator::updateGenerationHistory(const std::size_t i, const std::size_t j)
+{
+    grid::Cell c{index((2*i) + 1, (2*j) + 1, mWidth, mHeight), grid::Cell::Type::EmptyField};
+    mGenerationHistory.emplace_back(c);
+    emit cellGenerated(c);
 }

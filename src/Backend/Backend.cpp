@@ -10,6 +10,7 @@
 #include "Algorithm/MazeGeneration/IterativeBacktracker.hpp"
 
 #include "Backend/Grid.hpp"
+#include "Backend/Utils.hpp"
 #include "Backend/MazeGenerator.hpp"
 
 Backend::Backend(QQmlApplicationEngine& engine, QObject *parent)
@@ -22,7 +23,7 @@ void Backend::onStartPathFinding(QVariant gc, int width) {
     qDebug() << "Start pathFinding";
 
     auto grid = grid::Grid(gc, width);
-    auto graph = make_graph(grid.getRows());
+    auto graph = utils::makeGraph(grid);
     //@todo operator() is not pretty anymore
 
     auto* alg = algorithmList.getSelected();
@@ -50,23 +51,14 @@ void Backend::onAlgorithmSelected(QVariant v)
     algorithmList.selectAlgorithm(v.toString().toStdString());
 }
 
-namespace {
-
-int index(const std::size_t i,const std::size_t j, const std::size_t width, const std::size_t height) {
-    if (i < 0 || j < 0 || i > height -1 || j > width -1) {
-        return -1;
-    }
-    return i * width + j;
-}
-
-}
-
 void Backend::onGenerateMaze(int width, int height)
 {
     qDebug() << "Generate maze: " << width<< ":" <<height;
     MazeGenerator mg(std::make_unique<algorithm::IterativeBacktracker>(), width, height);
 
+    QObject::connect(&mg, &MazeGenerator::cellGenerated, this, &Backend::onMazeCellGenerated);
     auto mazeData = mg.generate();
+    QObject::disconnect(&mg, &MazeGenerator::cellGenerated, this, &Backend::onMazeCellGenerated);
 
     std::vector<int> ret(width * height, static_cast<int>(grid::Cell::Type::Obstacle));
     qDebug() << "ret size: " << ret.size();
@@ -79,6 +71,11 @@ void Backend::onGenerateMaze(int width, int height)
     QVariant v;
     v.setValue(ret);
     emit mazeGenerationDone(v);
+}
+
+void Backend::onMazeCellGenerated(const grid::Cell &c)
+{
+    emit mazeCellGenerated(c.id);
 }
 
 void Backend::loadAlgorithms()
@@ -109,44 +106,4 @@ QVariant Backend::toQVatiantVS(const std::vector<std::string> &val) const
     QVariant v;
     v.setValue(tmp);
     return v;
-}
-
-graph::Graph Backend::make_graph(const grid::Grid::Grid_t &plane) const
-{
-    graph::Graph graph;
-    //add vertexes
-    for (const auto& row : plane) {
-        for (const auto& cell : row) {
-            graph.add(graph::Vertex{cell.id});
-        }
-    }
-    //add edges
-    for (int i = 0 ; i < plane.size(); i++) {
-        for (int j = 0 ; j < plane[i].size(); j++) {
-            if (plane[i][j].type == grid::Cell::Type::Obstacle) {
-                continue;
-            }
-            if (i > 0) {
-                if (plane[i-1][j].type != grid::Cell::Type::Obstacle) {
-                    graph.add(graph::Edge{{plane[i][j].id}, {plane[i-1][j].id}});
-                }
-            }
-            if (j < plane[i].size() - 1) {
-                if (plane[i][j + 1].type != grid::Cell::Type::Obstacle) {
-                    graph.add(graph::Edge{{plane[i][j].id}, {plane[i][j + 1].id}});
-                }
-            }
-            if (i < plane.size() - 1) {
-                if (plane[i + 1][j].type != grid::Cell::Type::Obstacle) {
-                    graph.add(graph::Edge{{plane[i][j].id}, {plane[i + 1][j].id}});
-                }
-            }
-            if (j > 0 ) {
-                if (plane[i][j - 1].type != grid::Cell::Type::Obstacle) {
-                    graph.add(graph::Edge{{plane[i][j].id}, {plane[i][j - 1].id}});
-                }
-            }
-        }
-    }
-    return graph;
 }

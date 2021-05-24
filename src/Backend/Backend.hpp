@@ -22,6 +22,7 @@ public:
 signals:
     void pathFindingDone(QVariant path);
     void vertexVisited(QVariant v);
+    void mazeCellGenerated(QVariant v);
     void availableAlgorithmsSet(QVariant v);
     void mazeGenerationDone(QVariant v);
 
@@ -30,6 +31,7 @@ public slots:
     void onVertexVisited(const graph::Vertex& v);
     void onAlgorithmSelected(QVariant v);
     void onGenerateMaze(int width, int heigth);
+    void onMazeCellGenerated(const grid::Cell& c);
 
 public:
     void loadAlgorithms();
@@ -37,8 +39,6 @@ public:
 private:
     QVariant toQVatiantVS(const std::vector<std::string>& val) const;
     QVariant toQVariant(const algorithm::Algorithm::Path& path) const;
-
-    graph::Graph make_graph(const grid::Grid::Grid_t& plane) const;
 
     QQmlApplicationEngine& mEngine;
     algorithm::AlgorithmList algorithmList;
