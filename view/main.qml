@@ -138,8 +138,8 @@ Window {
 
             onTriggered: {
                 if (history.length > 0) {
-                    if (isNeitherStartNorEnd(history[0])) {
-                        parent.gridCells[history[0]].color = parent.visitedField.color;
+                    if (isNeitherStartNorEnd(history[0].id)) {
+                        parent.gridCells[history[0].id].color = history[0].color;
                     }
                     history.shift();
                 } else if(path.length > 0) {
@@ -171,7 +171,12 @@ Window {
         }
 
         function onVertexVisited(vertex) {
-            timer.history.push(vertex);
+            timer.history.push({id: vertex, color: gridView.visitedField.color});
+            timer.start()
+        }
+
+        function onMazeCellGenerated(cell) {
+            timer.history.push({id: cell, color: gridView.emptyFiled.color});
             timer.start()
         }
 

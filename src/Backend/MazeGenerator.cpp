@@ -7,6 +7,7 @@ namespace {
 
 std::uint32_t index(const std::size_t i,const std::size_t j, const std::size_t width, const std::size_t height) {
     if (i < 0 || j < 0 || i > height -1 || j > width -1) {
+        qDebug() << "i: "<< i << " j: " << j << " width: " << width << " height: " << height;
         throw std::logic_error("Wrong parameters in index()");
     }
     return i * width + j;
@@ -82,7 +83,7 @@ void MazeGenerator::onWallRemoved(const graph::Edge &e)
 
 void MazeGenerator::updateGenerationHistory(const std::size_t i, const std::size_t j)
 {
-    grid::Cell c{index((2*i) + 1, (2*j) + 1, mWidth, mHeight), grid::Cell::Type::EmptyField};
+    grid::Cell c{index(i, j, mWidth, mHeight), grid::Cell::Type::EmptyField};
     mGenerationHistory.emplace_back(c);
     emit cellGenerated(c);
 }

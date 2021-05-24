@@ -37,6 +37,9 @@ int main(int argc, char *argv[])
     QObject::connect(backend, SIGNAL(mazeGenerationDone(QVariant)),
                      view, SLOT(onMazeGenerationDone(QVariant)));
 
+    QObject::connect(backend, SIGNAL(mazeCellGenerated(QVariant)),
+                     view, SLOT(onMazeCellGenerated(QVariant)));
+
     backend->loadAlgorithms();
 
     return app.exec();
