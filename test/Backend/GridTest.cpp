@@ -92,8 +92,8 @@ TEST_F(GridTest, canCreateGridFromDimentions)
     Grid grid(height, width);
     EXPECT_FALSE(grid.getStart());
     EXPECT_FALSE(grid.getEnd());
-    EXPECT_EQ(height, grid.getGrid().size());
-    EXPECT_EQ(width, grid.getGrid()[0].size());
+    EXPECT_EQ(height, grid.getRows().size());
+    EXPECT_EQ(width, grid.getRows()[0].size());
 }
 
 

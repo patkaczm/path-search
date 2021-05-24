@@ -21,7 +21,7 @@ void Backend::onStartPathFinding(QVariant gc, int width) {
     qDebug() << "Start pathFinding";
 
     auto grid = grid::Grid(gc, width);
-    auto graph = make_graph(grid.getGrid());
+    auto graph = make_graph(grid.getRows());
     //@todo operator() is not pretty anymore
 
     auto* alg = algorithmList.getSelected();
@@ -69,15 +69,15 @@ void Backend::onGenerateMaze(int width, int heigth)
     qDebug() << "Tmp size: "<< tmpWidth << ":" << tmpHeigth;
 
     grid::Grid gridd(tmpHeigth, tmpWidth);
-    auto graph = make_graph(gridd.getGrid());
+    auto graph = make_graph(gridd.getRows());
 
 
     auto alg = algorithm::IterativeBacktracker();
-    QObject::connect(&alg, &algorithm::IterativeBacktracker::wallRemoved,
-                     this, &Backend::onWallRemoved);
+//    QObject::connect(&alg, &algorithm::IterativeBacktracker::wallRemoved,
+//                     this, &Backend::onWallRemoved);
     graph::Graph maze = alg.generateMaze(graph, *graph.getVertexes().begin());
-    QObject::disconnect(&alg, &algorithm::IterativeBacktracker::wallRemoved,
-                     this, &Backend::onWallRemoved);
+//    QObject::disconnect(&alg, &algorithm::IterativeBacktracker::wallRemoved,
+//                     this, &Backend::onWallRemoved);
 
 
     std::vector<int> ret(width * heigth, static_cast<int>(grid::Cell::Type::Obstacle));

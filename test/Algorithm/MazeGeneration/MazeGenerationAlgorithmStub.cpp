@@ -9,4 +9,9 @@ graph::Graph algorithm::MazeGenerationAlgorithmStub::generateMaze(const graph::G
     return algorithm::mock::MazeGenerationAlgorithmMock::instance().generateMaze(g, start);
 }
 
+void MazeGenerationAlgorithmStub::emitWallRemoved(const graph::Edge &e)
+{
+    emit wallRemoved(e);
+}
+
 }

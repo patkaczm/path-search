@@ -34,5 +34,13 @@ TEST(CellTest, throwOnUnknownType)
     EXPECT_THROW(Cell(1, 4), std::out_of_range);
 }
 
+TEST(CellTest, canUseEqualOperator)
+{
+    Cell a (1, 2);
+    Cell b (2, 3);
+    EXPECT_TRUE(a == a);
+    EXPECT_FALSE(a == b);
+}
+
 }
 }

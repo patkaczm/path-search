@@ -34,7 +34,7 @@ graph::Graph algorithm::IterativeBacktracker::generateMaze(const graph::Graph &g
             //remove wall
             auto edge = graph::Edge{current, randomNeighbour};
             maze.add(edge);
-            emit wallRemoved(current, randomNeighbour, edge);
+            emit wallRemoved(edge);
             visited.emplace(randomNeighbour);
             s.push(randomNeighbour);
         }

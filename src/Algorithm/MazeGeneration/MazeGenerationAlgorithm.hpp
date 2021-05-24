@@ -12,7 +12,7 @@ public:
     virtual ~MazeGenerationAlgorithm() = default;
     virtual graph::Graph generateMaze(const graph::Graph& g, const graph::Vertex& start) = 0;
 signals:
-    virtual void wallRemoved(const graph::Vertex& a, const graph::Vertex& b, const graph::Edge& e) = 0;
+    virtual void wallRemoved(const graph::Edge& e) = 0;
 };
 
 }

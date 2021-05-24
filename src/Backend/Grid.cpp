@@ -33,10 +33,16 @@ grid::Grid::Grid(QVariant gc, std::size_t width)
     }
 }
 
-const Grid::Grid_t &Grid::getGrid() const
+Grid::Grid_t &Grid::getRows()
 {
     return mGrid;
 }
+
+const Grid::Grid_t &Grid::getRows() const
+{
+    return mGrid;
+}
+
 
 std::optional<Cell> Grid::getStart() const
 {

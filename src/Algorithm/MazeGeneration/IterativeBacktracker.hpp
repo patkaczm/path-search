@@ -14,7 +14,7 @@ public:
     graph::Graph generateMaze(const graph::Graph& g, const graph::Vertex& start) override;
 
 signals:
-    void wallRemoved(const graph::Vertex& a, const graph::Vertex& b, const graph::Edge& e);
+    void wallRemoved(const graph::Edge& e);
 };
 
 }

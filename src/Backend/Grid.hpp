@@ -16,7 +16,8 @@ public:
     Grid(std::size_t heigth, std::size_t width);
     Grid(QVariant gc, std::size_t width);
 
-    const Grid_t& getGrid() const;
+    Grid_t& getRows();
+    const Grid_t& getRows() const;
     std::optional<Cell> getStart() const;
     std::optional<Cell> getEnd() const;
 

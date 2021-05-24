@@ -8,6 +8,15 @@ Cell::Cell(std::uint32_t id, std::uint8_t type) : id(id), type(toType(type))
 {
 }
 
+Cell::Cell(uint32_t id, Cell::Type type) : id (id), type(type)
+{
+}
+
+bool Cell::operator==(const Cell &rhs) const
+{
+    return id == rhs.id && type == rhs.type;
+}
+
 Cell::Type Cell::toType(std::uint8_t type) const
 {
     static const std::map<std::uint8_t, Cell::Type> converter {{0, Cell::Type::EmptyField}, {1, Cell::Type::Start},
