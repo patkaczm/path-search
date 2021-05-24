@@ -10,6 +10,7 @@
 #include "Algorithm/MazeGeneration/IterativeBacktracker.hpp"
 
 #include "Backend/Grid.hpp"
+#include "Backend/MazeGenerator.hpp"
 
 Backend::Backend(QQmlApplicationEngine& engine, QObject *parent)
     : QObject(parent)
@@ -60,70 +61,24 @@ int index(const std::size_t i,const std::size_t j, const std::size_t width, cons
 
 }
 
-void Backend::onGenerateMaze(int width, int heigth)
+void Backend::onGenerateMaze(int width, int height)
 {
-    removedWallHistory.clear();
-    qDebug() << "Generate maze: " << width<< ":" <<heigth;
-    std::size_t tmpHeigth = (heigth - 1) / 2;
-    std::size_t tmpWidth = (width - 1) / 2;
-    qDebug() << "Tmp size: "<< tmpWidth << ":" << tmpHeigth;
+    qDebug() << "Generate maze: " << width<< ":" <<height;
+    MazeGenerator mg(std::make_unique<algorithm::IterativeBacktracker>(), width, height);
 
-    grid::Grid gridd(tmpHeigth, tmpWidth);
-    auto graph = make_graph(gridd.getRows());
+    auto mazeData = mg.generate();
 
-
-    auto alg = algorithm::IterativeBacktracker();
-//    QObject::connect(&alg, &algorithm::IterativeBacktracker::wallRemoved,
-//                     this, &Backend::onWallRemoved);
-    graph::Graph maze = alg.generateMaze(graph, *graph.getVertexes().begin());
-//    QObject::disconnect(&alg, &algorithm::IterativeBacktracker::wallRemoved,
-//                     this, &Backend::onWallRemoved);
-
-
-    std::vector<int> ret(width * heigth, static_cast<int>(grid::Cell::Type::Obstacle));
+    std::vector<int> ret(width * height, static_cast<int>(grid::Cell::Type::Obstacle));
     qDebug() << "ret size: " << ret.size();
-
-    for (const auto& v : maze.getVertexes()) {
-        auto i = v.id / tmpWidth;
-        auto j = v.id % tmpWidth;
-        ret.at(index((2*i) + 1, (2*j) + 1, width, heigth)) = static_cast<int>(grid::Cell::Type::EmptyField);
-        for (const auto& neighbour : maze.getNeighbours(v)) {
-            if (neighbour.id == v.id + 1) { // right
-                ret.at(index(2*i + 1, 2*(j + 1), width, heigth)) = static_cast<int>(grid::Cell::Type::EmptyField);
-            } else if (neighbour.id == v.id + tmpWidth) { // bottom
-                ret.at(index(2*(i + 1), 2*j + 1, width, heigth)) = static_cast<int>(grid::Cell::Type::EmptyField);
-            }
+    for (const auto& row : mazeData.maze.getRows()) {
+        for (const auto& cell : row) {
+            ret.at(cell.id) = static_cast<int>(cell.type);
         }
     }
 
-    // (re)create history
-    for (const auto& [a, b] : removedWallHistory)
-    {
-        auto ai = a.id / tmpWidth;
-        auto aj = a.id % tmpWidth;
-        auto bi = b.id / tmpWidth;
-        auto bj = b.id % tmpWidth;
-        emit vertexVisited(index((2*ai) + 1, (2*aj) + 1, width, heigth));
-        emit vertexVisited(index((2*bi) + 1, (2*bj) + 1, width, heigth));
-        if (b.id == a.id + 1) {
-            emit vertexVisited(index(2*ai + 1, 2*(aj + 1), width, heigth));
-        } else if (b.id == a.id + tmpWidth) {
-            emit vertexVisited(index(2*(ai + 1), 2*aj + 1, width, heigth));
-        } else if (a.id == b.id + 1) {
-            emit vertexVisited(index(2*bi + 1, 2*(bj + 1), width, heigth));
-        } else if (a.id == b.id + tmpWidth) {
-            emit vertexVisited(index(2*(bi + 1), 2*bj + 1, width, heigth));
-        }
-    }
-
-//    QVariant v;
-//    v.setValue(ret);
-//    emit mazeGenerationDone(v);
-}
-
-void Backend::onWallRemoved(const graph::Vertex &a, const graph::Vertex &b, const graph::Edge &e)
-{
-    removedWallHistory.emplace_back(a, b);
+    QVariant v;
+    v.setValue(ret);
+    emit mazeGenerationDone(v);
 }
 
 void Backend::loadAlgorithms()

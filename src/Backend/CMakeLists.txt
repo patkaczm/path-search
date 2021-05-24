@@ -23,4 +23,5 @@ target_link_libraries(BackendLib PRIVATE ${QtLib}
                                          CellLib
                                          GridLib
                                          AlgorithmListLib
+                                         MazeGeneratorLib
                                          IterativeBacktrackerLib)

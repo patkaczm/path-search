@@ -30,7 +30,6 @@ public slots:
     void onVertexVisited(const graph::Vertex& v);
     void onAlgorithmSelected(QVariant v);
     void onGenerateMaze(int width, int heigth);
-    void onWallRemoved(const graph::Vertex& a, const graph::Vertex& b, const graph::Edge& e);
 
 public:
     void loadAlgorithms();
@@ -40,8 +39,6 @@ private:
     QVariant toQVariant(const algorithm::Algorithm::Path& path) const;
 
     graph::Graph make_graph(const grid::Grid::Grid_t& plane) const;
-
-    std::vector<std::pair<graph::Vertex, graph::Vertex>> removedWallHistory{};
 
     QQmlApplicationEngine& mEngine;
     algorithm::AlgorithmList algorithmList;
