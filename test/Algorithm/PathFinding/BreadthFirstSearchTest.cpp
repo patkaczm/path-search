@@ -35,7 +35,7 @@ TEST_P(BreadthFirstSearchTest, pathSearchingTest)
         g.add(e);
     }
     BreadthFirstSearch bfs;
-    EXPECT_THAT(bfs(g, params.searchedPath.first, params.searchedPath.second),
+    EXPECT_THAT(bfs.findPath(g, params.searchedPath.first, params.searchedPath.second),
                 ::testing::ContainerEq(params.path));
 }
 

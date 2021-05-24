@@ -6,7 +6,7 @@
 namespace algorithm
 {
 
-Algorithm::Path BreadthFirstSearch::operator()(const graph::Graph& graph, const graph::Vertex &start, const graph::Vertex &end) const
+Algorithm::Path BreadthFirstSearch::findPath(const graph::Graph& graph, const graph::Vertex &start, const graph::Vertex &end) const
 {
     auto prev = solve(graph, start);
     return reconstructPath(start, end, prev);

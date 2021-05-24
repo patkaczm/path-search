@@ -10,19 +10,14 @@ namespace test {
 class DummyAlgorithm : public Algorithm
 {
 public:
-    Path operator()(const graph::Graph& , const graph::Vertex& , const graph::Vertex& ) const override {
+    Path findPath(const graph::Graph& , const graph::Vertex& , const graph::Vertex& ) const override {
         return {};
     }
     void vertexVisited(const graph::Vertex&) const override {}
 };
 
-class DummyAlgorithm2 : public Algorithm
+class DummyAlgorithm2 : public DummyAlgorithm
 {
-public:
-    Path operator()(const graph::Graph& , const graph::Vertex& , const graph::Vertex& ) const override {
-        return {};
-    }
-    void vertexVisited(const graph::Vertex&) const override {}
 };
 
 class AlgorithmListTest : public ::testing::Test {

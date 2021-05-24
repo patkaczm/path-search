@@ -8,7 +8,7 @@
 namespace algorithm
 {
 
-Algorithm::Path Dijkstra::operator()(const graph::Graph& graph, const graph::Vertex &start, const graph::Vertex &end) const
+Algorithm::Path Dijkstra::findPath(const graph::Graph& graph, const graph::Vertex &start, const graph::Vertex &end) const
 {
     auto prev = solve(graph, start);
     return reconstructPath(start, end, prev);

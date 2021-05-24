@@ -14,7 +14,7 @@ class Dijkstra : public QObject, public Algorithm
     Q_OBJECT
     Q_INTERFACES(algorithm::Algorithm)
 public:
-    Path operator()(const graph::Graph& graph, const graph::Vertex& start, const graph::Vertex& end) const override;
+    Path findPath(const graph::Graph& graph, const graph::Vertex& start, const graph::Vertex& end) const override;
 
 signals:
     void vertexVisited(const graph::Vertex&) const;

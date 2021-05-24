@@ -24,14 +24,13 @@ void Backend::onStartPathFinding(QVariant gc, int width) {
 
     auto grid = grid::Grid(gc, width);
     auto graph = utils::makeGraph(grid);
-    //@todo operator() is not pretty anymore
 
     auto* alg = algorithmList.getSelected();
     if (alg) {
         QObject::connect(dynamic_cast<const QObject*>(alg), SIGNAL(vertexVisited(const graph::Vertex&)),
                          this, SLOT(onVertexVisited(const graph::Vertex&)));
 
-        auto path = alg->operator()(graph, graph::Vertex{grid.getStart()->id}, graph::Vertex{grid.getEnd()->id});
+        auto path = alg->findPath(graph, graph::Vertex{grid.getStart()->id}, graph::Vertex{grid.getEnd()->id});
 
         QObject::disconnect(dynamic_cast<const QObject*>(alg), SIGNAL(vertexVisited(const graph::Vertex&)),
                             this, SLOT(onVertexVisited(const graph::Vertex&)));

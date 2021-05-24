@@ -7,7 +7,7 @@ namespace {
 
 }
 
-Algorithm::Path DepthFirstSearch::operator()(const graph::Graph& graph, const graph::Vertex &start, const graph::Vertex &end) const
+Algorithm::Path DepthFirstSearch::findPath(const graph::Graph& graph, const graph::Vertex &start, const graph::Vertex &end) const
 {
     auto vertexes = graph.getVertexes();
     std::map<graph::Vertex, bool> visited;
