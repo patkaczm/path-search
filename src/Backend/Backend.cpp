@@ -69,7 +69,7 @@ void Backend::onGenerateMaze(int width, int height)
 
     QVariant v;
     v.setValue(ret);
-//    emit mazeGenerationDone(v);
+    emit mazeGenerationDone(v);
 }
 
 void Backend::onMazeCellGenerated(const grid::Cell &c)

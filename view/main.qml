@@ -6,11 +6,11 @@ import QtQml 2.15
 
 Window {
     width: 640
-    minimumWidth: width
-    maximumWidth: width
+//    minimumWidth: width
+//    maximumWidth: width
     height: 480
-    minimumHeight: height
-    maximumHeight: height
+//    minimumHeight: height
+//    maximumHeight: height
     visible: true
     title: qsTr("Path Search")
     objectName: "mainWindow"
@@ -106,8 +106,8 @@ Window {
     Item {
         id: gridView
         objectName: "gridView"
-        width: parent.width
-        height: parent.height
+        anchors.fill: parent
+        anchors.centerIn: parent
         visible: false
 
         readonly property var emptyFiled: ({ color: "white", value: 0});
@@ -213,35 +213,38 @@ Window {
             gridLayout.columns = gridSizeWidth.value
             gridLayout.rows = gridSizeHeight.value
 
-            for (var i = 0; i < gridSizeWidth.value * gridSizeHeight.value; i++) {
-
-                var object = component.createObject(gridLayout,
-                                                    {"cellId": i,
-                                                        "width": gridLayout.width / gridLayout.columns,
-                                                        "height": gridLayout.height / gridLayout.columns,
-                                                        "color": "white",
-                                                        "border.color": "black",
-                                                        "border.width": 1})
-                object.clicked.connect(cellClicked)
-                gridCells.push(object)
+            for (var i = 0; i <gridSizeHeight.value; i++) {
+                for(var j = 0; j <  gridSizeWidth.value; j++) {
+                    var object = component.createObject(gridLayout,
+                                                        {"cellId": i * gridSizeWidth.value + j,
+                                                         "Layout.fillHeight": true,
+                                                         "Layout.fillWidth": true,
+                                                         "Layout.row": i,
+                                                         "Layout.column": j,
+                                                         "color": "white",
+                                                         "border.color": "grey",
+                                                         "border.width": 1})
+                    object.clicked.connect(cellClicked)
+                    gridCells.push(object)
+                }
             }
 
         }
 
         function onMazeGenerationDone(maze) {
-            for (var i = 0 ; i < maze.length; i++) {
-//                console.log(i, ":", maze[i]);
-                if (maze[i] === obstacleField.value) {
-                    gridCells[i].color = obstacleField.color;
-                } else if (maze[i] === emptyFiled.value) {
-                    gridCells[i].color = emptyFiled.color;
-                }
-            }
+//            for (var i = 0 ; i < maze.length; i++) {
+//                if (maze[i] === obstacleField.value) {
+//                    gridCells[i].color = obstacleField.color;
+//                } else if (maze[i] === emptyFiled.value) {
+//                    gridCells[i].color = emptyFiled.color;
+//                }
+//            }
         }
 
         //should be deleted on visibility changed to invisible
         onVisibleChanged: {
             gridView.createGrid();
+            console.log(gridLayout.width, gridLayout.height)
         }
 
         RowLayout {
@@ -250,14 +253,13 @@ Window {
 
             GridLayout {
                 id: gridLayout
-                height: parent.height
-                width: height
                 columnSpacing: -2
                 rowSpacing: -1
                 Layout.leftMargin: 5
                 Layout.bottomMargin: 5
                 Layout.topMargin: 5
                 Layout.fillWidth: true
+                width: 400
                 Layout.fillHeight: true
             }
             ColumnLayout {
@@ -353,6 +355,7 @@ Window {
                 }
             }
         }
+
     }
 
 }
