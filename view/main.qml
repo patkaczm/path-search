@@ -57,7 +57,7 @@ Window {
                         Layout.topMargin: 20
                         objectName: "gridSizeWidth"
                         editable: true
-                        value: 51
+                        value: 3
                         Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                         to: 51
                         from: 1
@@ -81,7 +81,7 @@ Window {
                         Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                         objectName: "gridSize"
                         editable: true
-                        value: 51
+                        value: 3
                         from: 1
                         to: 51
                         Layout.topMargin: 20
@@ -218,13 +218,11 @@ Window {
                                                          "Layout.row": i,
                                                          "Layout.column": j,
                                                          "color": "white",
-                                                         "border.color": "grey",
-                                                         "border.width": 1})
+                                                        })
                     object.clicked.connect(cellClicked)
                     gridCells.push(object)
                 }
             }
-
         }
 
         function onMazeGenerationDone(maze) {
@@ -356,6 +354,16 @@ Window {
                     value: 100
                     onMoved: {
                         timer.interval = value
+                    }
+                }
+                Rectangle {
+                    width: 100
+                    height: 50
+                    color: "red"
+                    CustomBorder {
+                        commonBorder: true
+                        commonBorderWidth: 1
+                        borderColor: "black"
                     }
                 }
             }
