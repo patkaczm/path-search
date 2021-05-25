@@ -69,7 +69,6 @@ void MazeGenerator::onWallRemoved(const graph::Edge &e)
     auto bi = e.b.id / tmpWidth;
     auto bj = e.b.id % tmpWidth;
     updateGenerationHistory((2*ai) + 1, (2*aj) + 1);
-    updateGenerationHistory((2*bi) + 1, (2*bj) + 1);
     if (e.b.id == e.a.id + 1) {
         updateGenerationHistory(2*ai + 1, 2*(aj + 1));
     } else if (e.b.id == e.a.id + tmpWidth) {
@@ -79,6 +78,7 @@ void MazeGenerator::onWallRemoved(const graph::Edge &e)
     } else if (e.a.id == e.b.id + tmpWidth) {
         updateGenerationHistory(2*(bi + 1), 2*bj + 1);
     }
+    updateGenerationHistory((2*bi) + 1, (2*bj) + 1);
 }
 
 void MazeGenerator::updateGenerationHistory(const std::size_t i, const std::size_t j)

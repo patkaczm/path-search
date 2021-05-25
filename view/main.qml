@@ -125,7 +125,7 @@ Window {
 
         Timer {
             id: timer
-            readonly property int baseInterval: 1
+            readonly property int baseInterval: 100
             interval: baseInterval
             running: false
             repeat: true
@@ -143,9 +143,6 @@ Window {
                     }
                     history.shift();
                 } else if(path.length > 0) {
-                    if (interval > 5) {
-                        interval = baseInterval / 5;
-                    }
                     if (isNeitherStartNorEnd(path[0])) {
                         parent.gridCells[path[0]].color = parent.pathField.color;
                     }
@@ -157,7 +154,6 @@ Window {
             }
             function clearTimer() {
                 stop()
-                interval = baseInterval
                 path = []
                 history = []
             }
@@ -351,6 +347,15 @@ Window {
                         onClicked: {
                             parent.btnData[index]["action"]()
                         }
+                    }
+                }
+                Slider {
+                    Layout.fillWidth: true
+                    from: 100
+                    to: 1
+                    value: 100
+                    onMoved: {
+                        timer.interval = value
                     }
                 }
             }
