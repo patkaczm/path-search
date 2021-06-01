@@ -7,8 +7,8 @@
 #include "Graph/Graph.hpp"
 #include "Algorithm/PathFinding/Algorithm.hpp"
 #include "Algorithm/PathFinding/AlgorithmList.hpp"
-#include "Backend/Cell.hpp"
-#include "Backend/Grid.hpp"
+#include "Grid/Cell.hpp"
+#include "Grid/Grid.hpp"
 
 class Cell;
 

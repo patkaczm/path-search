@@ -1,4 +1,4 @@
-#include "Backend/Grid.hpp"
+#include "Grid/Grid.hpp"
 
 #include <QDebug>
 

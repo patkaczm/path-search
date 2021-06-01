@@ -8,8 +8,8 @@
 
 #include "Algorithm/MazeGeneration/MazeGenerationAlgorithm.hpp"
 
-#include "Backend/Grid.hpp"
-#include "Backend/Cell.hpp"
+#include "Grid/Grid.hpp"
+#include "Grid/Cell.hpp"
 
 class MazeGenerator : public QObject
 {

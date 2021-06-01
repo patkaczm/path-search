@@ -6,7 +6,7 @@
 #include <optional>
 
 #include "Graph/Graph.hpp"
-#include "Backend/Cell.hpp"
+#include "Grid/Cell.hpp"
 
 namespace grid {
 

@@ -9,7 +9,6 @@
 #include "Algorithm/PathFinding/Dijkstra.hpp"
 #include "Algorithm/MazeGeneration/IterativeBacktracker.hpp"
 
-#include "Backend/Grid.hpp"
 #include "Backend/Utils.hpp"
 #include "Backend/MazeGenerator.hpp"
 

@@ -35,6 +35,7 @@ set(PROJECT_SOURCES
 #endif()
 
 add_subdirectory(Graph)
+add_subdirectory(Grid)
 add_subdirectory(Algorithm)
 add_subdirectory(Backend)
 

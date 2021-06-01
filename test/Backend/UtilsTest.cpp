@@ -5,7 +5,7 @@
 
 #include "Backend/Utils.hpp"
 #include "Graph/Graph.hpp"
-#include "Backend/Grid.hpp"
+#include "Grid/Grid.hpp"
 
 namespace utils::test
 {
