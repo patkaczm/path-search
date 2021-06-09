@@ -93,6 +93,23 @@ TEST_F(GraphTest, canGetNumberOfVertexes)
     EXPECT_EQ(4, g.getVertexes().size());
 }
 
+TEST_F(GraphTest, canRemoveEdge)
+{
+    Vertex v1{1};
+    Vertex v2{2};
+    g.add(v1);
+    g.add(v2);
+    Edge e {v1, v2};
+    EXPECT_TRUE(g.add(e));
+    EXPECT_TRUE(g.remove(e));
+}
 
+TEST_F(GraphTest, cannotRemoveEdgeFromInexistentVertexes)
+{
+    Vertex v1{1};
+    Vertex v2{2};
+    Edge e {v1, v2};
+    EXPECT_THROW(g.remove(e), VertexDoesNotExist);
+}
 }
 }

@@ -31,6 +31,24 @@ bool Graph::add(const Edge &e)
     return true;
 }
 
+bool Graph::remove(const Edge &e)
+{
+    if(!adjList.contains(e.a) || !adjList.contains(e.b))
+    {
+        throw VertexDoesNotExist{};
+    }
+    if ((adjList.at(e.a).contains(e.b) && !adjList.at(e.b).contains(e.a)) ||
+        (adjList.at(e.b).contains(e.a) && !adjList.at(e.a).contains(e.b))) {
+        throw(std::logic_error{"This is bidirectional graph. This cannot happen"});
+    }
+    if (!adjList.at(e.a).contains(e.b) && !adjList.at(e.b).contains(e.a)) {
+        return false;
+    }
+    adjList.at(e.a).erase(e.b);
+    adjList.at(e.b).erase(e.a);
+    return true;
+}
+
 Graph::Neighbours Graph::getNeighbours(const Vertex &v) const
 {
     if (!adjList.contains(v)) {

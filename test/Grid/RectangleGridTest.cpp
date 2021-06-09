@@ -36,11 +36,42 @@ TEST_F(RectangleGridTest, returnCellWhenAtParamsAreInRange)
 
 TEST_F(RectangleGridTest, getNeighboursReturnRightNeighbours)
 {
-    std::set<grid::Cell> r1 {Cell(1, Cell::Type::EmptyField), Cell(3, Cell::Type::EmptyField)};
-    EXPECT_THAT(mGrid.neighbours(Cell(0, Cell::Type::EmptyField)), ::testing::ContainerEq(r1));
-    std::set<grid::Cell> r2 {Cell(0, Cell::Type::EmptyField), Cell(2, Cell::Type::EmptyField), Cell(4, Cell::Type::EmptyField)};
-    EXPECT_THAT(mGrid.neighbours(Cell(1, Cell::Type::EmptyField)), ::testing::ContainerEq(r2));
+    std::set<grid::Cell> r1 {Cell(1), Cell(3)};
+    EXPECT_THAT(mGrid.neighbours(Cell(0)), ::testing::ContainerEq(r1));
+    std::set<grid::Cell> r2 {Cell(0), Cell(2), Cell(4)};
+    EXPECT_THAT(mGrid.neighbours(Cell(1)), ::testing::ContainerEq(r2));
+}
 
+TEST_F(RectangleGridTest, addWall) {
+    mGrid.addWall(Cell(0), Cell(1));
+
+    std::set<grid::Cell> neighbours {Cell(3)};
+    EXPECT_THAT(mGrid.neighbours(Cell(0)), ::testing::ContainerEq(neighbours));
+}
+
+TEST_F(RectangleGridTest, cannotAddWallBetweenCellsWhichAreNotAdjacend) {
+    mGrid.addWall(Cell(0), Cell(2));
+
+    std::set<grid::Cell> neighbours {Cell(3), Cell(1)};
+    EXPECT_THAT(mGrid.neighbours(Cell(0)), ::testing::ContainerEq(neighbours));
+}
+
+TEST_F(RectangleGridTest, removeWall) {
+    mGrid.addWall(Cell(0), Cell(1));
+
+    std::set<grid::Cell> neighbours {Cell(3)};
+    EXPECT_THAT(mGrid.neighbours(Cell(0)), ::testing::ContainerEq(neighbours));
+
+    mGrid.removeWall(Cell(0), Cell(1));
+    neighbours.emplace(Cell(1));
+    EXPECT_THAT(mGrid.neighbours(Cell(0)), ::testing::ContainerEq(neighbours));
+}
+
+TEST_F(RectangleGridTest, cannotRemoveWallBetweenCellsWhichAreNotAdjacend) {
+    mGrid.removeWall(Cell(0), Cell(2));
+
+    std::set<grid::Cell> neighbours {Cell(3), Cell(1)};
+    EXPECT_THAT(mGrid.neighbours(Cell(0)), ::testing::ContainerEq(neighbours));
 }
 
 }

@@ -4,6 +4,10 @@
 
 namespace grid {
 
+Cell::Cell(uint32_t id) : id(id), type(Type::EmptyField)
+{
+}
+
 Cell::Cell(std::uint32_t id, std::uint8_t type) : id(id), type(toType(type))
 {
 }

@@ -14,9 +14,8 @@ RectangleGrid::RectangleGrid(std::uint32_t height, std::uint32_t width)
     const std::set<Direction> directions{Direction::Down, Direction::Up, Direction::Right, Direction::Left};
     for (std::uint32_t j = 0 ; j < mHeight; j++) {
         for (std::uint32_t i = 0 ; i < mWidth; i++) {
-            std::cout << j << " " << i <<std::endl;
             for (const auto& direction : directions) {
-                if (shouldCreateConnectionWithCell(direction, j, i)) {
+                if (canCreateConnectionWithCell(direction, j, i)) {
                     createConnectionWithCell(direction, j, i);
                 }
             }
@@ -24,7 +23,7 @@ RectangleGrid::RectangleGrid(std::uint32_t height, std::uint32_t width)
     }
 }
 
-bool RectangleGrid::shouldCreateConnectionWithCell(const RectangleGrid::Direction &d, std::uint32_t j, std::uint32_t i) const
+bool RectangleGrid::canCreateConnectionWithCell(const RectangleGrid::Direction &d, std::uint32_t j, std::uint32_t i) const
 {
     switch (d) {
     case Direction::Right: {
@@ -65,6 +64,15 @@ void RectangleGrid::createConnectionWithCell(const RectangleGrid::Direction &d, 
     }
 }
 
+bool RectangleGrid::canCreateConnectionBetweenCells(const Cell &c1, const Cell &c2) const
+{
+        return (c2.id == c1.id + 1 || // right
+                c2.id == c1.id - 1 || // left
+                c2.id == c1.id - mWidth || // up
+                c2.id == c1.id + mWidth // down
+            );
+}
+
 Cell RectangleGrid::at(std::size_t j, std::size_t i) const
 {
     auto cell = getCell(j * mWidth + i);
@@ -84,10 +92,21 @@ std::set<Cell> RectangleGrid::neighbours(const Cell &c) const
     auto neighbours = mGraph.getNeighbours(graph::Vertex{c.id});
     std::set<Cell> ret;
     for(const auto& v : neighbours) {
-        //@todo EmptyField seems to be superflavous here.
-        ret.emplace(Cell(v.id, Cell::Type::EmptyField));
+        ret.emplace(Cell(v.id));
     }
     return ret;
+}
+
+void RectangleGrid::addWall(const Cell &c1, const Cell &c2)
+{
+    mGraph.remove(graph::Edge{graph::Vertex{c1.id}, graph::Vertex{c2.id}});
+}
+
+void RectangleGrid::removeWall(const Cell &c1, const Cell &c2)
+{
+    if (canCreateConnectionBetweenCells(c1, c2)) {
+        mGraph.add(graph::Edge{graph::Vertex{c1.id}, graph::Vertex{c2.id}});
+    }
 }
 
 std::vector<int> RectangleGrid::flat() const
@@ -100,8 +119,7 @@ std::optional<Cell> RectangleGrid::getCell(std::uint32_t id) const
     auto vertexes = mGraph.getVertexes();
     auto found = std::find(vertexes.begin(), vertexes.end(), graph::Vertex{id});
     if (found != vertexes.end()) {
-        //@todo EmptyField seems to be superflavous here.
-        return Cell(id, Cell::Type::EmptyField);
+        return Cell(id);
     }
     return std::nullopt;
 }

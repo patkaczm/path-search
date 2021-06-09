@@ -12,6 +12,7 @@ struct Cell {
         Obstacle,
     };
 
+    explicit Cell(std::uint32_t id);
     Cell(std::uint32_t id, std::uint8_t type);
     Cell(std::uint32_t id, Type type);
 
