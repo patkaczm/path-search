@@ -34,7 +34,8 @@ private:
     };
     bool canCreateConnectionWithCell(const Direction& d, std::uint32_t j, std::uint32_t i) const;
     void createConnectionWithCell(const Direction&d, std::uint32_t j, std::uint32_t  i);
-    bool canCreateConnectionBetweenCells(const Cell& c1, const Cell& c2) const;
+    bool isAdjacent(const Cell& c1, const Cell& c2) const;
+    std::uint32_t  getCellWalls(const Cell& c) const;
     std::optional<Cell> getCell(std::uint32_t id) const;
 
     graph::Graph mGraph;

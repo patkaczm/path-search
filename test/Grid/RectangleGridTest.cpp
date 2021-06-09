@@ -74,4 +74,22 @@ TEST_F(RectangleGridTest, cannotRemoveWallBetweenCellsWhichAreNotAdjacend) {
     EXPECT_THAT(mGrid.neighbours(Cell(0)), ::testing::ContainerEq(neighbours));
 }
 
+TEST_F(RectangleGridTest, getFlattenRepresentationOfGridWithWalls)
+{
+    std::vector<int> flatten {
+        0b11,
+        0b111,
+        0b110,
+        0b1001,
+        0b1101,
+        0b1100
+    };
+    EXPECT_THAT(mGrid.flat(), ::testing::ContainerEq(flatten));
+
+    mGrid.addWall(Cell(0), Cell(1));
+    flatten.at(0) = 0b10;
+    flatten.at(1) = 0b011;
+    EXPECT_THAT(mGrid.flat(), ::testing::ContainerEq(flatten));
+}
+
 }

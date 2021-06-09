@@ -10,7 +10,6 @@ RectangleGrid::RectangleGrid(std::uint32_t height, std::uint32_t width)
             mGraph.add(graph::Vertex{j * mWidth + i});
         }
     }
-    // This one does not work.
     const std::set<Direction> directions{Direction::Down, Direction::Up, Direction::Right, Direction::Left};
     for (std::uint32_t j = 0 ; j < mHeight; j++) {
         for (std::uint32_t i = 0 ; i < mWidth; i++) {
@@ -64,13 +63,32 @@ void RectangleGrid::createConnectionWithCell(const RectangleGrid::Direction &d, 
     }
 }
 
-bool RectangleGrid::canCreateConnectionBetweenCells(const Cell &c1, const Cell &c2) const
+bool RectangleGrid::isAdjacent(const Cell &c1, const Cell &c2) const
 {
         return (c2.id == c1.id + 1 || // right
                 c2.id == c1.id - 1 || // left
                 c2.id == c1.id - mWidth || // up
                 c2.id == c1.id + mWidth // down
             );
+}
+
+std::uint32_t RectangleGrid::getCellWalls(const Cell &c) const
+{
+    std::uint32_t r{};
+    for(const auto& neighbour : neighbours(c)) {
+        if (neighbour.id == c.id + 1) { // right
+            r |= 0b1;
+        }
+        else if (neighbour.id == c.id + mWidth) { // down
+            r |= 0b10;
+        } else if (neighbour.id == c.id - 1) {// left
+            r |= 0b100;
+        } else if (neighbour.id == c.id - mWidth) { // up
+            r |= 0b1000;
+        }
+    }
+    return r;
+    // bit 0 means that there is no passage aka there is wall
 }
 
 Cell RectangleGrid::at(std::size_t j, std::size_t i) const
@@ -99,20 +117,31 @@ std::set<Cell> RectangleGrid::neighbours(const Cell &c) const
 
 void RectangleGrid::addWall(const Cell &c1, const Cell &c2)
 {
-    mGraph.remove(graph::Edge{graph::Vertex{c1.id}, graph::Vertex{c2.id}});
+    if(isAdjacent(c1, c2)) {
+        mGraph.remove(graph::Edge{graph::Vertex{c1.id}, graph::Vertex{c2.id}});
+    }
 }
 
 void RectangleGrid::removeWall(const Cell &c1, const Cell &c2)
 {
-    if (canCreateConnectionBetweenCells(c1, c2)) {
+    if (isAdjacent(c1, c2)) {
         mGraph.add(graph::Edge{graph::Vertex{c1.id}, graph::Vertex{c2.id}});
     }
 }
 
 std::vector<int> RectangleGrid::flat() const
 {
-    return {};
+    std::vector<int> r(mHeight * mWidth, 0);
+
+    for(std::uint32_t j = 0; j < mHeight; j++) {
+        for(std::uint32_t i = 0; i < mWidth; i++) {
+            auto id = j * mWidth + i;
+            r.at(id) = getCellWalls(Cell(id));
+        }
+    }
+    return r;
 }
+
 
 std::optional<Cell> RectangleGrid::getCell(std::uint32_t id) const
 {
