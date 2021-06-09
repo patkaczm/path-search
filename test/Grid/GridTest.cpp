@@ -1,4 +1,4 @@
-#include "Backend/Grid.hpp"
+#include "Grid/Grid.hpp"
 
 #include <gtest/gtest.h>
 
@@ -8,6 +8,8 @@
 #include <QCoreApplication>
 #include <QJSValue>
 #include <QJSEngine>
+
+#include "Grid/Make.hpp"
 
 namespace grid {
 namespace test {
@@ -96,6 +98,9 @@ TEST_F(GridTest, canCreateGridFromDimentions)
     EXPECT_EQ(width, grid.getRows()[0].size());
 }
 
+TEST(MakeGrid, test1) {
+    auto grid = grid::make<grid::GridType::Rectangle>(10, 14);
+}
 
 }
 }

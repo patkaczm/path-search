@@ -18,6 +18,7 @@ struct Cell {
     std::uint32_t id;
     Type type;
     bool operator==(const Cell& rhs) const;
+    bool operator<(const Cell& rhs) const;
 private:
     Type toType(std::uint8_t type) const;
 };

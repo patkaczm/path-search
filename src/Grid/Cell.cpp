@@ -17,6 +17,11 @@ bool Cell::operator==(const Cell &rhs) const
     return id == rhs.id && type == rhs.type;
 }
 
+bool Cell::operator<(const Cell &rhs) const
+{
+    return id < rhs.id;
+}
+
 Cell::Type Cell::toType(std::uint8_t type) const
 {
     static const std::map<std::uint8_t, Cell::Type> converter {{0, Cell::Type::EmptyField}, {1, Cell::Type::Start},

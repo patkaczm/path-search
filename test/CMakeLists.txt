@@ -8,6 +8,7 @@ include(${CMAKE_BASE_LIST_DIR}/cmake/add_ut.cmake)
 set_property(GLOBAL PROPERTY ALL_TESTS_LIST)
 
 add_subdirectory(Graph)
+add_subdirectory(Grid)
 add_subdirectory(Algorithm)
 add_subdirectory(Backend)
 
