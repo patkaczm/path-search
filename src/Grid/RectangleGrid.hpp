@@ -17,10 +17,11 @@ public:
 
     Cell at(std::size_t j, std::size_t i) const override;
     std::pair<std::size_t, std::size_t> size() const override;
-    std::set<Cell> neighbours(const Cell& c) const override;
+    std::set<Cell> adjacent(const Cell& c) const override;
 
     void addWall(const Cell& c1, const Cell& c2) /*override*/;
     void removeWall(const Cell& c1, const Cell& c2) /*override*/;
+    bool areConnected(const Cell& c1, const Cell& c2) /*override*/;
 
     //graph::Graph graph() const override;
     std::vector<int> flat() const override;

@@ -37,41 +37,40 @@ TEST_F(RectangleGridTest, returnCellWhenAtParamsAreInRange)
 TEST_F(RectangleGridTest, getNeighboursReturnRightNeighbours)
 {
     std::set<grid::Cell> r1 {Cell(1), Cell(3)};
-    EXPECT_THAT(mGrid.neighbours(Cell(0)), ::testing::ContainerEq(r1));
+    EXPECT_THAT(mGrid.adjacent(Cell(0)), ::testing::ContainerEq(r1));
     std::set<grid::Cell> r2 {Cell(0), Cell(2), Cell(4)};
-    EXPECT_THAT(mGrid.neighbours(Cell(1)), ::testing::ContainerEq(r2));
+    EXPECT_THAT(mGrid.adjacent(Cell(1)), ::testing::ContainerEq(r2));
+}
+
+TEST_F(RectangleGridTest, cellAreConnectedAfterCreation) {
+    EXPECT_TRUE(mGrid.areConnected(Cell(0), Cell(1)));
 }
 
 TEST_F(RectangleGridTest, addWall) {
     mGrid.addWall(Cell(0), Cell(1));
-
-    std::set<grid::Cell> neighbours {Cell(3)};
-    EXPECT_THAT(mGrid.neighbours(Cell(0)), ::testing::ContainerEq(neighbours));
+    EXPECT_FALSE(mGrid.areConnected(Cell(0), Cell(1)));
 }
 
 TEST_F(RectangleGridTest, cannotAddWallBetweenCellsWhichAreNotAdjacend) {
     mGrid.addWall(Cell(0), Cell(2));
 
-    std::set<grid::Cell> neighbours {Cell(3), Cell(1)};
-    EXPECT_THAT(mGrid.neighbours(Cell(0)), ::testing::ContainerEq(neighbours));
+    EXPECT_FALSE(mGrid.areConnected(Cell(0), Cell(2)));
 }
 
 TEST_F(RectangleGridTest, removeWall) {
     mGrid.addWall(Cell(0), Cell(1));
 
-    std::set<grid::Cell> neighbours {Cell(3)};
-    EXPECT_THAT(mGrid.neighbours(Cell(0)), ::testing::ContainerEq(neighbours));
+    ASSERT_FALSE(mGrid.areConnected(Cell(0), Cell(1)));
 
     mGrid.removeWall(Cell(0), Cell(1));
-    neighbours.emplace(Cell(1));
-    EXPECT_THAT(mGrid.neighbours(Cell(0)), ::testing::ContainerEq(neighbours));
+    EXPECT_TRUE(mGrid.areConnected(Cell(0), Cell(1)));
 }
 
 TEST_F(RectangleGridTest, cannotRemoveWallBetweenCellsWhichAreNotAdjacend) {
-    mGrid.removeWall(Cell(0), Cell(2));
+    ASSERT_FALSE(mGrid.areConnected(Cell(0), Cell(2)));
 
-    std::set<grid::Cell> neighbours {Cell(3), Cell(1)};
-    EXPECT_THAT(mGrid.neighbours(Cell(0)), ::testing::ContainerEq(neighbours));
+    mGrid.removeWall(Cell(0), Cell(1));
+    EXPECT_FALSE(mGrid.areConnected(Cell(0), Cell(2)));
 }
 
 TEST_F(RectangleGridTest, getFlattenRepresentationOfGridWithWalls)

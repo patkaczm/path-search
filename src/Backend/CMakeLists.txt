@@ -4,7 +4,7 @@ target_link_libraries(BackendUtilsLib PRIVATE GridLib GraphLib ${QtLib})
 
 add_library(MazeGeneratorLib MazeGenerator.cpp)
 target_include_directories(MazeGeneratorLib PRIVATE ${INCLUDE_DIR})
-target_link_libraries(MazeGeneratorLib PRIVATE ${QtLib} BackendUtilsLib GraphLib GridLib)
+target_link_libraries(MazeGeneratorLib PRIVATE ${QtLib} BackendUtilsLib GraphLib GridLib RectangleGridLib)
 
 add_library(BackendLib Backend.cpp)
 target_include_directories(BackendLib PRIVATE ${INCLUDE_DIR})
@@ -18,4 +18,5 @@ target_link_libraries(BackendLib PRIVATE ${QtLib}
                                          AlgorithmListLib
                                          MazeGeneratorLib
                                          BackendUtilsLib
-                                         IterativeBacktrackerLib)
+                                         IterativeBacktrackerLib
+                                         RectangleGridLib)

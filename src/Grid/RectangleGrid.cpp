@@ -10,16 +10,16 @@ RectangleGrid::RectangleGrid(std::uint32_t height, std::uint32_t width)
             mGraph.add(graph::Vertex{j * mWidth + i});
         }
     }
-    const std::set<Direction> directions{Direction::Down, Direction::Up, Direction::Right, Direction::Left};
-    for (std::uint32_t j = 0 ; j < mHeight; j++) {
-        for (std::uint32_t i = 0 ; i < mWidth; i++) {
-            for (const auto& direction : directions) {
-                if (canCreateConnectionWithCell(direction, j, i)) {
-                    createConnectionWithCell(direction, j, i);
-                }
-            }
-        }
-    }
+//    const std::set<Direction> directions{Direction::Down, Direction::Up, Direction::Right, Direction::Left};
+//    for (std::uint32_t j = 0 ; j < mHeight; j++) {
+//        for (std::uint32_t i = 0 ; i < mWidth; i++) {
+//            for (const auto& direction : directions) {
+//                if (canCreateConnectionWithCell(direction, j, i)) {
+//                    createConnectionWithCell(direction, j, i);
+//                }
+//            }
+//        }
+//    }
 }
 
 bool RectangleGrid::canCreateConnectionWithCell(const RectangleGrid::Direction &d, std::uint32_t j, std::uint32_t i) const
@@ -75,7 +75,7 @@ bool RectangleGrid::isAdjacent(const Cell &c1, const Cell &c2) const
 std::uint32_t RectangleGrid::getCellWalls(const Cell &c) const
 {
     std::uint32_t r{};
-    for(const auto& neighbour : neighbours(c)) {
+    for(const auto& neighbour : mGraph.getNeighbours(graph::Vertex{c.id})) {
         if (neighbour.id == c.id + 1) { // right
             r |= 0b1;
         }
@@ -86,6 +86,7 @@ std::uint32_t RectangleGrid::getCellWalls(const Cell &c) const
         } else if (neighbour.id == c.id - mWidth) { // up
             r |= 0b1000;
         }
+        std::cout << std::endl;
     }
     return r;
     // bit 0 means that there is no passage aka there is wall
@@ -105,12 +106,24 @@ std::pair<std::size_t, std::size_t> RectangleGrid::size() const
     return {mHeight, mWidth};
 }
 
-std::set<Cell> RectangleGrid::neighbours(const Cell &c) const
+std::set<Cell> RectangleGrid::adjacent(const Cell &c) const
 {
-    auto neighbours = mGraph.getNeighbours(graph::Vertex{c.id});
     std::set<Cell> ret;
-    for(const auto& v : neighbours) {
-        ret.emplace(Cell(v.id));
+    if (c.id % mWidth != 0) {
+        ret.emplace(c.id - 1);
+        //add left
+    }
+    if (c.id > mWidth) {
+        ret.emplace(c.id - mWidth);
+        //add up
+    }
+    if ((c.id + 1) % mWidth != 0 ) {
+        ret.emplace(c.id + 1);
+        //add right
+    }
+    if (c.id < mWidth * (mHeight - 1)) {
+        //add bottom
+        ret.emplace(c.id + mWidth);
     }
     return ret;
 }
@@ -127,6 +140,12 @@ void RectangleGrid::removeWall(const Cell &c1, const Cell &c2)
     if (isAdjacent(c1, c2)) {
         mGraph.add(graph::Edge{graph::Vertex{c1.id}, graph::Vertex{c2.id}});
     }
+}
+
+bool RectangleGrid::areConnected(const Cell &c1, const Cell &c2)
+{
+    return mGraph.getNeighbours(graph::Vertex{c1.id}).contains(graph::Vertex{c2.id}) &&
+           mGraph.getNeighbours(graph::Vertex{c2.id}).contains(graph::Vertex{c1.id});
 }
 
 std::vector<int> RectangleGrid::flat() const

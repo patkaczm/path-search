@@ -13,7 +13,7 @@ Rectangle
 
     z : -1
 
-    property string borderColor : "white"
+    property string borderColor : "black"
 
     color: borderColor
 

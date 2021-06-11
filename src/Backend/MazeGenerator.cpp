@@ -61,6 +61,13 @@ MazeGenerator::Maze MazeGenerator::generate()
     return {retMaze, mGenerationHistory};
 }
 
+grid::RectangleGrid MazeGenerator::generateRectangle()
+{
+    grid::RectangleGrid r(mHeight, mWidth);
+    mAlgorithm->generateMaze(r);
+    return r;
+}
+
 void MazeGenerator::onWallRemoved(const graph::Edge &e)
 {
     std::size_t tmpWidth = (mWidth - 1) / 2;

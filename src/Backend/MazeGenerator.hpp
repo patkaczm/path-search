@@ -22,6 +22,8 @@ public:
 
     MazeGenerator(std::unique_ptr<algorithm::MazeGenerationAlgorithm>&& algorithm, const std::size_t width, const std::size_t heigth);
     Maze generate();
+    //@todo tmp
+    grid::RectangleGrid generateRectangle();
 
 signals:
     void cellGenerated(const grid::Cell& c);

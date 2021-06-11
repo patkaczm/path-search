@@ -13,6 +13,7 @@ Rectangle {
     }
     CustomBorder {
         id: brd
+        anchors.fill: parent
         commonBorder: true
         commonBorderWidth: 1
         borderColor: "black"

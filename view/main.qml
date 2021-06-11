@@ -224,8 +224,18 @@ Window {
                 }
             }
         }
-
+        function isSet(value, bitPos) {
+           var result =   Math.floor(value / Math.pow(2, bitPos)) % 2;
+           return result === 1;
+        }
         function onMazeGenerationDone(maze) {
+            for (var i = 0 ; i < maze.length; i++) {
+                gridCells[i].border.commonBorder = false;
+                gridCells[i].border.rBorderwidth = !isSet(maze[i], 0);
+                gridCells[i].border.bBorderwidth = !isSet(maze[i], 1);
+                gridCells[i].border.lBorderwidth = !isSet(maze[i], 2);
+                gridCells[i].border.tBorderwidth = !isSet(maze[i], 3);
+            }
 //            for (var i = 0 ; i < maze.length; i++) {
 //                if (maze[i] === obstacleField.value) {
 //                    gridCells[i].color = obstacleField.color;
@@ -297,9 +307,9 @@ Window {
                 }
                 function generateMaze() {
                     // check that width and height are 2n+1
-                    for (var i = 0; i < gridView.gridCells.length; i++) {
-                        gridView.gridCells[i].color="black";
-                    }
+//                    for (var i = 0; i < gridView.gridCells.length; i++) {
+//                        gridView.gridCells[i].color="black";
+//                    }
 
                     gridView.generateMaze(gridSizeWidth.value, gridSizeHeight.value);
                 }
