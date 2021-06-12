@@ -228,7 +228,9 @@ Window {
            var result =   Math.floor(value / Math.pow(2, bitPos)) % 2;
            return result === 1;
         }
+        property var maze;
         function onMazeGenerationDone(maze) {
+            gridView.maze = maze;
             for (var i = 0 ; i < maze.length; i++) {
                 gridCells[i].border.commonBorder = false;
                 gridCells[i].border.rBorderwidth = !isSet(maze[i], 0);
@@ -367,14 +369,71 @@ Window {
                     }
                 }
                 Rectangle {
-                    width: 100
-                    height: 50
-                    color: "red"
-                    CustomBorder {
-                        commonBorder: true
-                        commonBorderWidth: 1
-                        borderColor: "black"
+                    width: 200
+                    height: 200
+                    Canvas {
+                        id : cvs
+                        anchors.fill: parent
+                        function p(mx, my) {
+                            let arr = gridView.maze;
+                            console.log(arr)
+                            let cellXSize = width / gridSizeWidth.value;
+                            let cellYSize = height / gridSizeHeight.value;
+                            console.log(cellXSize, cellYSize);
+
+                            let ctx = getContext("2d")
+                            ctx.reset()
+
+                            var X = Math.floor(mx/cellXSize);
+                            var Y = Math.floor(my/cellYSize);
+                            console.log("X: ", X,
+                                        " Y: ", Y,
+                                        " id: ", Math.floor(my/cellYSize) * gridSizeWidth.value + Math.floor(mx/cellXSize));
+                            ctx.beginPath();
+                            ctx.fillStyle ="yellow";
+                            ctx.fillRect(X * cellXSize, Y * cellYSize, cellXSize + 1, cellYSize + 1);
+
+                            for (var i = 0 ; i < gridView.maze.length; i++) {
+                                let x = (i % gridSizeWidth.value) * cellXSize;
+                                let y = Math.floor(i / gridSizeWidth.value) * cellYSize;
+
+                                if (!gridView.isSet(gridView.maze[i], 0)) {
+                                    ctx.beginPath();
+                                    ctx.moveTo(x + cellXSize, y);
+                                    ctx.lineTo(x + cellXSize, y + cellYSize);
+                                    ctx.stroke();
+                                }
+                                if (!gridView.isSet(gridView.maze[i], 1)) {
+                                    ctx.beginPath();
+                                    ctx.moveTo(x, y + cellYSize);
+                                    ctx.lineTo(x + cellXSize, y + cellYSize);
+                                    ctx.stroke();
+                                }
+                                if (!gridView.isSet(gridView.maze[i], 2)) {
+                                    ctx.beginPath();
+                                    ctx.moveTo(x, y);
+                                    ctx.lineTo(x, y + cellYSize);
+                                    ctx.stroke();
+                                }
+                                if (!gridView.isSet(gridView.maze[i], 3)) {
+                                    ctx.beginPath();
+                                    ctx.moveTo(x, y);
+                                    ctx.lineTo(x + cellXSize, y);
+                                    ctx.stroke();
+                                }
+                            }
+
+                        }
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: {
+
+                               cvs.p(mouseX, mouseY)
+                               cvs.requestPaint()
+                            }
+                        }
                     }
+
                 }
             }
         }
