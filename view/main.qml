@@ -182,7 +182,7 @@ Window {
         }
 
         function onMazeGenerationDone(maze) {
-            cvs1.drawMaze(maze);
+            cvs1.drawRectangleCellMaze(maze);
             cvs1.requestPaint();
         }
 
@@ -195,15 +195,72 @@ Window {
             Layout.alignment: Qt.AlignVCenter
             Layout.preferredWidth: parent.width / 5 * 3;
             Layout.preferredHeight: parent.width / 5 * 3;
-//            Layout.fillHeight: true
 
             Layout.margins: 5
+            property var currentMaze: undefined;
+            property var currentWalls: "thin";
             function reset() {
                 let ctx = getContext("2d")
                 ctx.reset()
             }
 
-            function drawMaze(maze) {
+            function thickWalls() {
+                currentWalls = "thick";
+                drawRectangleCellWithThickWallsMaze(currentMaze);
+                requestPaint();
+            }
+
+            function thinWalls() {
+                currentWalls = "thin";
+                drawRectangleCellWithThinWallsMaze(currentMaze);
+                requestPaint();
+            }
+
+            function drawRectangleCellMaze(maze) {
+                if (currentWalls === "thin") {
+                    drawRectangleCellWithThinWallsMaze(maze);
+                    requestPaint();
+                } else if (currentWalls === "thick") {
+                    drawRectangleCellWithThickWallsMaze(maze);
+                    requestPaint();
+                }
+            }
+
+            function drawRectangleCellWithThickWallsMaze(maze) {
+                currentMaze = maze;
+                let newGridSizeWidth = (gridSizeWidth.value * 2) + 1
+                let newGridSizeHeight = (gridSizeHeight.value * 2) + 1
+                let cellXSize = width / newGridSizeWidth;
+                let cellYSize = height / newGridSizeHeight;
+
+                let ctx = getContext("2d")
+                ctx.reset()
+
+                ctx.beginPath();
+                ctx.fillStyle="black";
+                ctx.fillRect(0, 0, width, height);
+                ctx.fill();
+
+
+                ctx.beginPath();
+                ctx.fillStyle = "white";
+                for (var i = 0; i < maze.length; i++) {
+                    let x = ( 2 *(i % gridSizeWidth.value) + 1)* cellXSize;
+                    let y = (2 * Math.floor(i / gridSizeWidth.value) + 1)* cellYSize
+
+                    ctx.fillRect(x, y, cellXSize , cellYSize );
+                    if (gridView.isSet(maze[i], 0)) {
+                        ctx.fillRect(x + cellXSize, y, cellXSize, cellYSize);
+                    }
+                    if (gridView.isSet(maze[i], 1)) {
+                        ctx.fillRect(x, y + cellYSize, cellXSize, cellYSize);
+                    }
+                }
+                ctx.fill();
+            }
+
+            function drawRectangleCellWithThinWallsMaze(maze) {
+                currentMaze = maze;
                 let cellXSize = width / gridSizeWidth.value;
                 let cellYSize = height / gridSizeHeight.value;
                 console.log(cellXSize, cellYSize);
@@ -211,51 +268,45 @@ Window {
                 let ctx = getContext("2d")
                 ctx.reset()
 
+                ctx.beginPath();
                 for (var i = 0 ; i < maze.length; i++) {
                     let x = (i % gridSizeWidth.value) * cellXSize;
                     let y = Math.floor(i / gridSizeWidth.value) * cellYSize;
 
                     if (!gridView.isSet(maze[i], 0)) {
-                        ctx.beginPath();
                         ctx.moveTo(x + cellXSize, y);
                         ctx.lineTo(x + cellXSize, y + cellYSize);
-                        ctx.stroke();
                     }
                     if (!gridView.isSet(maze[i], 1)) {
-                        ctx.beginPath();
                         ctx.moveTo(x, y + cellYSize);
                         ctx.lineTo(x + cellXSize, y + cellYSize);
-                        ctx.stroke();
                     }
                     if (!gridView.isSet(maze[i], 2)) {
-                        ctx.beginPath();
                         ctx.moveTo(x, y);
                         ctx.lineTo(x, y + cellYSize);
-                        ctx.stroke();
                     }
                     if (!gridView.isSet(maze[i], 3)) {
-                        ctx.beginPath();
                         ctx.moveTo(x, y);
                         ctx.lineTo(x + cellXSize, y);
-                        ctx.stroke();
                     }
                 }
+                ctx.stroke();
             }
 
             function p(mx, my) {
-                console.log(height, width)
+                console.log(mx, my)
 
-                let cellXSize = width / gridSizeWidth.value;
-                let cellYSize = height / gridSizeHeight.value;
-                var X = Math.floor(mx/cellXSize);
-                var Y = Math.floor(my/cellYSize);
-                console.log("X: ", X,
-                            " Y: ", Y,
-                            " id: ", Math.floor(my/cellYSize) * gridSizeWidth.value + Math.floor(mx/cellXSize));
-                let ctx = getContext("2d")
-                ctx.beginPath();
-                ctx.fillStyle ="yellow";
-                ctx.fillRect(X * cellXSize + 1, Y * cellYSize + 1, cellXSize - 2, cellYSize - 2);
+//                let cellXSize = width / gridSizeWidth.value;
+//                let cellYSize = height / gridSizeHeight.value;
+//                var X = Math.floor(mx/cellXSize);
+//                var Y = Math.floor(my/cellYSize);
+//                console.log("X: ", X,
+//                            " Y: ", Y,
+//                            " id: ", Math.floor(my/cellYSize) * gridSizeWidth.value + Math.floor(mx/cellXSize));
+//                let ctx = getContext("2d")
+//                ctx.beginPath();
+//                ctx.fillStyle ="yellow";
+//                ctx.fillRect(X * cellXSize + 1, Y * cellYSize + 1, cellXSize - 2, cellYSize - 2);
                 }
 
 
@@ -322,6 +373,22 @@ Window {
                                    {name: "Reset", action: reset},
                                    {name: "Clear visited area", action: clearVisitedArea}
                                   ]
+            ComboBox {
+                Layout.leftMargin: 10
+                Layout.rightMargin: 10
+                Layout.fillWidth: true
+                model : ["Thin walls", "Thick walls"]
+                onActivated: {
+                    if (model[index] === "Thin walls") {
+                        //signal?
+                        cvs1.thinWalls();
+                    } else if (model[index] === "Thick walls") {
+                        //signal?
+                        cvs1.thickWalls();
+                    }
+                }
+            }
+
             ComboBox {
                 objectName: "availableAlgorithms"
                 Layout.leftMargin: 10
