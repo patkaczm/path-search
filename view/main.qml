@@ -6,11 +6,11 @@ import QtQml 2.15
 
 Window {
     width: 640
-//    minimumWidth: width
-//    maximumWidth: width
+    minimumWidth: width
+    maximumWidth: width
     height: 480
-//    minimumHeight: height
-//    maximumHeight: height
+    minimumHeight: height
+    maximumHeight: height
     visible: true
     title: qsTr("Path Search")
     objectName: "mainWindow"
@@ -176,270 +176,199 @@ Window {
             timer.start()
         }
 
-        function removeAnotherStartOrStopField() {
-            for (var i = 0; i < gridCells.length; i++) {
-                if (Qt.colorEqual(gridCells[i].color, gridView.selectColor)) {
-                    gridCells[i].color = emptyFiled.color;
-                }
-            }
-        }
-
-        function drawField(cellId)
-        {
-            for (var i = 0; i < gridCells.length; i++) {
-                if (gridCells[i].cellId === cellId) {
-                    gridCells[i].color = gridView.selectColor;
-                    break;
-                }
-            }
-        }
-
-        function cellClicked(cellId)
-        {
-            if (gridView.selectColor === startField.color || gridView.selectColor === stopField.color)
-            {
-                removeAnotherStartOrStopField()
-            }
-            drawField(cellId)
-        }
-
-        function createGrid() {
-            var component = Qt.createComponent("gridCell.qml")
-
-            gridLayout.columns = gridSizeWidth.value
-            gridLayout.rows = gridSizeHeight.value
-
-            for (var i = 0; i <gridSizeHeight.value; i++) {
-                for(var j = 0; j <  gridSizeWidth.value; j++) {
-                    var object = component.createObject(gridLayout,
-                                                        {"cellId": i * gridSizeWidth.value + j,
-                                                         "Layout.fillHeight": true,
-                                                         "Layout.fillWidth": true,
-                                                         "Layout.row": i,
-                                                         "Layout.column": j,
-                                                         "color": "white",
-                                                        })
-                    object.clicked.connect(cellClicked)
-                    gridCells.push(object)
-                }
-            }
-        }
         function isSet(value, bitPos) {
            var result =   Math.floor(value / Math.pow(2, bitPos)) % 2;
            return result === 1;
         }
-        property var maze;
+
         function onMazeGenerationDone(maze) {
-            gridView.maze = maze;
-            for (var i = 0 ; i < maze.length; i++) {
-                gridCells[i].border.commonBorder = false;
-                gridCells[i].border.rBorderwidth = !isSet(maze[i], 0);
-                gridCells[i].border.bBorderwidth = !isSet(maze[i], 1);
-                gridCells[i].border.lBorderwidth = !isSet(maze[i], 2);
-                gridCells[i].border.tBorderwidth = !isSet(maze[i], 3);
-            }
-//            for (var i = 0 ; i < maze.length; i++) {
-//                if (maze[i] === obstacleField.value) {
-//                    gridCells[i].color = obstacleField.color;
-//                } else if (maze[i] === emptyFiled.value) {
-//                    gridCells[i].color = emptyFiled.color;
-//                }
-//            }
+            cvs1.drawMaze(maze);
+            cvs1.requestPaint();
         }
 
-        //should be deleted on visibility changed to invisible
-        onVisibleChanged: {
-            gridView.createGrid();
-            console.log(gridLayout.width, gridLayout.height)
-        }
 
         RowLayout {
         anchors.fill: parent
-        anchors.centerIn: parent
 
-            GridLayout {
-                id: gridLayout
-                columnSpacing: -2
-                rowSpacing: -1
-                Layout.leftMargin: 5
-                Layout.bottomMargin: 5
-                Layout.topMargin: 5
-                Layout.fillWidth: true
-                width: 400
-                Layout.fillHeight: true
+        Canvas {
+            id : cvs1
+            Layout.alignment: Qt.AlignVCenter
+            Layout.preferredWidth: parent.width / 5 * 3;
+            Layout.preferredHeight: parent.width / 5 * 3;
+//            Layout.fillHeight: true
+
+            Layout.margins: 5
+            function reset() {
+                let ctx = getContext("2d")
+                ctx.reset()
             }
-            ColumnLayout {
-                id: colLayout
-                function selectStart(){gridView.selectColor = gridView.startField.color;}
-                function selectEnd(){gridView.selectColor = gridView.stopField.color;}
-                function drawObstacle(){gridView.selectColor = gridView.obstacleField.color;}
-                function start() {
-                    var easyArray = [];
-                    for (var i = 0; i < gridView.gridCells.length; i++) {
-                        if (Qt.colorEqual(gridView.gridCells[i].color, gridView.startField.color))
-                        {
-                            easyArray.push(gridView.startField.value);
-                        }
-                        else if (Qt.colorEqual(gridView.gridCells[i].color, gridView.stopField.color))
-                        {
-                            easyArray.push(gridView.stopField.value);
-                        }
-                        else if (Qt.colorEqual(gridView.gridCells[i].color, gridView.obstacleField.color))
-                        {
-                            easyArray.push(gridView.obstacleField.value);
-                        } else {
-                            easyArray.push(gridView.emptyFiled.value);
-                        }
-                    }
-                    gridView.startPathSearching(easyArray, gridSizeWidth.value)
-                }
-                function reset() {
-                    timer.clearTimer()
-                    for (var i = 0; i < gridView.gridCells.length; i++) {
-                        gridView.gridCells[i].color = gridView.emptyFiled.color
-                    }
-                }
-                function clearVisitedArea() {
-                    timer.clearTimer()
-                    for (var i = 0; i < gridView.gridCells.length; i++) {
-                        if (Qt.colorEqual(gridView.gridCells[i].color, gridView.visitedField.color)) {
-                            gridView.gridCells[i].color = gridView.emptyFiled.color;
-                        }
-                    }
-                }
-                function generateMaze() {
-                    // check that width and height are 2n+1
-//                    for (var i = 0; i < gridView.gridCells.length; i++) {
-//                        gridView.gridCells[i].color="black";
-//                    }
 
-                    gridView.generateMaze(gridSizeWidth.value, gridSizeHeight.value);
+            function drawMaze(maze) {
+                let cellXSize = width / gridSizeWidth.value;
+                let cellYSize = height / gridSizeHeight.value;
+                console.log(cellXSize, cellYSize);
+
+                let ctx = getContext("2d")
+                ctx.reset()
+
+                for (var i = 0 ; i < maze.length; i++) {
+                    let x = (i % gridSizeWidth.value) * cellXSize;
+                    let y = Math.floor(i / gridSizeWidth.value) * cellYSize;
+
+                    if (!gridView.isSet(maze[i], 0)) {
+                        ctx.beginPath();
+                        ctx.moveTo(x + cellXSize, y);
+                        ctx.lineTo(x + cellXSize, y + cellYSize);
+                        ctx.stroke();
+                    }
+                    if (!gridView.isSet(maze[i], 1)) {
+                        ctx.beginPath();
+                        ctx.moveTo(x, y + cellYSize);
+                        ctx.lineTo(x + cellXSize, y + cellYSize);
+                        ctx.stroke();
+                    }
+                    if (!gridView.isSet(maze[i], 2)) {
+                        ctx.beginPath();
+                        ctx.moveTo(x, y);
+                        ctx.lineTo(x, y + cellYSize);
+                        ctx.stroke();
+                    }
+                    if (!gridView.isSet(maze[i], 3)) {
+                        ctx.beginPath();
+                        ctx.moveTo(x, y);
+                        ctx.lineTo(x + cellXSize, y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            function p(mx, my) {
+                console.log(height, width)
+
+                let cellXSize = width / gridSizeWidth.value;
+                let cellYSize = height / gridSizeHeight.value;
+                var X = Math.floor(mx/cellXSize);
+                var Y = Math.floor(my/cellYSize);
+                console.log("X: ", X,
+                            " Y: ", Y,
+                            " id: ", Math.floor(my/cellYSize) * gridSizeWidth.value + Math.floor(mx/cellXSize));
+                let ctx = getContext("2d")
+                ctx.beginPath();
+                ctx.fillStyle ="yellow";
+                ctx.fillRect(X * cellXSize + 1, Y * cellYSize + 1, cellXSize - 2, cellYSize - 2);
                 }
 
-                property var btnData: [
-                                       {name: "generate maze", action: generateMaze},
-                                       {name: "Select start", action: selectStart},
-                                       {name: "Select end", action: selectEnd},
-                                       {name: "Draw obstacle", action: drawObstacle},
-                                       {name: "Start", action: start},
-                                       {name: "Reset", action: reset},
-                                       {name: "Clear visited area", action: clearVisitedArea}
-                                      ]
-                ComboBox {
-                    objectName: "availableAlgorithms"
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+
+                   cvs1.p(mouseX, mouseY)
+                   cvs1.requestPaint()
+                }
+            }
+        }
+        ColumnLayout {
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
+            function selectStart(){gridView.selectColor = gridView.startField.color;}
+            function selectEnd(){gridView.selectColor = gridView.stopField.color;}
+            function drawObstacle(){gridView.selectColor = gridView.obstacleField.color;}
+            function start() {
+                var easyArray = [];
+                for (var i = 0; i < gridView.gridCells.length; i++) {
+                    if (Qt.colorEqual(gridView.gridCells[i].color, gridView.startField.color))
+                    {
+                        easyArray.push(gridView.startField.value);
+                    }
+                    else if (Qt.colorEqual(gridView.gridCells[i].color, gridView.stopField.color))
+                    {
+                        easyArray.push(gridView.stopField.value);
+                    }
+                    else if (Qt.colorEqual(gridView.gridCells[i].color, gridView.obstacleField.color))
+                    {
+                        easyArray.push(gridView.obstacleField.value);
+                    } else {
+                        easyArray.push(gridView.emptyFiled.value);
+                    }
+                }
+                gridView.startPathSearching(easyArray, gridSizeWidth.value)
+            }
+            function reset() {
+                timer.clearTimer()
+                for (var i = 0; i < gridView.gridCells.length; i++) {
+                    gridView.gridCells[i].color = gridView.emptyFiled.color
+                }
+            }
+            function clearVisitedArea() {
+                timer.clearTimer()
+                for (var i = 0; i < gridView.gridCells.length; i++) {
+                    if (Qt.colorEqual(gridView.gridCells[i].color, gridView.visitedField.color)) {
+                        gridView.gridCells[i].color = gridView.emptyFiled.color;
+                    }
+                }
+            }
+            function generateMaze() {
+                gridView.generateMaze(gridSizeWidth.value, gridSizeHeight.value);
+            }
+
+            property var btnData: [
+                                   {name: "generate maze", action: generateMaze},
+                                   {name: "Select start", action: selectStart},
+                                   {name: "Select end", action: selectEnd},
+                                   {name: "Draw obstacle", action: drawObstacle},
+                                   {name: "Start", action: start},
+                                   {name: "Reset", action: reset},
+                                   {name: "Clear visited area", action: clearVisitedArea}
+                                  ]
+            ComboBox {
+                objectName: "availableAlgorithms"
+                Layout.leftMargin: 10
+                Layout.rightMargin: 10
+                Layout.fillWidth: true
+                displayText: ''
+                function onAvailableAlgorithmsSet(algorithms) {
+                    var tmp = []
+                    for (var alg in algorithms) {
+                        tmp.push(algorithms[alg])
+                    }
+                    model = tmp
+                }
+                signal algorithmSelected(variant selected);
+                onActivated: {
+                    console.log("Selected: ", model[index]);
+                    displayText = model[index];
+                    algorithmSelected(model[index]);
+                }
+
+            }
+
+            Repeater {
+                model: parent.btnData
+                Button {
                     Layout.leftMargin: 10
                     Layout.rightMargin: 10
                     Layout.fillWidth: true
-                    displayText: ''
-                    function onAvailableAlgorithmsSet(algorithms) {
-                        var tmp = []
-                        for (var alg in algorithms) {
-                            tmp.push(algorithms[alg])
-                        }
-                        model = tmp
-                    }
-                    signal algorithmSelected(variant selected);
-                    onActivated: {
-                        console.log("Selected: ", model[index]);
-                        displayText = model[index];
-                        algorithmSelected(model[index]);
-                    }
-
-                }
-
-                Repeater {
-                    model: parent.btnData
-                    Button {
-                        Layout.leftMargin: 10
-                        Layout.rightMargin: 10
-                        Layout.fillWidth: true
-                        text: modelData.name
-                        onClicked: {
-                            parent.btnData[index]["action"]()
-                        }
+                    text: modelData.name
+                    onClicked: {
+                        parent.btnData[index]["action"]()
                     }
                 }
-                Slider {
-                    Layout.fillWidth: true
-                    from: 100
-                    to: 1
-                    value: 100
-                    onMoved: {
-                        timer.interval = value
-                    }
-                }
-                Rectangle {
-                    width: 200
-                    height: 200
-                    Canvas {
-                        id : cvs
-                        anchors.fill: parent
-                        function p(mx, my) {
-                            let arr = gridView.maze;
-                            console.log(arr)
-                            let cellXSize = width / gridSizeWidth.value;
-                            let cellYSize = height / gridSizeHeight.value;
-                            console.log(cellXSize, cellYSize);
-
-                            let ctx = getContext("2d")
-                            ctx.reset()
-
-                            var X = Math.floor(mx/cellXSize);
-                            var Y = Math.floor(my/cellYSize);
-                            console.log("X: ", X,
-                                        " Y: ", Y,
-                                        " id: ", Math.floor(my/cellYSize) * gridSizeWidth.value + Math.floor(mx/cellXSize));
-                            ctx.beginPath();
-                            ctx.fillStyle ="yellow";
-                            ctx.fillRect(X * cellXSize, Y * cellYSize, cellXSize + 1, cellYSize + 1);
-
-                            for (var i = 0 ; i < gridView.maze.length; i++) {
-                                let x = (i % gridSizeWidth.value) * cellXSize;
-                                let y = Math.floor(i / gridSizeWidth.value) * cellYSize;
-
-                                if (!gridView.isSet(gridView.maze[i], 0)) {
-                                    ctx.beginPath();
-                                    ctx.moveTo(x + cellXSize, y);
-                                    ctx.lineTo(x + cellXSize, y + cellYSize);
-                                    ctx.stroke();
-                                }
-                                if (!gridView.isSet(gridView.maze[i], 1)) {
-                                    ctx.beginPath();
-                                    ctx.moveTo(x, y + cellYSize);
-                                    ctx.lineTo(x + cellXSize, y + cellYSize);
-                                    ctx.stroke();
-                                }
-                                if (!gridView.isSet(gridView.maze[i], 2)) {
-                                    ctx.beginPath();
-                                    ctx.moveTo(x, y);
-                                    ctx.lineTo(x, y + cellYSize);
-                                    ctx.stroke();
-                                }
-                                if (!gridView.isSet(gridView.maze[i], 3)) {
-                                    ctx.beginPath();
-                                    ctx.moveTo(x, y);
-                                    ctx.lineTo(x + cellXSize, y);
-                                    ctx.stroke();
-                                }
-                            }
-
-                        }
-                        MouseArea {
-                            anchors.fill: parent
-                            onClicked: {
-
-                               cvs.p(mouseX, mouseY)
-                               cvs.requestPaint()
-                            }
-                        }
-                    }
-
+            }
+            Slider {
+                Layout.fillWidth: true
+                from: 100
+                to: 1
+                value: 100
+                onMoved: {
+                    timer.interval = value
                 }
             }
         }
 
-    }
-
+        }
+        }
 }
 
 /*##^##
