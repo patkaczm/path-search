@@ -118,7 +118,8 @@ Window {
         readonly property var pathField: ({ color: "blue", value: 5});
 
         property var selectColor: obstacleField.color
-        property var gridCells: [];
+        property var startFieldId: undefined;
+        property var stopFieldId: undefined;
 
         signal startPathSearching(variant gridCells, int width);
         signal generateMaze(int width, int height);
@@ -296,17 +297,38 @@ Window {
             function p(mx, my) {
                 console.log(mx, my)
 
-//                let cellXSize = width / gridSizeWidth.value;
-//                let cellYSize = height / gridSizeHeight.value;
-//                var X = Math.floor(mx/cellXSize);
-//                var Y = Math.floor(my/cellYSize);
-//                console.log("X: ", X,
-//                            " Y: ", Y,
-//                            " id: ", Math.floor(my/cellYSize) * gridSizeWidth.value + Math.floor(mx/cellXSize));
-//                let ctx = getContext("2d")
-//                ctx.beginPath();
-//                ctx.fillStyle ="yellow";
-//                ctx.fillRect(X * cellXSize + 1, Y * cellYSize + 1, cellXSize - 2, cellYSize - 2);
+                let cellXSize = width / gridSizeWidth.value;
+                let cellYSize = height / gridSizeHeight.value;
+                var X = Math.floor(mx/cellXSize);
+                var Y = Math.floor(my/cellYSize);
+                var id = Math.floor(my/cellYSize) * gridSizeWidth.value + Math.floor(mx/cellXSize);
+                console.log("X: ", X,
+                            " Y: ", Y,
+                            " id: ", id);
+                drawRectangleCellMaze(currentMaze);
+                let ctx = getContext("2d");
+                ctx.beginPath();
+                if (Qt.colorEqual(gridView.selectColor, gridView.startField.color)) {
+                    gridView.startFieldId = id;
+                    ctx.fillStyle = gridView.selectColor;
+                    ctx.fillRect(X * cellXSize + 1, Y * cellYSize + 1, cellXSize - 2, cellYSize - 2);
+                } else if (Qt.colorEqual(gridView.selectColor, gridView.stopField.color)) {
+                    gridView.stopFieldId = id;
+                }
+
+                if (gridView.startFieldId) {
+                    let x = (gridView.startFieldId % gridSizeWidth.value) * cellXSize;
+                    let y = Math.floor(gridView.startFieldId / gridSizeWidth.value) * cellYSize;
+                    ctx.fillStyle = gridView.startField.color;
+                    ctx.fillRect(x, y, cellXSize, cellYSize);
+                }
+                if (gridView.stopFieldId) {
+                    let x = (gridView.stopFieldId % gridSizeWidth.value) * cellXSize;
+                    let y = Math.floor(gridView.stopFieldId / gridSizeWidth.value) * cellYSize;
+                    ctx.fillStyle = gridView.stopField.color;
+                    ctx.fillRect(x, y, cellXSize, cellYSize);
+                }
+
                 }
 
 

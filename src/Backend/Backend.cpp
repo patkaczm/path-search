@@ -58,14 +58,6 @@ void Backend::onGenerateMaze(int width, int height)
     auto mazeData = mg.generateRectangle();
     QObject::disconnect(&mg, &MazeGenerator::cellGenerated, this, &Backend::onMazeCellGenerated);
 
-//    std::vector<int> ret(width * height, static_cast<int>(grid::Cell::Type::Obstacle));
-//    qDebug() << "ret size: " << ret.size();
-//    for (const auto& row : mazeData.maze.getRows()) {
-//        for (const auto& cell : row) {
-//            ret.at(cell.id) = static_cast<int>(cell.type);
-//        }
-//    }
-
     QVariant v;
     v.setValue(mazeData.flat());
     qDebug() << mazeData.flat();
