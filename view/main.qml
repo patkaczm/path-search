@@ -16,93 +16,34 @@ Window {
     objectName: "mainWindow"
 
     Item {
-        id: selectGridSizeView
-        objectName: "selectGridSizeView"
+        id: menu
         width: parent.width
         height: parent.height
-        visible: true
-
         ColumnLayout {
-            id: columnLayout
+            width: parent.width * 0.5
+            height: parent.height * 0.4
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-
-
-            Text {
-                id: text1
-                text: qsTr("Select grid size")
-                font.pixelSize: 25
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                minimumPixelSize: 12
-            }
-            RowLayout {
-                id: rowLayout
-                width: 100
-                height: 100
-
-                ColumnLayout {
-                    id: columnLayout1
-                    width: 100
-                    height: 100
-
-
-                    Text {
-                        id: text2
-                        text: qsTr("Select grid width")
-                        font.pixelSize: 12
-                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                    }
-                    SpinBox {
-                        id: gridSizeWidth
-                        Layout.topMargin: 20
-                        objectName: "gridSizeWidth"
-                        editable: true
-                        value: 3
-                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                        to: 51
-                        from: 1
-                    }
-                }
-
-                ColumnLayout {
-                    id: columnLayout2
-                    width: 100
-                    height: 100
-
-                    Text {
-                        id: text3
-                        text: qsTr("Select grid height")
-                        font.pixelSize: 12
-                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                    }
-
-                    SpinBox {
-                        id: gridSizeHeight
-                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                        objectName: "gridSize"
-                        editable: true
-                        value: 3
-                        from: 1
-                        to: 51
-                        Layout.topMargin: 20
-                    }
-                }
-
-            }
-
             Button {
-                id: button
-                text: qsTr("Start")
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                text: "Maze generation"
                 onClicked: {
-                    selectGridSizeView.visible = false
-                    gridView.visible = true
+                    menu.visible = false;
+                    gridView.visible = true;
                 }
-                Layout.topMargin: 20
             }
-
+            Button {
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                text: "Path finding"
+                onClicked: {
+                    console.log("Not yet implemented.")
+                }
+            }
         }
     }
+
     Item {
         id: gridView
         objectName: "gridView"
@@ -341,10 +282,13 @@ Window {
                 }
             }
         }
-        ColumnLayout {
+        GridLayout {
             Layout.fillHeight: true
             Layout.fillWidth: true
-            Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignTop;
+            Layout.topMargin: 10
+            columns: 2
+
             function selectStart(){gridView.selectColor = gridView.startField.color;}
             function selectEnd(){gridView.selectColor = gridView.stopField.color;}
             function drawObstacle(){gridView.selectColor = gridView.obstacleField.color;}
@@ -388,16 +332,49 @@ Window {
 
             property var btnData: [
                                    {name: "generate maze", action: generateMaze},
-                                   {name: "Select start", action: selectStart},
-                                   {name: "Select end", action: selectEnd},
-                                   {name: "Draw obstacle", action: drawObstacle},
-                                   {name: "Start", action: start},
-                                   {name: "Reset", action: reset},
-                                   {name: "Clear visited area", action: clearVisitedArea}
+//                                   {name: "Select start", action: selectStart},
+//                                   {name: "Select end", action: selectEnd},
+//                                   {name: "Draw obstacle", action: drawObstacle},
+//                                   {name: "Start", action: start},
+//                                   {name: "Reset", action: reset},
+//                                   {name: "Clear visited area", action: clearVisitedArea}
                                   ]
+            Text {
+                id: text3
+                text: qsTr("grid height")
+                font.pixelSize: 12
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+            }
+
+            SpinBox {
+                id: gridSizeHeight
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                objectName: "gridSize"
+                editable: true
+                value: 3
+                from: 1
+                to: 51
+            }
+
+            Text {
+                id: text2
+                text: qsTr("grid width")
+                font.pixelSize: 12
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+            }
+
+            SpinBox {
+                id: gridSizeWidth
+                objectName: "gridSizeWidth"
+                editable: true
+                value: 3
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                to: 51
+                from: 1
+            }
+
             ComboBox {
-                Layout.leftMargin: 10
-                Layout.rightMargin: 10
+                Layout.columnSpan: 2
                 Layout.fillWidth: true
                 model : ["Thin walls", "Thick walls"]
                 onActivated: {
@@ -413,8 +390,7 @@ Window {
 
             ComboBox {
                 objectName: "availableAlgorithms"
-                Layout.leftMargin: 10
-                Layout.rightMargin: 10
+                Layout.columnSpan: 2
                 Layout.fillWidth: true
                 displayText: ''
                 function onAvailableAlgorithmsSet(algorithms) {
@@ -436,8 +412,7 @@ Window {
             Repeater {
                 model: parent.btnData
                 Button {
-                    Layout.leftMargin: 10
-                    Layout.rightMargin: 10
+                    Layout.columnSpan: 2
                     Layout.fillWidth: true
                     text: modelData.name
                     onClicked: {
@@ -445,15 +420,7 @@ Window {
                     }
                 }
             }
-            Slider {
-                Layout.fillWidth: true
-                from: 100
-                to: 1
-                value: 100
-                onMoved: {
-                    timer.interval = value
-                }
-            }
+
         }
 
         }
