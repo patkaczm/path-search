@@ -1,20 +1,19 @@
 import QtQuick 2.12
 
-Canvas {
-    id: rectangleThickMaze
+Item {
+    id: rectangleThickMazePainter
     property var currentMaze: undefined;
-    function reset() {
-        let ctx = getContext("2d")
+    function reset(ctx) {
         ctx.reset()
     }
-    function drawMaze(maze) {
+    function drawMaze(maze, ctx) {
+        console.log("hello")
         currentMaze = maze;
         let newGridSizeWidth = (gridSizeWidth.value * 2) + 1
         let newGridSizeHeight = (gridSizeHeight.value * 2) + 1
         let cellXSize = width / newGridSizeWidth;
         let cellYSize = height / newGridSizeHeight;
 
-        let ctx = getContext("2d")
         ctx.reset()
 
         ctx.beginPath();

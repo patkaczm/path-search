@@ -59,8 +59,13 @@ Window {
                border.width: 2
                border.color: "black"
                onWidthChanged: {
-                   testItem.maze.width = rr.width < rr.height ? rr.width : rr.height;
-                   testItem.maze.height = rr.width < rr.height ? rr.width : rr.height;
+                   cvs.width = rr.width < rr.height ? rr.width : rr.height;
+                   cvs.height = rr.width < rr.height ? rr.width : rr.height;
+               }
+               Canvas {
+                   id: cvs
+                   Layout.fillHeight: true
+                   Layout.fillWidth: true
                }
             }
             Button {
@@ -73,61 +78,61 @@ Window {
                 }
                 text: "Generate Maze"
             }
-            Button {
-                text: "createThinMaze"
-                onClicked: {
-                    if (testItem.maze !== undefined) {
-                        testItem.maze.destroy();
-                    }
+//            Button {
+//                text: "createThinMaze"
+//                onClicked: {
+//                    if (testItem.maze !== undefined) {
+//                        testItem.maze.destroy();
+//                    }
 
-                    var component = Qt.createComponent("RectangleThinMaze.qml");
-                    if (component.status === Component.Ready) {
+//                    var component = Qt.createComponent("RectangleThinMaze.qml");
+//                    if (component.status === Component.Ready) {
 
-                        testItem.maze = component.createObject(rr,
-                                               {
-                                               "id": "testRect",
-                                               "width": rr.width / 5 * 3,
-                                               "height": rr.width / 5 * 3,
-                                               }
-                                            )
-                    }
-                    testItem.maze.width = rr.width < rr.height ? rr.width : rr.height;
-                    testItem.maze.height = rr.width < rr.height ? rr.width : rr.height;
-                    if (testItem.currentMaze) {
-                        testItem.maze.drawMaze(testItem.currentMaze);
-                        testItem.maze.requestPaint();
-                    }
-//                    gridView.generateMaze(gridSizeWidth.value, gridSizeHeight.value);
-                }
-            }
-            Button {
-                text: "createThickMaze"
-                onClicked: {
-                    if (testItem.maze !== undefined) {
-                        testItem.maze.destroy();
-                    }
+//                        testItem.maze = component.createObject(rr,
+//                                               {
+//                                               "id": "testRect",
+//                                               "width": rr.width / 5 * 3,
+//                                               "height": rr.width / 5 * 3,
+//                                               }
+//                                            )
+//                    }
+//                    testItem.maze.width = rr.width < rr.height ? rr.width : rr.height;
+//                    testItem.maze.height = rr.width < rr.height ? rr.width : rr.height;
+//                    if (testItem.currentMaze) {
+//                        testItem.maze.drawMaze(testItem.currentMaze);
+//                        testItem.maze.requestPaint();
+//                    }
+////                    gridView.generateMaze(gridSizeWidth.value, gridSizeHeight.value);
+//                }
+//            }
+//            Button {
+//                text: "createThickMaze"
+//                onClicked: {
+//                    if (testItem.maze !== undefined) {
+//                        testItem.maze.destroy();
+//                    }
 
-                    var component = Qt.createComponent("RectangleThickMaze.qml");
-                    if (component.status === Component.Ready) {
+//                    var component = Qt.createComponent("RectangleThickMaze.qml");
+//                    if (component.status === Component.Ready) {
 
-                        testItem.maze = component.createObject(rr,
-                                               {
-                                               "id": "testRect",
-                                               "width": rr.width / 5 * 3,
-                                               "height": rr.width / 5 * 3,
-                                               }
-                                            )
-                    }
-                    testItem.maze.width = rr.width < rr.height ? rr.width : rr.height;
-                    testItem.maze.height = rr.width < rr.height ? rr.width : rr.height;
-//                    gridView.generateMaze(gridSizeWidth.value, gridSizeHeight.value);
-                    if (testItem.currentMaze) {
-                        testItem.maze.drawMaze(testItem.currentMaze);
-                        testItem.maze.requestPaint();
-                    }
+//                        testItem.maze = component.createObject(rr,
+//                                               {
+//                                               "id": "testRect",
+//                                               "width": rr.width / 5 * 3,
+//                                               "height": rr.width / 5 * 3,
+//                                               }
+//                                            )
+//                    }
+//                    testItem.maze.width = rr.width < rr.height ? rr.width : rr.height;
+//                    testItem.maze.height = rr.width < rr.height ? rr.width : rr.height;
+////                    gridView.generateMaze(gridSizeWidth.value, gridSizeHeight.value);
+//                    if (testItem.currentMaze) {
+//                        testItem.maze.drawMaze(testItem.currentMaze);
+//                        testItem.maze.requestPaint();
+//                    }
 
-                }
-            }
+//                }
+//            }
         }
 
 
@@ -244,12 +249,10 @@ Window {
         }
 
         function onMazeGenerationDone(maze) {
-            testItem.maze.drawMaze(maze);
-            testItem.maze.requestPaint();
+            testItem.maze.drawMaze(maze, cvs.getContext("2d"));
+            cvs.requestPaint();
             testItem.currentMaze = maze;
 
-            cvs1.drawRectangleCellMaze(maze);
-            cvs1.requestPaint();
         }
 
 

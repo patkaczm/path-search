@@ -1,21 +1,21 @@
 import QtQuick 2.12
 
 Canvas {
-    id: rectangleThinMaze
+    id: rectangleThinMazePainter
     property var currentMaze: undefined;
 
-    function reset() {
-        let ctx = rectangleThinMaze.getContext("2d");
+    function reset(ctx) {
+//        let ctx = rectangleThinMaze.getContext("2d");
         ctx.reset();
     }
 
-    function drawMaze(maze) {
+    function drawMaze(maze, ctx) {
         currentMaze = maze;
         let cellXSize = width / gridSizeWidth.value;
         let cellYSize = height / gridSizeHeight.value;
         console.log(cellXSize, cellYSize);
 
-        let ctx = rectangleThinMaze.getContext("2d")
+//        let ctx = rectangleThinMaze.getContext("2d")
         ctx.reset()
 
         ctx.beginPath();
