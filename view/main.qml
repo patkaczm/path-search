@@ -6,19 +6,139 @@ import QtQml 2.15
 
 Window {
     width: 640
-    minimumWidth: width
-    maximumWidth: width
+//    minimumWidth: width
+//    maximumWidth: width
     height: 480
-    minimumHeight: height
-    maximumHeight: height
+//    minimumHeight: height
+//    maximumHeight: height
     visible: true
     title: qsTr("Path Search")
     objectName: "mainWindow"
 
     Item {
+        id: testItem
+        width: parent.width
+        height: parent.height
+
+        property var maze: undefined;
+        property var currentMaze: null;
+
+
+        function createMaze() {
+            if (parent.maze !== undefined) {
+                parent.maze.destroy();
+            }
+
+            var component = Qt.createComponent("RectangleThickMaze.qml");
+            if (component.status === Component.Ready) {
+
+                maze = component.createObject(rr,
+                                       {
+                                       "id": "testRect",
+                                       "width": rr.width / 5 * 3,
+                                       "height": rr.width / 5 * 3,
+                                       }
+                                    )
+            }
+
+        }
+        Component.onCompleted: createMaze()
+
+        GridLayout {
+            columns: 2
+            rows: 3
+            width: parent.width
+            height: parent.height
+            Rectangle {
+                id: rr
+               Layout.rowSpan: 3
+               Layout.fillHeight: true
+               Layout.fillWidth: true
+               Layout.margins: 10
+
+               border.width: 2
+               border.color: "black"
+               onWidthChanged: {
+                   testItem.maze.width = rr.width < rr.height ? rr.width : rr.height;
+                   testItem.maze.height = rr.width < rr.height ? rr.width : rr.height;
+               }
+            }
+            Button {
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignTop;
+                Layout.columnSpan: 1
+                onClicked: {
+                    testItem.maze.width = rr.width < rr.height ? rr.width : rr.height;
+                    testItem.maze.height = rr.width < rr.height ? rr.width : rr.height;
+                    gridView.generateMaze(gridSizeWidth.value, gridSizeHeight.value);
+                }
+                text: "Generate Maze"
+            }
+            Button {
+                text: "createThinMaze"
+                onClicked: {
+                    if (testItem.maze !== undefined) {
+                        testItem.maze.destroy();
+                    }
+
+                    var component = Qt.createComponent("RectangleThinMaze.qml");
+                    if (component.status === Component.Ready) {
+
+                        testItem.maze = component.createObject(rr,
+                                               {
+                                               "id": "testRect",
+                                               "width": rr.width / 5 * 3,
+                                               "height": rr.width / 5 * 3,
+                                               }
+                                            )
+                    }
+                    testItem.maze.width = rr.width < rr.height ? rr.width : rr.height;
+                    testItem.maze.height = rr.width < rr.height ? rr.width : rr.height;
+                    if (testItem.currentMaze) {
+                        testItem.maze.drawMaze(testItem.currentMaze);
+                        testItem.maze.requestPaint();
+                    }
+//                    gridView.generateMaze(gridSizeWidth.value, gridSizeHeight.value);
+                }
+            }
+            Button {
+                text: "createThickMaze"
+                onClicked: {
+                    if (testItem.maze !== undefined) {
+                        testItem.maze.destroy();
+                    }
+
+                    var component = Qt.createComponent("RectangleThickMaze.qml");
+                    if (component.status === Component.Ready) {
+
+                        testItem.maze = component.createObject(rr,
+                                               {
+                                               "id": "testRect",
+                                               "width": rr.width / 5 * 3,
+                                               "height": rr.width / 5 * 3,
+                                               }
+                                            )
+                    }
+                    testItem.maze.width = rr.width < rr.height ? rr.width : rr.height;
+                    testItem.maze.height = rr.width < rr.height ? rr.width : rr.height;
+//                    gridView.generateMaze(gridSizeWidth.value, gridSizeHeight.value);
+                    if (testItem.currentMaze) {
+                        testItem.maze.drawMaze(testItem.currentMaze);
+                        testItem.maze.requestPaint();
+                    }
+
+                }
+            }
+        }
+
+
+
+    }
+
+    Item {
         id: menu
         width: parent.width
         height: parent.height
+        visible: false
         ColumnLayout {
             width: parent.width * 0.5
             height: parent.height * 0.4
@@ -124,6 +244,10 @@ Window {
         }
 
         function onMazeGenerationDone(maze) {
+            testItem.maze.drawMaze(maze);
+            testItem.maze.requestPaint();
+            testItem.currentMaze = maze;
+
             cvs1.drawRectangleCellMaze(maze);
             cvs1.requestPaint();
         }
