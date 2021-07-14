@@ -55,6 +55,7 @@ Item {
 
                function paintGrid()
                {
+                   console.log(width, gridWidth, height, gridHeight);
                    let ctx = cvs.getContext("2d");
                    ctx.beginPath();
                    for (var x = 0; x <= gridWidth; x++) {
@@ -85,6 +86,7 @@ Item {
                }
 
                MouseArea {
+                   id: ma
                    anchors.fill: parent
                    function getCellId(mouseX, mouseY)
                    {
@@ -115,11 +117,25 @@ Item {
                        var id = getCellId(mouseX, mouseY);
                        replaceStartOrStopField(id);
                        cvs.cells[id] = cvs.select;
-                       //check start and end
                        cvs.paintCells();
                        cvs.paintGrid();
                        cvs.requestPaint();
                    }
+               }
+               //@todo probably can be done better;
+               property var isGridPaintedForTheFirstTime: false;
+               onAvailableChanged: {
+                   if (width && height && available && !isGridPaintedForTheFirstTime) {
+                       isGridPaintedForTheFirstTime = true;
+                       cvs.paintGrid();
+                       cvs.requestPaint();
+                   }
+               }
+               onWidthChanged: {
+                   onAvailableChanged();
+               }
+               onHeightChanged: {
+                   onAvailableChanged();
                }
            }
         }
