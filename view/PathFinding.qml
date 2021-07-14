@@ -199,12 +199,13 @@ Item {
 
                 pathFindingWindow.startPathFinding(arr, cvs.gridWidth);
             }
+            function clear() { cvs.cells = Array.from({length: cvs.gridHeight * cvs.gridWidth}, (_) => cvs.emptyFiled); cvs.paint()}
 
             property var btnData: [
                                    {name: "Start", action: selectStart, colspan: 1},
                                    {name: "End", action: selectEnd, colspan: 1},
                                    {name: "Obstacle", action: selectObstacle, colspan: 1},
-                                   {name: "Clear", action: null, colspan: 1},
+                                   {name: "Clear", action: clear, colspan: 1},
                                    {name: "Find Path", action: startPathFinding, colspan: 2},
                                   ]
             Repeater {
