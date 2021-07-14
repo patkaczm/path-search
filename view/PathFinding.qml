@@ -96,8 +96,22 @@ Item {
                        console.log("X: ", X," Y: ", Y, " id: ", id);
                        return id;
                    }
+                   function clearPreviouslySelected(type) {
+                       if (cvs.select === type) {
+                           for(var i = 0; i < cvs.cells.length; i++) {
+                               if (cvs.cells[i] === type)
+                               {
+                                   cvs.cells[i] = cvs.emptyFiled;
+                                   break;
+                               }
+                           }
+                       }
+                   }
 
                    onClicked: {
+                       clearPreviouslySelected(cvs.startField);
+                       clearPreviouslySelected(cvs.stopField);
+
                        cvs.cells[getCellId(mouseX, mouseY)] = cvs.select;
                        //check start and end
                        cvs.paintCells();
