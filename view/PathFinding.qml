@@ -10,7 +10,6 @@ Item {
     signal startPathFinding(variant gridCells, int width);
     function onPathFindingDone(pathV) {
         for (var prop in pathV) {
-            console.log(pathV[prop]);
             if (cvs.cells[pathV[prop]] === cvs.startField ||
                 cvs.cells[pathV[prop]] === cvs.stopField) {
                 continue;
@@ -68,7 +67,6 @@ Item {
 
                function paintGrid()
                {
-                   console.log(width, gridWidth, height, gridHeight);
                    let ctx = cvs.getContext("2d");
                    ctx.beginPath();
                    for (var x = 0; x <= gridWidth; x++) {
@@ -91,7 +89,6 @@ Item {
                    for (var i = 0; i < cells.length; i++) {
                        let x = (i % gridWidth) * cellXSize;
                        let y = Math.floor(i / gridWidth) * cellYSize;
-                        console.log(x, y, cellXSize, cellYSize, cells[i].color)
                        ctx.fillStyle = cells[i].color;
                        ctx.fillRect(x , y , cellXSize , cellYSize );
                    }
@@ -104,6 +101,17 @@ Item {
                    requestPaint();
                }
 
+               function clearFields()
+               {
+                   cells = Array.from({length: gridHeight * gridWidth}, (_) => emptyFiled);
+               }
+
+               function clear()
+               {
+                   var ctx = getContext("2d");
+                   ctx.reset();
+               }
+
                MouseArea {
                    id: ma
                    anchors.fill: parent
@@ -114,7 +122,6 @@ Item {
                        var X = Math.floor(mouseX/cellXSize);
                        var Y = Math.floor(mouseY/cellYSize);
                        var id = Math.floor(mouseY/cellYSize) * cvs.gridWidth + Math.floor(mouseX/cellXSize);
-                       console.log("X: ", X," Y: ", Y, " id: ", id);
                        return id;
                    }
                    function replaceStartOrStopField(id)
@@ -154,6 +161,7 @@ Item {
                onHeightChanged: {
                    onAvailableChanged();
                }
+
            }
         }
 
@@ -173,6 +181,7 @@ Item {
                 Layout.rowSpan: 1
                 Layout.fillWidth: true
                 displayText: ''
+                //@todo exception when start path finding for the second time
                 function onAvailableAlgorithmsSet(algorithms) {
                     var tmp = []
                     for (var alg in algorithms) {
@@ -188,6 +197,55 @@ Item {
                 }
             }
 
+            Text {
+                id: text3
+                text: qsTr("grid height")
+                font.pixelSize: 12
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+            }
+
+            SpinBox {
+                id: gridSizeHeight
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                objectName: "gridSizeHeight"
+                editable: true
+                value: 3
+                from: 1
+                to: 51
+                onValueChanged: {
+                    cvs.gridHeight = value;
+                    cvs.clear();
+                    cvs.paintGrid();
+                    cvs.clearFields();
+                    cvs.requestPaint();
+                }
+            }
+
+            Text {
+                id: text2
+                text: qsTr("grid width")
+                font.pixelSize: 12
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+            }
+
+            SpinBox {
+                id: gridSizeWidth
+                objectName: "gridSizeWidth"
+                editable: true
+                value: 3
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                to: 51
+                from: 1
+                onValueChanged: {
+                    cvs.gridWidth = value;
+                    cvs.clear();
+                    cvs.paintGrid();
+                    cvs.clearFields();
+                    cvs.requestPaint();
+                }
+            }
+
+
             function selectStart(){cvs.select = cvs.startField}
             function selectEnd() {cvs.select = cvs.stopField}
             function selectObstacle() {cvs.select = cvs.obstacleField}
@@ -199,7 +257,7 @@ Item {
 
                 pathFindingWindow.startPathFinding(arr, cvs.gridWidth);
             }
-            function clear() { cvs.cells = Array.from({length: cvs.gridHeight * cvs.gridWidth}, (_) => cvs.emptyFiled); cvs.paint()}
+            function clear() { cvs.clearFields(); cvs.paint()}
 
             property var btnData: [
                                    {name: "Start", action: selectStart, colspan: 1},
