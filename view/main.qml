@@ -16,13 +16,20 @@ Window {
     objectName: "mainWindow"
 
 MazeGeneration {
-    visible: true
+    visible: false
     id: mazeGenerationWindow
     width: parent.width
     height: parent.height
     generateButton.onClicked: {
+        //this will be changed in the future
         gridView.generateMaze(mazeGenerationWindow.mazeWidth, mazeGenerationWindow.mazeHeight);
     }
+}
+
+PathFinding {
+    id: pathFindingWindow
+    width: parent.width
+    height: parent.height
 }
 
     Item {

@@ -6,5 +6,6 @@
         <file>view/MazeGeneration.qml</file>
         <file>view/RectangleThickMazePainter.qml</file>
         <file>view/RectangleThinMazePainter.qml</file>
+        <file>view/PathFinding.qml</file>
     </qresource>
 </RCC>
