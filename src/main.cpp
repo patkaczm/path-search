@@ -20,16 +20,25 @@ int main(int argc, char *argv[])
 
     QObject* view = engine.rootObjects().at(0)->findChild<QObject*>("gridView");
 
-    QObject::connect(view, SIGNAL(startPathSearching(QVariant,int)),
-                     backend, SLOT(onStartPathFinding(QVariant,int)));
-    QObject::connect(backend, SIGNAL(pathFindingDone(QVariant)),
-                     view, SLOT(onPathFindingDone(QVariant)));
+
     QObject::connect(backend, SIGNAL(vertexVisited(QVariant)),
                      view, SLOT(onVertexVisited(QVariant)));
+
+    //path finding
+
+    QObject* pathFindingWindow = engine.rootObjects().at(0)->findChild<QObject*>("pathFindingWindow");
+
+    QObject::connect(pathFindingWindow, SIGNAL(startPathFinding(QVariant,int)),
+                     backend, SLOT(onStartPathFinding(QVariant,int)));
+    QObject::connect(backend, SIGNAL(pathFindingDone(QVariant)),
+                     pathFindingWindow, SLOT(onPathFindingDone(QVariant)));
+
     QObject::connect(backend, SIGNAL(availableAlgorithmsSet(QVariant)),
-                     view->findChild<QObject*>("availableAlgorithms"), SLOT(onAvailableAlgorithmsSet(QVariant)));
-    QObject::connect(view->findChild<QObject*>("availableAlgorithms"), SIGNAL(algorithmSelected(QVariant)),
+                     pathFindingWindow->findChild<QObject*>("availableAlgorithms"), SLOT(onAvailableAlgorithmsSet(QVariant)));
+    QObject::connect(pathFindingWindow->findChild<QObject*>("availableAlgorithms"), SIGNAL(algorithmSelected(QVariant)),
                      backend, SLOT(onAlgorithmSelected(QVariant)));
+
+    //maze generation
 
     QObject::connect(view, SIGNAL(generateMaze(int, int)),
                      backend, SLOT(onGenerateMaze(int, int)));

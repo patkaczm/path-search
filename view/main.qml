@@ -28,6 +28,7 @@ MazeGeneration {
 
 PathFinding {
     id: pathFindingWindow
+    objectName: "pathFindingWindow"
     width: parent.width
     height: parent.height
 }

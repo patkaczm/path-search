@@ -7,6 +7,19 @@ Item {
     width: parent.width
     height: parent.height
 
+    signal startPathFinding(variant gridCells, int width);
+    function onPathFindingDone(pathV) {
+        for (var prop in pathV) {
+            console.log(pathV[prop]);
+            if (cvs.cells[pathV[prop]] === cvs.startField ||
+                cvs.cells[pathV[prop]] === cvs.stopField) {
+                continue;
+            }
+            cvs.cells[pathV[prop]] = cvs.pathField;
+        }
+        cvs.paint();
+    }
+
     GridLayout {
         columns: 3
         rows: 5
@@ -85,6 +98,12 @@ Item {
                    ctx.fill();
                }
 
+               function paint() {
+                   paintCells();
+                   paintGrid();
+                   requestPaint();
+               }
+
                MouseArea {
                    id: ma
                    anchors.fill: parent
@@ -117,9 +136,7 @@ Item {
                        var id = getCellId(mouseX, mouseY);
                        replaceStartOrStopField(id);
                        cvs.cells[id] = cvs.select;
-                       cvs.paintCells();
-                       cvs.paintGrid();
-                       cvs.requestPaint();
+                       cvs.paint();
                    }
                }
                //@todo probably can be done better;
@@ -149,31 +166,46 @@ Item {
             Layout.alignment: Qt.AlignHCenter | Qt.AlignTop;
             columns: 2
             rows: 5
-            ComboBox {
 
+            ComboBox {
+                objectName: "availableAlgorithms"
                 Layout.columnSpan: 2
                 Layout.rowSpan: 1
                 Layout.fillWidth: true
-                model : ["Thick walls", "Thin walls"]
-                onActivated: {
-                    if (model[index] === "Thin walls") {
-                        mazeGenerationWindow.painter = rectangleThinMazePainter;
-                    } else if (model[index] === "Thick walls") {
-                        mazeGenerationWindow.painter = rectangleThickMazePainter;
+                displayText: ''
+                function onAvailableAlgorithmsSet(algorithms) {
+                    var tmp = []
+                    for (var alg in algorithms) {
+                        tmp.push(algorithms[alg])
                     }
-                    mazeGenerationWindow.drawMaze(currentMaze);
+                    model = tmp
+                }
+                signal algorithmSelected(variant selected);
+                onActivated: {
+                    console.log("Selected: ", model[index]);
+                    displayText = model[index];
+                    algorithmSelected(model[index]);
                 }
             }
+
             function selectStart(){cvs.select = cvs.startField}
             function selectEnd() {cvs.select = cvs.stopField}
             function selectObstacle() {cvs.select = cvs.obstacleField}
+            function startPathFinding() {
+                var arr = [];
+                for (var i = 0; i < cvs.cells.length; i++) {
+                    arr.push(cvs.cells[i].value);
+                }
+
+                pathFindingWindow.startPathFinding(arr, cvs.gridWidth);
+            }
 
             property var btnData: [
                                    {name: "Start", action: selectStart, colspan: 1},
                                    {name: "End", action: selectEnd, colspan: 1},
                                    {name: "Obstacle", action: selectObstacle, colspan: 1},
                                    {name: "Clear", action: null, colspan: 1},
-                                   {name: "Find Path", action: null, colspan: 2},
+                                   {name: "Find Path", action: startPathFinding, colspan: 2},
                                   ]
             Repeater {
                 model: parent.btnData
