@@ -96,23 +96,25 @@ Item {
                        console.log("X: ", X," Y: ", Y, " id: ", id);
                        return id;
                    }
-                   function clearPreviouslySelected(type) {
-                       if (cvs.select === type) {
-                           for(var i = 0; i < cvs.cells.length; i++) {
-                               if (cvs.cells[i] === type)
-                               {
-                                   cvs.cells[i] = cvs.emptyFiled;
-                                   break;
-                               }
+                   function replaceStartOrStopField(id)
+                   {
+                       if (cvs.select === cvs.startField) {
+                           if (cvs.startFieldId) {
+                               cvs.cells[cvs.startFieldId] = cvs.emptyFiled;
                            }
+                           cvs.startFieldId = id;
+                       } else if (cvs.select === cvs.stopField) {
+                           if (cvs.stopFieldId) {
+                               cvs.cells[cvs.stopFieldId] = cvs.emptyFiled;
+                           }
+                           cvs.stopFieldId = id;
                        }
                    }
 
                    onClicked: {
-                       clearPreviouslySelected(cvs.startField);
-                       clearPreviouslySelected(cvs.stopField);
-
-                       cvs.cells[getCellId(mouseX, mouseY)] = cvs.select;
+                       var id = getCellId(mouseX, mouseY);
+                       replaceStartOrStopField(id);
+                       cvs.cells[id] = cvs.select;
                        //check start and end
                        cvs.paintCells();
                        cvs.paintGrid();
