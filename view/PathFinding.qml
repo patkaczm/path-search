@@ -132,11 +132,14 @@ Item {
                     mazeGenerationWindow.drawMaze(currentMaze);
                 }
             }
+            function selectStart(){cvs.select = cvs.startField}
+            function selectEnd() {cvs.select = cvs.stopField}
+            function selectObstacle() {cvs.select = cvs.obstacleField}
 
             property var btnData: [
-                                   {name: "Start", action: null, colspan: 1},
-                                   {name: "End", action: null, colspan: 1},
-                                   {name: "Obstacle", action: null, colspan: 1},
+                                   {name: "Start", action: selectStart, colspan: 1},
+                                   {name: "End", action: selectEnd, colspan: 1},
+                                   {name: "Obstacle", action: selectObstacle, colspan: 1},
                                    {name: "Clear", action: null, colspan: 1},
                                    {name: "Find Path", action: null, colspan: 2},
                                   ]
