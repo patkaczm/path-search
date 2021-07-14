@@ -15,81 +15,21 @@ Window {
     title: qsTr("Path Search")
     objectName: "mainWindow"
 
-    Item {
-        id: testItem
-        width: parent.width
-        height: parent.height
-
-        property var currentMaze: null;
-
-        RectangleThickMaze {
-            id: rectangleThickMazePainter
-        }
-        RectangleThinMaze {
-            id: rectangleThinMazePainter
-        }
-
-        property var painter: rectangleThickMazePainter;
-
-        function drawCurrentMaze() {
-            painter.drawMaze(testItem.currentMaze, cvs);
-            cvs.requestPaint();
-        }
-
-        GridLayout {
-            columns: 2
-            rows: 3
-            width: parent.width
-            height: parent.height
-            Rectangle {
-                id: rr
-               Layout.rowSpan: 3
-               Layout.fillHeight: true
-               Layout.fillWidth: true
-               Layout.margins: 10
-
-               border.width: 2
-               border.color: "black"
-               onWidthChanged: {
-                   cvs.width = rr.width < rr.height ? rr.width : rr.height;
-                   cvs.height = rr.width < rr.height ? rr.width : rr.height;
-               }
-               Canvas {
-                   id: cvs
-                   Layout.fillHeight: true
-                   Layout.fillWidth: true
-               }
-            }
-            Button {
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignTop;
-                Layout.columnSpan: 1
-                onClicked: {
-                    gridView.generateMaze(gridSizeWidth.value, gridSizeHeight.value);
-                }
-                text: "Generate Maze"
-            }
-            Button {
-                text: "Thin Maze"
-                onClicked: {
-                    testItem.painter = rectangleThinMazePainter;
-                    testItem.drawCurrentMaze();
-                }
-            }
-            Button {
-                text: "Thick Maze"
-                onClicked: {
-                    testItem.painter = rectangleThickMazePainter;
-                    testItem.drawCurrentMaze();
-                }
-            }
-        }
+MazeGeneration {
+    visible: true
+    id: mazeGenerationWindow
+    width: parent.width
+    height: parent.height
+    generateButton.onClicked: {
+        gridView.generateMaze(mazeGenerationWindow.mazeWidth, mazeGenerationWindow.mazeHeight);
     }
+}
 
     Item {
+        visible: false
         id: menu
         width: parent.width
         height: parent.height
-        visible: false
         ColumnLayout {
             width: parent.width * 0.5
             height: parent.height * 0.4
@@ -195,11 +135,7 @@ Window {
         }
 
         function onMazeGenerationDone(maze) {
-            testItem.painter.drawMaze(maze, cvs);
-            console.log(cvs)
-            cvs.requestPaint();
-            testItem.currentMaze = maze;
-
+            mazeGenerationWindow.drawMaze(maze);
         }
 
 

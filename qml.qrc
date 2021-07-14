@@ -3,7 +3,8 @@
         <file>view/main.qml</file>
         <file>view/gridCell.qml</file>
         <file>view/CustomBorder.qml</file>
-        <file>view/RectangleThickMaze.qml</file>
-        <file>view/RectangleThinMaze.qml</file>
+        <file>view/MazeGeneration.qml</file>
+        <file>view/RectangleThickMazePainter.qml</file>
+        <file>view/RectangleThinMazePainter.qml</file>
     </qresource>
 </RCC>
