@@ -127,6 +127,16 @@ Item {
                    cells = Array.from({length: gridHeight * gridWidth}, (_) => emptyFiled);
                }
 
+               function clearPreviousPath()
+               {
+                   for (var i = 0; i < cells.length; i++) {
+                       if (cells[i] === cvs.visitedField || cells[i] === cvs.pathField) {
+                           cells[i] = cvs.emptyFiled;
+                       }
+                   }
+                   paint();
+               }
+
                function clear()
                {
                    var ctx = getContext("2d");
@@ -328,8 +338,9 @@ Item {
             function selectObstacle() {cvs.select = cvs.obstacleField}
             function startPathFinding() {
                 var arr = [];
+                cvs.clearPreviousPath();
                 for (var i = 0; i < cvs.cells.length; i++) {
-                    arr.push(cvs.cells[i].value);
+                        arr.push(cvs.cells[i].value);
                 }
                 showSteps.enabled = false;
                 pathFindingWindow.startPathFinding(arr, cvs.gridWidth);
