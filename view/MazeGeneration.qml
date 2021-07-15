@@ -19,10 +19,20 @@ Item {
     property var mazeWidth: 3
     property var mazeHeight: 3
 
+    function onMazeGenerationDone(maze) {
+        drawMaze(maze);
+    }
+
     function drawMaze(maze) {
         currentMaze = maze;
         painter.drawMaze(maze, cvs);
         cvs.requestPaint();
+    }
+    signal generateMaze(int width, int height);
+
+    function isSet(value, bitPos) {
+       var result =   Math.floor(value / Math.pow(2, bitPos)) % 2;
+       return result === 1;
     }
 
     GridLayout {
@@ -124,6 +134,9 @@ Item {
             Layout.alignment: Qt.AlignHCenter | Qt.AlignTop;
             Layout.rightMargin: 10
             text: "Generate Maze"
+            onClicked: {
+                mazeGenerationWindow.generateMaze(mazeGenerationWindow.mazeWidth, mazeGenerationWindow.mazeHeight);
+            }
         }
 
 

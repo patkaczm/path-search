@@ -18,9 +18,6 @@ int main(int argc, char *argv[])
 
     Backend* backend = new Backend(engine, &app);
 
-    QObject* view = engine.rootObjects().at(0)->findChild<QObject*>("gridView");
-
-
     //path finding
 
     QObject* pathFindingWindow = engine.rootObjects().at(0)->findChild<QObject*>("pathFindingWindow");
@@ -40,14 +37,16 @@ int main(int argc, char *argv[])
 
     //maze generation
 
-    QObject::connect(view, SIGNAL(generateMaze(int, int)),
+    QObject* mazeGenerationWindow = engine.rootObjects().at(0)->findChild<QObject*>("mazeGenerationWindow");
+
+    QObject::connect(mazeGenerationWindow, SIGNAL(generateMaze(int, int)),
                      backend, SLOT(onGenerateMaze(int, int)));
 
     QObject::connect(backend, SIGNAL(mazeGenerationDone(QVariant)),
-                     view, SLOT(onMazeGenerationDone(QVariant)));
+                     mazeGenerationWindow, SLOT(onMazeGenerationDone(QVariant)));
 
-    QObject::connect(backend, SIGNAL(mazeCellGenerated(QVariant)),
-                     view, SLOT(onMazeCellGenerated(QVariant)));
+//    QObject::connect(backend, SIGNAL(mazeCellGenerated(QVariant)),
+//                     view, SLOT(onMazeCellGenerated(QVariant)));
 
     backend->loadAlgorithms();
 

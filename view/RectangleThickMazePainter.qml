@@ -25,10 +25,10 @@ Item {
             let y = (2 * Math.floor(i / gridSizeWidth.value) + 1)* cellYSize
 
             ctx.fillRect(x, y, cellXSize , cellYSize );
-            if (gridView.isSet(maze[i], 0)) {
+            if (mazeGenerationWindow.isSet(maze[i], 0)) {
                 ctx.fillRect(x + cellXSize, y, cellXSize, cellYSize);
             }
-            if (gridView.isSet(maze[i], 1)) {
+            if (mazeGenerationWindow.isSet(maze[i], 1)) {
                 ctx.fillRect(x, y + cellYSize, cellXSize, cellYSize);
             }
         }

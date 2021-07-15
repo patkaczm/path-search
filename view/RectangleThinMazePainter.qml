@@ -16,19 +16,19 @@ Item {
             let x = (i % gridSizeWidth.value) * cellXSize;
             let y = Math.floor(i / gridSizeWidth.value) * cellYSize;
 
-            if (!gridView.isSet(maze[i], 0)) {
+            if (!mazeGenerationWindow.isSet(maze[i], 0)) {
                 ctx.moveTo(x + cellXSize, y);
                 ctx.lineTo(x + cellXSize, y + cellYSize);
             }
-            if (!gridView.isSet(maze[i], 1)) {
+            if (!mazeGenerationWindow.isSet(maze[i], 1)) {
                 ctx.moveTo(x, y + cellYSize);
                 ctx.lineTo(x + cellXSize, y + cellYSize);
             }
-            if (!gridView.isSet(maze[i], 2)) {
+            if (!mazeGenerationWindow.isSet(maze[i], 2)) {
                 ctx.moveTo(x, y);
                 ctx.lineTo(x, y + cellYSize);
             }
-            if (!gridView.isSet(maze[i], 3)) {
+            if (!mazeGenerationWindow.isSet(maze[i], 3)) {
                 ctx.moveTo(x, y);
                 ctx.lineTo(x + cellXSize, y);
             }
