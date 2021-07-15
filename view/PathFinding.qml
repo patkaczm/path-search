@@ -9,14 +9,33 @@ Item {
 
     signal startPathFinding(variant gridCells, int width);
     function onPathFindingDone(pathV) {
-        for (var prop in pathV) {
-            if (cvs.cells[pathV[prop]] === cvs.startField ||
-                cvs.cells[pathV[prop]] === cvs.stopField) {
-                continue;
+        if (showSteps.checked) {
+            timer.path = pathV;
+            console.log(timer.path)
+            if (!timer.running) {
+                timer.start();
             }
-            cvs.cells[pathV[prop]] = cvs.pathField;
+        } else {
+
+         for (var prop in pathV) {
+                if (cvs.cells[pathV[prop]] === cvs.startField ||
+                    cvs.cells[pathV[prop]] === cvs.stopField) {
+                    continue;
+                }
+                cvs.cells[pathV[prop]] = cvs.pathField;
+            }
+            cvs.paint();
+            showSteps.enabled = true;
         }
-        cvs.paint();
+    }
+
+    function onCellVisited(cell) {
+        if (showSteps.checked) {
+            timer.history.push(cell);
+            if (!timer.running){
+                timer.start()
+            }
+        }
     }
 
     GridLayout {
@@ -33,7 +52,7 @@ Item {
            Layout.fillHeight: true
            Layout.fillWidth: true
            Layout.margins: 10
-           Layout.minimumWidth: parent.width / 5 * 3
+           Layout.minimumWidth: parent.width * 0.6
 
 //           border.width: 2
 //           border.color: "black"
@@ -103,6 +122,8 @@ Item {
 
                function clearFields()
                {
+                   startFieldId = undefined;
+                   stopFieldId = undefined;
                    cells = Array.from({length: gridHeight * gridWidth}, (_) => emptyFiled);
                }
 
@@ -165,6 +186,44 @@ Item {
            }
         }
 
+        Timer {
+            id: timer
+            readonly property int baseInterval: 100
+            interval: baseInterval
+            running: false
+            repeat: true
+            property var path: []
+            property var history: []
+            function isNeitherStartNorEnd(cell) {
+                return !(cvs.startFieldId === cell || cvs.stopFieldId === cell)
+            }
+
+            onTriggered: {
+                if (history.length > 0) {
+                    if (isNeitherStartNorEnd(history[0])) {
+                        cvs.cells[history[0]] = cvs.visitedField;
+                    }
+                    history.shift();
+                } else if(path.length > 0) {
+                    if (isNeitherStartNorEnd(path[0])) {
+                        cvs.cells[path[0]] = cvs.pathField;
+                    }
+                    path.shift();
+                }
+                else {
+                    showSteps.enabled = true;
+                    stop();
+                }
+                cvs.paint();
+            }
+            function clearTimer() {
+                stop()
+                path = []
+                history = []
+            }
+
+        }
+
         GridLayout {
             Layout.columnSpan: 2
             Layout.rowSpan: 5
@@ -173,7 +232,7 @@ Item {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignHCenter | Qt.AlignTop;
             columns: 2
-            rows: 5
+            rows: 6
 
             ComboBox {
                 objectName: "availableAlgorithms"
@@ -207,6 +266,7 @@ Item {
             SpinBox {
                 id: gridSizeHeight
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.fillWidth: true
                 objectName: "gridSizeHeight"
                 editable: true
                 value: 3
@@ -215,8 +275,8 @@ Item {
                 onValueChanged: {
                     cvs.gridHeight = value;
                     cvs.clear();
-                    cvs.paintGrid();
                     cvs.clearFields();
+                    cvs.paintGrid();
                     cvs.requestPaint();
                 }
             }
@@ -234,17 +294,34 @@ Item {
                 editable: true
                 value: 3
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.fillWidth: true
                 to: 51
                 from: 1
                 onValueChanged: {
                     cvs.gridWidth = value;
                     cvs.clear();
-                    cvs.paintGrid();
                     cvs.clearFields();
+                    cvs.paintGrid();
                     cvs.requestPaint();
                 }
             }
 
+            CheckBox {
+                id: showSteps
+                Layout.columnSpan: 1
+                Layout.fillWidth: true
+                text: "Show steps"
+
+            }
+            Slider {
+                Layout.columnSpan: 1
+                Layout.fillWidth: true
+                from: 10
+                to: 1000
+                onMoved: {
+                    timer.interval = value;
+                }
+            }
 
             function selectStart(){cvs.select = cvs.startField}
             function selectEnd() {cvs.select = cvs.stopField}
@@ -254,7 +331,7 @@ Item {
                 for (var i = 0; i < cvs.cells.length; i++) {
                     arr.push(cvs.cells[i].value);
                 }
-
+                showSteps.enabled = false;
                 pathFindingWindow.startPathFinding(arr, cvs.gridWidth);
             }
             function clear() { cvs.clearFields(); cvs.paint()}

@@ -5,12 +5,12 @@ import QtQuick.Layouts 1.11
 import QtQml 2.15
 
 Window {
-    width: 640
-//    minimumWidth: width
-//    maximumWidth: width
-    height: 480
-//    minimumHeight: height
-//    maximumHeight: height
+    width: 1000
+    minimumWidth: width
+    maximumWidth: width
+    height: 600
+    minimumHeight: height
+    maximumHeight: height
     visible: true
     title: qsTr("Path Search")
     objectName: "mainWindow"
@@ -27,6 +27,7 @@ MazeGeneration {
 }
 
 PathFinding {
+//    visible: false
     id: pathFindingWindow
     objectName: "pathFindingWindow"
     width: parent.width

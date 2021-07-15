@@ -21,9 +21,6 @@ int main(int argc, char *argv[])
     QObject* view = engine.rootObjects().at(0)->findChild<QObject*>("gridView");
 
 
-    QObject::connect(backend, SIGNAL(vertexVisited(QVariant)),
-                     view, SLOT(onVertexVisited(QVariant)));
-
     //path finding
 
     QObject* pathFindingWindow = engine.rootObjects().at(0)->findChild<QObject*>("pathFindingWindow");
@@ -32,6 +29,9 @@ int main(int argc, char *argv[])
                      backend, SLOT(onStartPathFinding(QVariant,int)));
     QObject::connect(backend, SIGNAL(pathFindingDone(QVariant)),
                      pathFindingWindow, SLOT(onPathFindingDone(QVariant)));
+
+    QObject::connect(backend, SIGNAL(vertexVisited(QVariant)),
+                     pathFindingWindow, SLOT(onCellVisited(QVariant)));
 
     QObject::connect(backend, SIGNAL(availableAlgorithmsSet(QVariant)),
                      pathFindingWindow->findChild<QObject*>("availableAlgorithms"), SLOT(onAvailableAlgorithmsSet(QVariant)));
