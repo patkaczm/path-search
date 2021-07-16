@@ -1,4 +1,4 @@
-#include "Algorithm/PathFinding/Algorithm.hpp"
+#include "Algorithm/PathFinding/PathFinding.hpp"
 
 #include <QObject>
 
@@ -9,10 +9,10 @@
 namespace algorithm
 {
 
-class DepthFirstSearch : public QObject, public Algorithm
+class DepthFirstSearch : public QObject, public PathFinding
 {
     Q_OBJECT
-    Q_INTERFACES(algorithm::Algorithm)
+    Q_INTERFACES(algorithm::PathFinding)
 public:
     Path findPath(const graph::Graph& graph, const graph::Vertex& start, const graph::Vertex& end) const override;
 
@@ -21,7 +21,7 @@ signals:
 
 private:
     void DFS(const graph::Vertex& v, const graph::Vertex& end, const graph::Graph& g, std::map<graph::Vertex, bool>& visited,
-                                                                                          algorithm::Algorithm::Path& p, bool& found) const;
+                                                                                          algorithm::PathFinding::Path& p, bool& found) const;
 };
 
 }

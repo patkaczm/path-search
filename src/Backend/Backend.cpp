@@ -77,7 +77,7 @@ void Backend::loadAlgorithms()
     emit availableAlgorithmsSet(toQVatiantVS(algorithmList.getAlgorithmList()));
 }
 
-QVariant Backend::toQVariant(const algorithm::Algorithm::Path &path) const
+QVariant Backend::toQVariant(const algorithm::PathFinding::Path &path) const
 {
     std::vector<int> tmp;
     for(const auto& step : path) {

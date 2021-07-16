@@ -5,7 +5,7 @@
 #include <QQmlApplicationEngine>
 
 #include "Graph/Graph.hpp"
-#include "Algorithm/PathFinding/Algorithm.hpp"
+#include "Algorithm/PathFinding/PathFinding.hpp"
 #include "Algorithm/AlgorithmList/AlgorithmList.hpp"
 #include "Grid/Cell.hpp"
 #include "Grid/Grid.hpp"
@@ -38,9 +38,9 @@ public:
 
 private:
     QVariant toQVatiantVS(const std::vector<std::string>& val) const;
-    QVariant toQVariant(const algorithm::Algorithm::Path& path) const;
+    QVariant toQVariant(const algorithm::PathFinding::Path& path) const;
 
     QQmlApplicationEngine& mEngine;
-    algorithm::AlgorithmList<algorithm::Algorithm> algorithmList;
+    algorithm::AlgorithmList<algorithm::PathFinding> algorithmList;
 };
 

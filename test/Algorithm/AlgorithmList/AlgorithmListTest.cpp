@@ -1,13 +1,13 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include "Algorithm/PathFinding/Algorithm.hpp"
+#include "Algorithm/PathFinding/PathFinding.hpp"
 #include "Algorithm/AlgorithmList/AlgorithmList.hpp"
 
 namespace algorithm {
 namespace test {
 
-class DummyAlgorithm : public Algorithm
+class DummyAlgorithm : public PathFinding
 {
 public:
     Path findPath(const graph::Graph& , const graph::Vertex& , const graph::Vertex& ) const override {
@@ -22,7 +22,7 @@ class DummyAlgorithm2 : public DummyAlgorithm
 
 class AlgorithmListTest : public ::testing::Test {
 protected:
-    AlgorithmList<Algorithm> algorithmList;
+    AlgorithmList<PathFinding> algorithmList;
 };
 
 TEST_F(AlgorithmListTest, getSelectedIsEmptyAtTheBegining)

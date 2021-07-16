@@ -8,7 +8,7 @@
 namespace algorithm
 {
 
-Algorithm::Path Dijkstra::findPath(const graph::Graph& graph, const graph::Vertex &start, const graph::Vertex &end) const
+PathFinding::Path Dijkstra::findPath(const graph::Graph& graph, const graph::Vertex &start, const graph::Vertex &end) const
 {
     auto prev = solve(graph, start);
     return reconstructPath(start, end, prev);
@@ -46,7 +46,7 @@ std::map<graph::Vertex, graph::Vertex> Dijkstra::solve(const graph::Graph& graph
     return prev;
 }
 
-Algorithm::Path Dijkstra::reconstructPath(const graph::Vertex &start, const graph::Vertex &end, const std::map<graph::Vertex, graph::Vertex> &prev) const
+PathFinding::Path Dijkstra::reconstructPath(const graph::Vertex &start, const graph::Vertex &end, const std::map<graph::Vertex, graph::Vertex> &prev) const
 {
     //@todo add tests to this
     if (prev.empty() || start == end) {
