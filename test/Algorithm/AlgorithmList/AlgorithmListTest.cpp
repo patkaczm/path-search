@@ -2,7 +2,7 @@
 #include <gmock/gmock.h>
 
 #include "Algorithm/PathFinding/Algorithm.hpp"
-#include "Algorithm/PathFinding/AlgorithmList.hpp"
+#include "Algorithm/AlgorithmList/AlgorithmList.hpp"
 
 namespace algorithm {
 namespace test {
@@ -22,7 +22,7 @@ class DummyAlgorithm2 : public DummyAlgorithm
 
 class AlgorithmListTest : public ::testing::Test {
 protected:
-    AlgorithmList algorithmList;
+    AlgorithmList<Algorithm> algorithmList;
 };
 
 TEST_F(AlgorithmListTest, getSelectedIsEmptyAtTheBegining)

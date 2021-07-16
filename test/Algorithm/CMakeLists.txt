@@ -1,2 +1,3 @@
+add_subdirectory(AlgorithmList)
 add_subdirectory(MazeGeneration)
 add_subdirectory(PathFinding)

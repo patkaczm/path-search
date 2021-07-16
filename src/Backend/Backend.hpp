@@ -6,7 +6,7 @@
 
 #include "Graph/Graph.hpp"
 #include "Algorithm/PathFinding/Algorithm.hpp"
-#include "Algorithm/PathFinding/AlgorithmList.hpp"
+#include "Algorithm/AlgorithmList/AlgorithmList.hpp"
 #include "Grid/Cell.hpp"
 #include "Grid/Grid.hpp"
 
@@ -41,6 +41,6 @@ private:
     QVariant toQVariant(const algorithm::Algorithm::Path& path) const;
 
     QQmlApplicationEngine& mEngine;
-    algorithm::AlgorithmList algorithmList;
+    algorithm::AlgorithmList<algorithm::Algorithm> algorithmList;
 };
 

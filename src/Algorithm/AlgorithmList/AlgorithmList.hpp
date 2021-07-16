@@ -4,10 +4,10 @@
 #include <memory>
 #include <vector>
 #include <typeinfo>
-#include "Algorithm/PathFinding/Algorithm.hpp"
 
 namespace algorithm {
 
+template <class Algorithm>
 class AlgorithmList {
 public:
     const Algorithm* getSelected() const;
@@ -25,4 +25,4 @@ private:
 };
 
 }
-#include "Algorithm/PathFinding/AlgorithmList.tpp"
+#include "Algorithm/AlgorithmList/AlgorithmList.tpp"
