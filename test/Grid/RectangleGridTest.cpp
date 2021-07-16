@@ -42,8 +42,8 @@ TEST_F(RectangleGridTest, getNeighboursReturnRightNeighbours)
     EXPECT_THAT(mGrid.adjacent(Cell(1)), ::testing::ContainerEq(r2));
 }
 
-TEST_F(RectangleGridTest, cellAreConnectedAfterCreation) {
-    EXPECT_TRUE(mGrid.areConnected(Cell(0), Cell(1)));
+TEST_F(RectangleGridTest, cellAreNotConnectedAfterCreation) {
+    EXPECT_FALSE(mGrid.areConnected(Cell(0), Cell(1)));
 }
 
 TEST_F(RectangleGridTest, addWall) {
@@ -76,18 +76,19 @@ TEST_F(RectangleGridTest, cannotRemoveWallBetweenCellsWhichAreNotAdjacend) {
 TEST_F(RectangleGridTest, getFlattenRepresentationOfGridWithWalls)
 {
     std::vector<int> flatten {
-        0b11,
-        0b111,
-        0b110,
-        0b1001,
-        0b1101,
-        0b1100
+        0b0000,
+        0b0000,
+        0b0000,
+
+        0b0000,
+        0b0000,
+        0b0000
     };
     EXPECT_THAT(mGrid.flat(), ::testing::ContainerEq(flatten));
 
-    mGrid.addWall(Cell(0), Cell(1));
-    flatten.at(0) = 0b10;
-    flatten.at(1) = 0b011;
+    mGrid.removeWall(Cell(0), Cell(1));
+    flatten.at(0) = 0b0001;
+    flatten.at(1) = 0b0100;
     EXPECT_THAT(mGrid.flat(), ::testing::ContainerEq(flatten));
 }
 

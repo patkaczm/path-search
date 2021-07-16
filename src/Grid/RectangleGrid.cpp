@@ -86,7 +86,6 @@ std::uint32_t RectangleGrid::getCellWalls(const Cell &c) const
         } else if (neighbour.id == c.id - mWidth) { // up
             r |= 0b1000;
         }
-        std::cout << std::endl;
     }
     return r;
     // bit 0 means that there is no passage aka there is wall
