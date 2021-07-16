@@ -251,18 +251,18 @@ Item {
                 Layout.fillWidth: true
                 displayText: ''
                 //@todo exception when start path finding for the second time
-                function onAvailableAlgorithmsSet(algorithms) {
+                function onAvailablePathFindingAlgorithmsSet(algorithms) {
                     var tmp = []
                     for (var alg in algorithms) {
                         tmp.push(algorithms[alg])
                     }
                     model = tmp
                 }
-                signal algorithmSelected(variant selected);
+                signal pathFindingAlgorithmSelect(variant selected);
                 onActivated: {
                     console.log("Selected: ", model[index]);
                     displayText = model[index];
-                    algorithmSelected(model[index]);
+                    pathFindingAlgorithmSelect(model[index]);
                 }
             }
 

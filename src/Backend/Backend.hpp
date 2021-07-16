@@ -23,13 +23,13 @@ signals:
     void pathFindingDone(QVariant path);
     void vertexVisited(QVariant v);
     void mazeCellGenerated(QVariant v);
-    void availableAlgorithmsSet(QVariant v);
+    void availablePathFindingAlgorithmsSet(QVariant v);
     void mazeGenerationDone(QVariant v);
 
 public slots:
     void onStartPathFinding(QVariant gc, int width);
     void onVertexVisited(const graph::Vertex& v);
-    void onAlgorithmSelected(QVariant v);
+    void onPathFindingAlgorithmSelect(QVariant v);
     void onGenerateMaze(int width, int heigth);
     void onMazeCellGenerated(const grid::Cell& c);
 

@@ -30,10 +30,10 @@ int main(int argc, char *argv[])
     QObject::connect(backend, SIGNAL(vertexVisited(QVariant)),
                      pathFindingWindow, SLOT(onCellVisited(QVariant)));
 
-    QObject::connect(backend, SIGNAL(availableAlgorithmsSet(QVariant)),
-                     pathFindingWindow->findChild<QObject*>("availableAlgorithms"), SLOT(onAvailableAlgorithmsSet(QVariant)));
-    QObject::connect(pathFindingWindow->findChild<QObject*>("availableAlgorithms"), SIGNAL(algorithmSelected(QVariant)),
-                     backend, SLOT(onAlgorithmSelected(QVariant)));
+    QObject::connect(backend, SIGNAL(availablePathFindingAlgorithmsSet(QVariant)),
+                     pathFindingWindow->findChild<QObject*>("availableAlgorithms"), SLOT(onAvailablePathFindingAlgorithmsSet(QVariant)));
+    QObject::connect(pathFindingWindow->findChild<QObject*>("availableAlgorithms"), SIGNAL(pathFindingAlgorithmSelect(QVariant)),
+                     backend, SLOT(onPathFindingAlgorithmSelect(QVariant)));
 
     //maze generation
 

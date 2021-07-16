@@ -44,7 +44,7 @@ void Backend::onVertexVisited(const graph::Vertex &v)
     emit vertexVisited(v.id);
 }
 
-void Backend::onAlgorithmSelected(QVariant v)
+void Backend::onPathFindingAlgorithmSelect(QVariant v)
 {
     algorithmList.selectAlgorithm(v.toString().toStdString());
 }
@@ -74,7 +74,7 @@ void Backend::loadAlgorithms()
     algorithmList.registerAlgorithm("BreadthFirstSearch", std::make_unique<algorithm::BreadthFirstSearch>());
     algorithmList.registerAlgorithm("DepthFirstSearch", std::make_unique<algorithm::DepthFirstSearch>());
     algorithmList.registerAlgorithm("Dijkstra", std::make_unique<algorithm::Dijkstra>());
-    emit availableAlgorithmsSet(toQVatiantVS(algorithmList.getAlgorithmList()));
+    emit availablePathFindingAlgorithmsSet(toQVatiantVS(algorithmList.getAlgorithmList()));
 }
 
 QVariant Backend::toQVariant(const algorithm::PathFinding::Path &path) const
