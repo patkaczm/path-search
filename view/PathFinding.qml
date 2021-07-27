@@ -46,6 +46,7 @@ Item {
         Layout.margins: 10
 
         Rectangle {
+           id: r
            Layout.columnSpan: 1
            Layout.rowSpan: 5
 
@@ -53,9 +54,10 @@ Item {
            Layout.fillWidth: true
            Layout.margins: 10
            Layout.minimumWidth: parent.width * 0.6
+           Layout.maximumWidth: parent.width * 0.6
 
-           border.width: 2
-           border.color: "black"
+//           border.width: 2
+//           border.color: "black"
            onWidthChanged: {
                cvs.width = width < height ? width : height;
                cvs.height = width < height ? width : height;
@@ -245,6 +247,7 @@ Item {
             rows: 6
 
             ComboBox {
+                id: availableAlgorithms
                 objectName: "availableAlgorithms"
                 Layout.columnSpan: 2
                 Layout.rowSpan: 1
@@ -337,6 +340,10 @@ Item {
             function selectEnd() {cvs.select = cvs.stopField}
             function selectObstacle() {cvs.select = cvs.obstacleField}
             function startPathFinding() {
+                if (availableAlgorithms.displayText === "") {
+                    return;
+                }
+
                 var arr = [];
                 cvs.clearPreviousPath();
                 for (var i = 0; i < cvs.cells.length; i++) {

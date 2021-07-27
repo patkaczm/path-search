@@ -49,12 +49,16 @@ Item {
            Layout.fillHeight: true
            Layout.fillWidth: true
            Layout.margins: 10
+           Layout.minimumWidth: parent.width * 0.6
+           Layout.maximumWidth: parent.width * 0.6
 
-           border.width: 2
-           border.color: "black"
+
+//           border.width: 2
+//           border.color: "black"
            onWidthChanged: {
                cvs.width = width < height ? width : height;
                cvs.height = width < height ? width : height;
+
            }
            onHeightChanged: {
                onWidthChanged();
@@ -67,8 +71,19 @@ Item {
            }
         }
 
+        GridLayout {
+            Layout.columnSpan: 2
+            Layout.rowSpan: 5
+            Layout.topMargin: 10
+            Layout.rightMargin: 10
+            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignTop;
+            columns: 2
+            rows: 6
+
         ComboBox {
             objectName: "availableAlgorithms"
+            id: availableAlgorithms
             Layout.columnSpan: 2
             Layout.rowSpan: 1
             Layout.fillWidth: true
@@ -90,8 +105,6 @@ Item {
         }
 
         ComboBox {
-            Layout.topMargin: 10
-            Layout.rightMargin: 10
             Layout.columnSpan: 2
             Layout.rowSpan: 1
             Layout.fillWidth: true
@@ -115,9 +128,9 @@ Item {
         }
 
         SpinBox {
-            Layout.rightMargin: 10
             id: gridSizeHeight
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+            Layout.fillWidth: true
             objectName: "gridSizeHeight"
             editable: true
             value: 3
@@ -136,12 +149,12 @@ Item {
         }
 
         SpinBox {
-            Layout.rightMargin: 10
             id: gridSizeWidth
             objectName: "gridSizeWidth"
             editable: true
             value: 3
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+            Layout.fillWidth: true
             to: 51
             from: 1
             onValueChanged: {
@@ -154,13 +167,17 @@ Item {
             Layout.columnSpan: 2
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignHCenter | Qt.AlignTop;
-            Layout.rightMargin: 10
             text: "Generate Maze"
             onClicked: {
+                console.log(availableAlgorithms.displayText)
+                if (availableAlgorithms.displayText === "") {
+                    return
+                }
+
                 mazeGenerationWindow.generateMaze(mazeGenerationWindow.mazeWidth, mazeGenerationWindow.mazeHeight);
             }
         }
 
-
+}
     }
 }

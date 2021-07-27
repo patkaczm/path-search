@@ -24,6 +24,11 @@ void Backend::onStartPathFinding(QVariant gc, int width) {
     auto grid = grid::Grid(gc, width);
     auto graph = utils::makeGraph(grid);
 
+    if (not grid.getStart().has_value() || not grid.getEnd().has_value()) {
+        emit pathFindingDone({});
+        return;
+    }
+
     auto* alg = pathFindingAlgorithmList.getSelected();
     if (alg) {
         QObject::connect(dynamic_cast<const QObject*>(alg), SIGNAL(vertexVisited(const graph::Vertex&)),
