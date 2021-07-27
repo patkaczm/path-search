@@ -8,7 +8,7 @@
 
 namespace algorithm {
 
-class IterativeBacktracker : public QObject , public MazeGeneration {
+class BinaryTree : public QObject , public MazeGeneration {
     Q_OBJECT
     Q_INTERFACES(algorithm::MazeGeneration)
 public:

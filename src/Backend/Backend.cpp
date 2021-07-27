@@ -8,6 +8,7 @@
 #include "Algorithm/PathFinding/DepthFirstSearch.hpp"
 #include "Algorithm/PathFinding/Dijkstra.hpp"
 #include "Algorithm/MazeGeneration/IterativeBacktracker.hpp"
+#include "Algorithm/MazeGeneration/BinaryTree.hpp"
 
 #include "Backend/Utils.hpp"
 
@@ -88,6 +89,7 @@ void Backend::loadPathFindingAlgorithms()
 void Backend::loadMazeGenerationAlgorithms()
 {
     mazeGenerationAlgorithmList.registerAlgorithm("IterativeBacktracker", std::make_unique<algorithm::IterativeBacktracker>());
+    mazeGenerationAlgorithmList.registerAlgorithm("BinaryTree", std::make_unique<algorithm::BinaryTree>());
     emit availableMazeGenerationAlgorithmsSet(toQVatiantVS(mazeGenerationAlgorithmList.getAlgorithmList()));
 }
 

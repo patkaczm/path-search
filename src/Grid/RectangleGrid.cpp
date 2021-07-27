@@ -91,16 +91,16 @@ std::uint32_t RectangleGrid::getCellWalls(const Cell &c) const
     // bit 0 means that there is no passage aka there is wall
 }
 
-Cell RectangleGrid::at(std::size_t j, std::size_t i) const
+Cell RectangleGrid::at(std::size_t row, std::size_t col) const
 {
-    auto cell = getCell(j * mWidth + i);
+    auto cell = getCell(row * mWidth + col);
     if (cell) {
         return cell.value();
     }
-    throw std::out_of_range{"RectangleGrid at out of the bounds at: [j: ." + std::to_string(j) + " i: " + std::to_string(i) + "]"};
+    throw std::out_of_range{"RectangleGrid at out of the bounds at: [row: ." + std::to_string(row) + " col: " + std::to_string(col) + "]"};
 }
 
-std::pair<std::size_t, std::size_t> RectangleGrid::size() const
+IGrid::Size RectangleGrid::size() const
 {
     return {mHeight, mWidth};
 }
