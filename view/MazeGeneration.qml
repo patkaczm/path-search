@@ -68,6 +68,28 @@ Item {
         }
 
         ComboBox {
+            objectName: "availableAlgorithms"
+            Layout.columnSpan: 2
+            Layout.rowSpan: 1
+            Layout.fillWidth: true
+            displayText: ''
+            //@todo exception when start path finding for the second time
+            function onAvailableAlgorithmsSet(algorithms) {
+                var tmp = []
+                for (var alg in algorithms) {
+                    tmp.push(algorithms[alg])
+                }
+                model = tmp
+            }
+            signal algorithmSelect(variant selected);
+            onActivated: {
+                console.log("Selected: ", model[index]);
+                displayText = model[index];
+                algorithmSelect(model[index]);
+            }
+        }
+
+        ComboBox {
             Layout.topMargin: 10
             Layout.rightMargin: 10
             Layout.columnSpan: 2

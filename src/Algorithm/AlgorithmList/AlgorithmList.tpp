@@ -1,7 +1,7 @@
 namespace algorithm {
 
 template <class Algorithm>
-const Algorithm* AlgorithmList<Algorithm>::getSelected() const
+Algorithm* const AlgorithmList<Algorithm>::getSelected() const
 {
     if (nameAlgorithmMap.contains(selected)) {
         return nameAlgorithmMap.at(selected).get();

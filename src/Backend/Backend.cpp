@@ -10,7 +10,6 @@
 #include "Algorithm/MazeGeneration/IterativeBacktracker.hpp"
 
 #include "Backend/Utils.hpp"
-#include "Backend/MazeGenerator.hpp"
 
 Backend::Backend(QQmlApplicationEngine& engine, QObject *parent)
     : QObject(parent)
@@ -24,7 +23,7 @@ void Backend::onStartPathFinding(QVariant gc, int width) {
     auto grid = grid::Grid(gc, width);
     auto graph = utils::makeGraph(grid);
 
-    auto* alg = algorithmList.getSelected();
+    auto* alg = pathFindingAlgorithmList.getSelected();
     if (alg) {
         QObject::connect(dynamic_cast<const QObject*>(alg), SIGNAL(vertexVisited(const graph::Vertex&)),
                          this, SLOT(onVertexVisited(const graph::Vertex&)));
@@ -46,21 +45,19 @@ void Backend::onVertexVisited(const graph::Vertex &v)
 
 void Backend::onPathFindingAlgorithmSelect(QVariant v)
 {
-    algorithmList.selectAlgorithm(v.toString().toStdString());
+    pathFindingAlgorithmList.selectAlgorithm(v.toString().toStdString());
 }
 
 void Backend::onGenerateMaze(int width, int height)
 {
     qDebug() << "Generate maze: " << width<< ":" <<height;
-    MazeGenerator mg(std::make_unique<algorithm::IterativeBacktracker>(), width, height);
 
-    QObject::connect(&mg, &MazeGenerator::cellGenerated, this, &Backend::onMazeCellGenerated);
-    auto mazeData = mg.generateRectangle();
-    QObject::disconnect(&mg, &MazeGenerator::cellGenerated, this, &Backend::onMazeCellGenerated);
+    grid::RectangleGrid r(height, width);
+    mazeGenerationAlgorithmList.getSelected()->generateMaze(r);
 
     QVariant v;
-    v.setValue(mazeData.flat());
-    qDebug() << mazeData.flat();
+    v.setValue(r.flat());
+    qDebug() << r.flat();
     emit mazeGenerationDone(v);
 }
 
@@ -69,12 +66,29 @@ void Backend::onMazeCellGenerated(const grid::Cell &c)
     emit mazeCellGenerated(c.id);
 }
 
+void Backend::onMazeGenerationAlgorithmSelect(QVariant v)
+{
+    mazeGenerationAlgorithmList.selectAlgorithm(v.toString().toStdString());
+}
+
 void Backend::loadAlgorithms()
 {
-    algorithmList.registerAlgorithm("BreadthFirstSearch", std::make_unique<algorithm::BreadthFirstSearch>());
-    algorithmList.registerAlgorithm("DepthFirstSearch", std::make_unique<algorithm::DepthFirstSearch>());
-    algorithmList.registerAlgorithm("Dijkstra", std::make_unique<algorithm::Dijkstra>());
-    emit availablePathFindingAlgorithmsSet(toQVatiantVS(algorithmList.getAlgorithmList()));
+    loadPathFindingAlgorithms();
+    loadMazeGenerationAlgorithms();
+}
+
+void Backend::loadPathFindingAlgorithms()
+{
+    pathFindingAlgorithmList.registerAlgorithm("BreadthFirstSearch", std::make_unique<algorithm::BreadthFirstSearch>());
+    pathFindingAlgorithmList.registerAlgorithm("DepthFirstSearch", std::make_unique<algorithm::DepthFirstSearch>());
+    pathFindingAlgorithmList.registerAlgorithm("Dijkstra", std::make_unique<algorithm::Dijkstra>());
+    emit availablePathFindingAlgorithmsSet(toQVatiantVS(pathFindingAlgorithmList.getAlgorithmList()));
+}
+
+void Backend::loadMazeGenerationAlgorithms()
+{
+    mazeGenerationAlgorithmList.registerAlgorithm("IterativeBacktracker", std::make_unique<algorithm::IterativeBacktracker>());
+    emit availableMazeGenerationAlgorithmsSet(toQVatiantVS(mazeGenerationAlgorithmList.getAlgorithmList()));
 }
 
 QVariant Backend::toQVariant(const algorithm::PathFinding::Path &path) const

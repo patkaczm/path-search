@@ -10,7 +10,7 @@ namespace algorithm {
 template <class Algorithm>
 class AlgorithmList {
 public:
-    const Algorithm* getSelected() const;
+    Algorithm* const getSelected() const;
     std::vector<std::string> getAlgorithmList() const;
     void selectAlgorithm(const std::string&);
 

@@ -45,6 +45,11 @@ int main(int argc, char *argv[])
     QObject::connect(backend, SIGNAL(mazeGenerationDone(QVariant)),
                      mazeGenerationWindow, SLOT(onMazeGenerationDone(QVariant)));
 
+    QObject::connect(backend, SIGNAL(availableMazeGenerationAlgorithmsSet(QVariant)),
+                     mazeGenerationWindow->findChild<QObject*>("availableAlgorithms"), SLOT(onAvailableAlgorithmsSet(QVariant)));
+    QObject::connect(mazeGenerationWindow->findChild<QObject*>("availableAlgorithms"), SIGNAL(algorithmSelect(QVariant)),
+                     backend, SLOT(onMazeGenerationAlgorithmSelect(QVariant)));
+
 //    QObject::connect(backend, SIGNAL(mazeCellGenerated(QVariant)),
 //                     view, SLOT(onMazeCellGenerated(QVariant)));
 

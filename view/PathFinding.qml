@@ -54,8 +54,8 @@ Item {
            Layout.margins: 10
            Layout.minimumWidth: parent.width * 0.6
 
-//           border.width: 2
-//           border.color: "black"
+           border.width: 2
+           border.color: "black"
            onWidthChanged: {
                cvs.width = width < height ? width : height;
                cvs.height = width < height ? width : height;

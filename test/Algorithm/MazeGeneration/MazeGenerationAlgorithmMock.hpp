@@ -1,8 +1,8 @@
 #include <gmock/gmock.h>
 
+#include <optional>
 #include "Utils/MockInstance.hpp"
-#include "Graph/Graph.hpp"
-#include "Graph/Vertex.hpp"
+#include "Grid/RectangleGrid.hpp"
 
 namespace algorithm {
 namespace mock {
@@ -10,7 +10,7 @@ namespace mock {
 class MazeGenerationAlgorithmMock : public utils::mocks::MockInstance<MazeGenerationAlgorithmMock>
 {
 public:
-    MOCK_METHOD(graph::Graph, generateMaze, (const graph::Graph& g, const graph::Vertex& start));
+    MOCK_METHOD(graph::Graph, generateMaze, (grid::RectangleGrid& r, const std::optional<grid::Cell>& start));
 };
 
 }

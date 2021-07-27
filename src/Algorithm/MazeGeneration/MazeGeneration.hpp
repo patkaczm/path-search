@@ -10,10 +10,9 @@
 
 namespace algorithm {
 
-class MazeGenerationAlgorithm {
+class MazeGeneration {
 public:
-    virtual ~MazeGenerationAlgorithm() = default;
-    virtual graph::Graph generateMaze(const graph::Graph& g, const graph::Vertex& start) = 0;
+    virtual ~MazeGeneration() = default;
     virtual void generateMaze(grid::RectangleGrid& r, const std::optional<grid::Cell>& start = std::nullopt) const = 0;
 signals:
     virtual void wallRemoved(const graph::Edge& e) = 0;
@@ -21,4 +20,4 @@ signals:
 
 }
 
-Q_DECLARE_INTERFACE(algorithm::MazeGenerationAlgorithm, "MazeGenerationAlgorithm")
+Q_DECLARE_INTERFACE(algorithm::MazeGeneration, "MazeGeneration")
