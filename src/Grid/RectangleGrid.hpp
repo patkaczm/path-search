@@ -12,11 +12,12 @@ namespace grid {
 
 class RectangleGrid : public IGrid {
 public:
+
     RectangleGrid(std::uint32_t height, std::uint32_t width);
     //explicit RectangleGrid(const graph::Graph& g);
 
     Cell at(std::size_t j, std::size_t i) const override;
-    std::pair<std::size_t, std::size_t> size() const override;
+    Size size() const override;
     std::set<Cell> adjacent(const Cell& c) const override;
 
     void addWall(const Cell& c1, const Cell& c2) /*override*/;

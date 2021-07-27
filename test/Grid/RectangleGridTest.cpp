@@ -19,8 +19,8 @@ TEST_F(RectangleGridTest, creates)
 {
     auto size = mGrid.size();
 
-    EXPECT_EQ(mYSize, size.first);
-    EXPECT_EQ(mXSize, size.second);
+    EXPECT_EQ(mYSize, size.height);
+    EXPECT_EQ(mXSize, size.width);
 }
 
 TEST_F(RectangleGridTest, throwWhenAtParamsOutOfTheBounds)

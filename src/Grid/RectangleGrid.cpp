@@ -100,7 +100,7 @@ Cell RectangleGrid::at(std::size_t j, std::size_t i) const
     throw std::out_of_range{"RectangleGrid at out of the bounds at: [j: ." + std::to_string(j) + " i: " + std::to_string(i) + "]"};
 }
 
-std::pair<std::size_t, std::size_t> RectangleGrid::size() const
+IGrid::Size RectangleGrid::size() const
 {
     return {mHeight, mWidth};
 }

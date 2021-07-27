@@ -13,4 +13,5 @@ target_link_libraries(BackendLib PRIVATE ${QtLib}
                                          GridLib
                                          BackendUtilsLib
                                          IterativeBacktrackerLib
+                                         BinaryTreeLib
                                          RectangleGridLib)
