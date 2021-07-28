@@ -1,14 +1,15 @@
 #pragma once
 
 #include <set>
+#include <vector>
 #include <random>
 #include <algorithm>
 
 namespace algorithm {
 namespace utils {
 
-template <class T>
-T getRandom(const std::set<T>& s)
+template <template<typename> class T, class U>
+U getRandom(const T<U>& s)
 {
     std::random_device seeder;
     std::mt19937 engine(seeder());

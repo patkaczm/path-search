@@ -9,3 +9,7 @@ target_link_libraries(IterativeBacktrackerLib PRIVATE GraphLib MazeGenerationUti
 add_library(BinaryTreeLib BinaryTree.cpp)
 target_include_directories(BinaryTreeLib PRIVATE ${INCLUDE_DIR})
 target_link_libraries(BinaryTreeLib PRIVATE GraphLib MazeGenerationUtilsLib Qt5::Core)
+
+add_library(SidewinderLib Sidewinder.cpp)
+target_include_directories(SidewinderLib PRIVATE ${INCLUDE_DIR})
+target_link_libraries(SidewinderLib PRIVATE GraphLib MazeGenerationUtilsLib Qt5::Core)

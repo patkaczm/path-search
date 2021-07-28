@@ -112,7 +112,7 @@ std::set<Cell> RectangleGrid::adjacent(const Cell &c) const
         ret.emplace(c.id - 1);
         //add left
     }
-    if (c.id > mWidth) {
+    if (c.id >= mWidth) {
         ret.emplace(c.id - mWidth);
         //add up
     }
