@@ -25,6 +25,7 @@ Item {
 
     function drawMaze(maze) {
         currentMaze = maze;
+        console.log("Current maze: ", currentMaze)
         painter.drawMaze(maze, cvs);
         cvs.requestPaint();
     }
@@ -33,6 +34,16 @@ Item {
     function isSet(value, bitPos) {
        var result =   Math.floor(value / Math.pow(2, bitPos)) % 2;
        return result === 1;
+    }
+
+    function getGridWidth()
+    {
+        console.log((gridSizeWidth.value * 2) + 1, wallsType.currentValue === "Thick walls", wallsType.currentValue)
+        return wallsType.currentValue === "Thick walls" ? (gridSizeWidth.value * 2) + 1 : gridSizeWidth.value;
+    }
+    function getGridHeight()
+    {
+        return wallsType.currentValue === "Thick walls" ? (gridSizeHeight.value * 2) + 1 : gridSizeHeight.value;
     }
 
     GridLayout {
@@ -68,6 +79,25 @@ Item {
                id: cvs
                Layout.fillHeight: true
                Layout.fillWidth: true
+
+
+
+               MouseArea {
+                   id: ma
+                   anchors.fill: parent
+                   function getCellId(mouseX, mouseY)
+                   {
+                       let cellXSize = width / mazeGenerationWindow.getGridWidth();
+                       let cellYSize = height / mazeGenerationWindow.getGridHeight();
+                       var X = Math.floor(mouseX/cellXSize);
+                       var Y = Math.floor(mouseY/cellYSize);
+                       var id = Math.floor(mouseY/cellYSize) * mazeGenerationWindow.getGridWidth() + Math.floor(mouseX/cellXSize);
+                       return id;
+                   }
+                   onClicked: {
+                       console.log(getCellId(mouseX, mouseY));
+                   }
+               }
            }
         }
 
@@ -105,6 +135,7 @@ Item {
         }
 
         ComboBox {
+            id: wallsType
             Layout.columnSpan: 2
             Layout.rowSpan: 1
             Layout.fillWidth: true

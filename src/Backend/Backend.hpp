@@ -30,6 +30,7 @@ signals:
 
 public slots:
     void onStartPathFinding(QVariant gc, int width);
+    void onStartPathFindingOnMaze(QVariant v, int width);
     void onVertexVisited(const graph::Vertex& v);
     void onPathFindingAlgorithmSelect(QVariant v);
 

@@ -14,6 +14,7 @@ class RectangleGrid : public IGrid {
 public:
 
     RectangleGrid(std::uint32_t height, std::uint32_t width);
+    RectangleGrid(const std::vector<int>& flat, std::uint32_t width);
     //explicit RectangleGrid(const graph::Graph& g);
 
     Cell at(std::size_t row, std::size_t col) const override;

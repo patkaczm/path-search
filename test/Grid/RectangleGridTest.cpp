@@ -92,4 +92,19 @@ TEST_F(RectangleGridTest, getFlattenRepresentationOfGridWithWalls)
     EXPECT_THAT(mGrid.flat(), ::testing::ContainerEq(flatten));
 }
 
+TEST_F(RectangleGridTest, createRectangleGridFromFlat)
+{
+    const std::vector<int> flat {
+        0b0001,
+        0b0100,
+        0b0000,
+
+        0b0000,
+        0b0000,
+        0b0000
+    };
+    RectangleGrid r(flat, mXSize);
+    EXPECT_THAT(r.flat(), ::testing::ContainerEq(flat));
+}
+
 }

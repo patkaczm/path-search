@@ -55,13 +55,23 @@ void Backend::onPathFindingAlgorithmSelect(QVariant v)
     pathFindingAlgorithmList.selectAlgorithm(v.toString().toStdString());
 }
 
+void Backend::onStartPathFindingOnMaze(QVariant v, int width) {
+//    QList tmp(v.toList());
+//    std::vector<int> flat(tmp.begin(), tmp.end());
+
+//    grid::RectangleGrid r(flat, width);
+    // start and end field need to be determined.
+//    auto path = pathFindingAlgorithmList.getSelected()->findPath(r);
+//    emit pathFindingDone(toQVariant(path));
+}
+
 void Backend::onGenerateMaze(int width, int height)
 {
     qDebug() << "Generate maze: " << width<< ":" <<height;
 
     grid::RectangleGrid r(height, width);
     mazeGenerationAlgorithmList.getSelected()->generateMaze(r);
-
+//    pathFindingAlgorithmList.getSelected()->findPath(r);
     QVariant v;
     v.setValue(r.flat());
     qDebug() << r.flat();

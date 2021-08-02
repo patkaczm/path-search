@@ -1,4 +1,7 @@
 #include "Grid/RectangleGrid.hpp"
+
+#include <bitset>
+
 #include <iostream>
 namespace grid {
 
@@ -19,7 +22,36 @@ RectangleGrid::RectangleGrid(std::uint32_t height, std::uint32_t width)
 //                }
 //            }
 //        }
-//    }
+    //    }
+}
+
+RectangleGrid::RectangleGrid(const std::vector<int> &flat, uint32_t width)
+    : mHeight(flat.size() / width), mWidth(width)
+{
+    for (std::uint32_t j = 0 ; j < mHeight; j++) {
+        for (std::uint32_t i = 0 ; i < mWidth; i++) {
+            mGraph.add(graph::Vertex{j * mWidth + i});
+        }
+    }
+
+    for (std::uint32_t j = 0 ; j < mHeight; j++) {
+        for (std::uint32_t i = 0 ; i < mWidth; i++) {
+            std::bitset<6> b(flat[j * mWidth + i]);
+            if (b.test(0)) {
+                removeWall(Cell{j * mWidth + i}, Cell{j * mWidth + i + 1});
+            }
+            if (b.test(1)) {
+                removeWall(Cell{j * mWidth + i}, Cell{j * mWidth + i + mWidth});
+            }
+            if (b.test(2)) {
+                removeWall(Cell{j * mWidth + i}, Cell{j * mWidth + i - 1});
+            }
+            if (b.test(3)) {
+                removeWall(Cell{j * mWidth + i}, Cell{j * mWidth + i - mWidth});
+            }
+            //@todo add start and end
+        }
+    }
 }
 
 bool RectangleGrid::canCreateConnectionWithCell(const RectangleGrid::Direction &d, std::uint32_t j, std::uint32_t i) const
