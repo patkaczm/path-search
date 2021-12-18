@@ -1,8 +1,8 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
-import QtQuick.Controls 2.15
+import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.11
-import QtQml 2.15
+import QtQml 2.12
 
 Window {
     width: 1000
